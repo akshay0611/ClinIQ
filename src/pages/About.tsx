@@ -42,37 +42,37 @@ const coreValues = [
 
 const team = [
   {
-  name: 'Akshay Kumar',
-  role: 'Developer',
-  img: '/api/placeholder/200/200',
-  bio: 'Passionate software developer with a knack for building scalable applications.',
-  linkedin: 'https://www.linkedin.com/in/akshaykumar0611/',
-  github: 'https://github.com/akshay0611'
-},
-{
-  name: 'Jishnu Chauhan',
-  role: 'Developer',
-  img: '/api/placeholder/200/200',
-  bio: 'Passionate software developer with a knack for building scalable applications.',
-  linkedin: 'https://www.linkedin.com/in/jishnu-chauhan-87624b36a',
-  github: 'http://github.com/jishnukeyhack'
-},
-{
-  name: 'Raunak Jain',
-  role: 'AI Researcher',
-  img: '/api/placeholder/200/200',
-  bio: 'Passionate software developer with a knack for building scalable applications.',
-  linkedin: 'https://www.linkedin.com/in/raunak-jain-ba2a4920a',
-  github: 'https://github.com/raunak-jain-02'
-},
-{
-  name: 'Himanshu Maurya',
-  role: 'Developer',
-  img: '/api/placeholder/200/200',
-  bio: 'Passionate software developer with a knack for building scalable applications.',
-  linkedin: 'https://www.linkedin.com/in/kumarhk2006',
-  github: 'https://github.com/himanshukum0r'
-},
+    name: 'Akshay Kumar',
+    role: 'Frontend, UI/UX Developer',
+    img: '/public/akshay.jpg',
+    bio: 'Specializes in creating intuitive user interfaces and responsive designs that enhance user experience. Skilled in modern frontend frameworks and design systems.',
+    linkedin: 'https://www.linkedin.com/in/akshaykumar0611/',
+    github: 'https://github.com/akshay0611'
+  },
+  {
+    name: 'Jishnu Chauhan',
+    role: 'Backend, Database Developer',
+    img: '/public/jishnu1.jpg',
+    bio: 'Focused on building secure, efficient backend systems and optimizing database performance. Experienced in developing scalable APIs and handling server-side logic.',
+    linkedin: 'https://www.linkedin.com/in/jishnu-chauhan-87624b36a',
+    github: 'http://github.com/jishnukeyhack'
+  },
+  {
+    name: 'Raunak Jain',
+    role: 'Project Management',
+    img: '/public/raunak.jpeg',
+    bio: 'Drives project execution through effective planning, coordination, and leadership. Ensures timely delivery while aligning team efforts with business goals.',
+    linkedin: 'https://www.linkedin.com/in/raunak-jain-ba2a4920a',
+    github: 'https://github.com/raunak-jain-02'
+  },
+  {
+    name: 'Himanshu Maurya',
+    role: 'Research Management',
+    img: '/public/himanshu.jpeg',
+    bio: 'Leads innovation through in-depth research and trend analysis. Bridges the gap between emerging technologies and practical implementation.',
+    linkedin: 'https://www.linkedin.com/in/kumarhk2006',
+    github: 'https://github.com/himanshukum0r'
+  }
 ];
 
 const milestones = [
@@ -361,12 +361,14 @@ export default function About() {
       whileTap={{ scale: 0.98 }}
       className="bg-white dark:bg-neutral-800/90 backdrop-blur-sm rounded-xl overflow-hidden shadow-xl shadow-blue-900/5 dark:shadow-neutral-900/30 border border-blue-50 dark:border-neutral-700/80 group"
     >
-      <div className="h-48 overflow-hidden relative">
-        <img 
-          src={member.img} 
-          alt={member.name} 
-          className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-        />
+      <div className="flex items-center justify-center mt-8 mb-2">
+        <div className="w-36 h-36 rounded-full overflow-hidden border-4 border-blue-100 dark:border-blue-800 shadow">
+          <img
+            src={member.img}
+            alt={member.name}
+            className="w-full h-full object-cover object-top"
+          />
+        </div>
       </div>
       <div className="p-6">
         <h3 className="font-bold text-lg text-gray-900 dark:text-white">{member.name}</h3>
@@ -381,7 +383,7 @@ export default function About() {
             className="text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 transition-colors"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.27c-.97 0-1.75-.79-1.75-1.76 0-.97.78-1.76 1.75-1.76s1.75.79 1.75 1.76c0 .97-.78 1.76-1.75 1.76zm15.5 11.27h-3v-5.6c0-1.34-.03-3.07-1.87-3.07-1.87 0-2.16 1.46-2.16 2.97v5.7h-3v-10h2.89v1.36h.04c.4-.76 1.37-1.56 2.83-1.56 3.03 0 3.59 2 3.59 4.59v5.61z"/>
+              <path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.27c-.97 0-1.75-.79-1.76-1.76 0-.97.78-1.76 1.75-1.76s1.75.79 1.75 1.76c0 .97-.78 1.76-1.75 1.76zm15.5 11.27h-3v-5.6c0-1.34-.03-3.07-1.87-3.07-1.87 0-2.16 1.46-2.16 2.97v5.7h-3v-10h2.89v1.36h.04c.4-.76 1.37-1.56 2.83-1.56 3.03 0 3.59 2 3.59 4.59v5.61z"/>
             </svg>
             <span className="sr-only">LinkedIn profile of {member.name}</span>
           </motion.a>
