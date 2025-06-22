@@ -20,7 +20,7 @@ Millions face delays and confusion in accessing healthcare.
 ## 🩺 Solution & Key Features
 
 - 🧠 **AI Symptom Checker:** Get instant, personalized health insights.
-- 👩‍⚕️ **Doctor Directory:** Find verified specialists by expertise.
+- 👩‍⚕️ **Doctor Directory:** Easily find trusted medical specialists by field of expertise.
 - 💬 **Chat Interface:** Interactive feedback on symptoms.
 - 📱 **Responsive UI:** Modern design with smooth animations.
 - 📅 **Appointment Booking:** Book and manage appointments with ease.
