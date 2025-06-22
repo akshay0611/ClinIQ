@@ -6,8 +6,7 @@ ClinIQ is an innovative full-stack healthtech platform that leverages AI to prov
 
 ## 🚀 Live Demo
 
-[🔗 Visit ClinIQ (Demo Link)](https://your-demo-link.com)  
-*(Replace with your actual deployment URL)*
+[🔗 Visit ClinIQ (Demo Link)](https://cliniq-iota.vercel.app/)  
 
 ---
 
@@ -51,7 +50,13 @@ Millions face delays and confusion in accessing healthcare.
 
 ## 📸 Screenshots
 
-![Home Page](./public/ClinIQ_Logo.png)
+**Homepage:**
+
+![Home Page](./public/cliniqhome.png)
+
+**Symptom Checker:**
+
+![Symptom Checker](./public/cliniqsymptomchecker.png)
 
 
 ---
