@@ -63,7 +63,7 @@ const team = [
   img: '/api/placeholder/200/200',
   bio: 'Passionate software developer with a knack for building scalable applications.',
   linkedin: 'https://www.linkedin.com/in/raunak-jain-ba2a4920a',
-  github: 'https://github.com/raunakjain'
+  github: 'https://github.com/raunak-jain-02'
 },
 {
   name: 'Himanshu Maurya',
