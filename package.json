@@ -1,0 +1,52 @@
+{
+  "name": "cliniq-healthcare-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@headlessui/react": "^2.2.2",
+    "@heroicons/react": "^2.2.0",
+    "@supabase/supabase-js": "^2.49.8",
+    "axios": "^1.9.0",
+    "date-fns": "^4.1.0",
+    "dotenv": "^16.5.0",
+    "framer-motion": "^11.1.6",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
+    "lucide-react": "^0.513.0",
+    "mongodb": "^6.16.0",
+    "react": "^18.3.1",
+    "react-calendar": "^4.8.0",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.51.0",
+    "react-hot-toast": "^2.5.2",
+    "react-router-dom": "^6.22.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.1",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.18",
+    "eslint": "^9.9.1",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.11",
+    "globals": "^15.9.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^8.3.0",
+    "vite": "^5.4.2"
+  },
+  "description": "ClinIQ is an innovative full-stack healthtech platform that leverages AI to provide accurate symptom analysis, doctor discovery, and appointment booking — all in one place. Designed for the **FullStack Forge Hackathon**, ClinIQ blends powerful AI with scalable architecture to solve real-world healthcare challenges.",
+  "main": "eslint.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* styles.css or component.module.css */
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) rotate(12deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(15deg);
+    }
+  }
+  

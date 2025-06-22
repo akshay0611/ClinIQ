@@ -1,0 +1,40 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Dependency directories
+node_modules/
+
+# Vite build output
+dist/
+build/
+
+# Local environment variables
+.env
+.env.*.local
+.env.local
+
+# Vercel/Netlify/other deployment configs (optional)
+.vercel/
+.netlify/
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Optional: lockfiles (if you only use one type)
+# Uncomment one if you don’t want to track them
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+.vercel
