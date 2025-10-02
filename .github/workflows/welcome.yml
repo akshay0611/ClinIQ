@@ -1,0 +1,35 @@
+name: Welcome New Issues
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  welcome-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add welcome comment
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const issueNumber = context.issue.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const commentBody = `
+              👋 Hello and thank you for contributing to **ClinIQ**! We appreciate you taking the time to open this issue.
+
+              Please make sure you have read our [**README.md**](https://github.com/${owner}/${repo}/blob/main/README.md) and [**CONTRIBUTING.md**](https://github.com/${owner}/${repo}/blob/main/CONTRIBUTING.md) guides.
+
+              **Important:** Please do not open a Pull Request until this issue has been assigned to you.
+
+              Our maintainers will review your issue shortly. Happy coding! 🚀
+            `;
+
+            await github.rest.issues.createComment({
+              owner: owner,
+              repo: repo,
+              issue_number: issueNumber,
+              body: commentBody
+            });
