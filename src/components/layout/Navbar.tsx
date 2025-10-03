@@ -10,13 +10,10 @@ import {
   LogOut, 
   Home, 
   Stethoscope, 
-  Search, 
   Users,
-  // LayoutDashboard,
-  HelpCircle,
-  MessageSquare,
   Info,
-  Hospital
+  Hospital,
+  Sparkles
 } from 'lucide-react';
 import Button from '../common/Button';
 import { useAuth } from '../../context/AuthContext';
@@ -29,6 +26,7 @@ const Navbar: React.FC = () => {
   const { pathname } = useLocation();
   const { currentUser, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
@@ -38,40 +36,40 @@ const Navbar: React.FC = () => {
     setIsProfileOpen(false);
   };
   
-  
   useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
-      if (offset > 10) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(offset > 20);
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  
   const navItems = [
-    { name: 'Home', path: '/', icon: <Home size={18} /> },
-    { name: 'About', path: '/about', icon: <Info size={18} /> },
-    { name: 'Symptom Checker', path: '/symptom-check', icon: <Stethoscope size={18} /> },
-    { name: 'Find Doctors', path: '/doctors', icon: <Users size={18} /> },
-    { name: 'Hospitals', path: '/hospitals', icon: <Hospital size={18} /> },
-    { name: 'FAQ', path: '/faq', icon: <HelpCircle size={18} /> },
-    { name: 'Contact', path: '/contact', icon: <MessageSquare size={18} /> },
+    { name: 'Home', path: '/', icon: <Home size={16} /> },
+    { name: 'Symptom Checker', path: '/symptom-check', icon: <Stethoscope size={16} /> },
+    { name: 'Find Doctors', path: '/doctors', icon: <Users size={16} /> },
+    { name: 'Hospitals', path: '/hospitals', icon: <Hospital size={16} /> },
+    { name: 'About', path: '/about', icon: <Info size={16} /> },
+
+    // { name: 'FAQ', path: '/faq', icon: <HelpCircle size={16} /> },
+    // { name: 'Contact', path: '/contact', icon: <MessageSquare size={16} /> },
   ];
   
   const isActive = (path: string) => pathname === path;
 
 
+  // Enhanced animation variants
   const navbarVariants = {
     initial: { opacity: 0, y: -20 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.3 } }
+    animate: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { 
+        duration: 0.4
+      } 
+    }
   };
 
   const menuItemVariants = {
@@ -80,52 +78,63 @@ const Navbar: React.FC = () => {
       opacity: 1,
       y: 0,
       transition: {
-        delay: 0.05 * i,
-        duration: 0.2
+        delay: 0.1 + (i * 0.05),
+        duration: 0.3
       }
     })
   };
+
 
   return (
     <motion.header 
       initial="initial"
       animate="animate"
       variants={navbarVariants}
-      className={`sticky top-0 z-30 w-full transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled 
-          ? 'bg-white/90 dark:bg-neutral-800/90 backdrop-blur-md shadow-md' 
-          : 'bg-white dark:bg-neutral-800'
+          ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-lg shadow-black/5' 
+          : 'bg-transparent'
       }`}
     >
-      <nav className="container mx-auto px-4 py-3 flex items-center justify-between"> 
-      
-        <Link to="/" className="flex items-center group" onClick={closeMenus}>
+      <nav className="container mx-auto px-6 py-4 flex items-center justify-between"> 
+        {/* Logo Section */}
+        <Link to="/" className="flex items-center group relative" onClick={closeMenus}>
           <motion.div 
-            className="flex items-center justify-center w-16 h-16 mr-2" 
-            whileHover={{ rotate: [0, -5, 5, -5, 0], transition: { duration: 0.5 } }}
+            className="flex items-center justify-center w-12 h-12 mr-3 relative"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ 
+              opacity: 1, 
+              y: 0,
+              transition: { 
+                duration: 0.4,
+                delay: 0.2
+              }
+            }}
+            whileHover={{ 
+              scale: 1.02,
+              transition: { duration: 0.2 }
+            }}
           >
-            {/* Replaced SVG component with img logo */}
             <img 
               src="/ClinIQ_Logo.png" 
               alt="ClinIQ Logo" 
-              className="w-full h-full object-contain" 
+              className="w-full h-full object-contain filter drop-shadow-sm" 
             />
           </motion.div>
           <div className="relative overflow-hidden">
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-blue-500 text-transparent bg-clip-text dark:from-primary-400 dark:to-blue-300"> {/* Increased text size (text-xl to text-2xl) */}
-              ClinIQ
-            </span>
             <motion.span 
-              className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary-600 to-blue-500 dark:from-primary-400 dark:to-blue-300"
-              initial={{ scaleX: 0, originX: 0 }}
-              whileHover={{ scaleX: 1 }}
-              transition={{ duration: 0.3 }}
-            />
+              className="text-xl font-bold bg-gradient-to-r from-primary-600 via-blue-600 to-purple-600 text-transparent bg-clip-text dark:from-primary-400 dark:via-blue-400 dark:to-purple-400"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+            >
+              ClinIQ
+            </motion.span>
           </div>
         </Link>
 
-       
-        <div className="hidden md:flex items-center space-x-1">
+        {/* Desktop Navigation */}
+        <div className="hidden lg:flex items-center space-x-1">
           {navItems.map((item, index) => (
             <motion.div
               key={item.path}
@@ -133,23 +142,23 @@ const Navbar: React.FC = () => {
               variants={menuItemVariants}
               initial="hidden"
               animate="visible"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
             >
               <Link
                 to={item.path}
-                className={`px-3 py-2 rounded-md text-sm font-medium flex items-center space-x-1.5 transition-colors ${
+                className={`relative px-4 py-2.5 rounded-xl text-sm font-medium flex items-center space-x-2 transition-all duration-300 group ${
                   isActive(item.path)
-                    ? 'text-white dark:text-white bg-gradient-to-r from-primary-600 to-blue-500 shadow-sm shadow-primary-600/20 dark:shadow-primary-400/20'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-100 dark:hover:bg-gray-700/30'
+                    ? 'text-white bg-gradient-to-r from-primary-500 to-blue-500 shadow-lg shadow-primary-500/25 dark:shadow-primary-400/25'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/50'
                 }`}
               >
-                <span className={`${isActive(item.path) ? 'text-white' : ''}`}>{item.icon}</span>
+                <span className={`transition-colors duration-200 ${isActive(item.path) ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-primary-500'}`}>
+                  {item.icon}
+                </span>
                 <span>{item.name}</span>
                 {isActive(item.path) && (
-                  <motion.span
+                  <motion.div
                     layoutId="activeIndicator"
-                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-white"
+                    className="absolute inset-0 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl -z-10"
                     initial={false}
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   />
@@ -159,72 +168,73 @@ const Navbar: React.FC = () => {
           ))}
         </div>
 
-       
-        <div className="flex items-center">
-         
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full mr-2"
+        {/* Action Buttons */}
+        <div className="flex items-center space-x-2">
+          {/* Search Button */}
+          {/*           <motion.button
+            className="p-2.5 text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/50 rounded-xl transition-all duration-200"
             aria-label="Search"
           >
-            <Search size={20} />
+            <Search size={18} />
           </motion.button>
-          
-         
+           */}
+          {/* Theme Toggle */}
           <motion.button
-            whileHover={{ rotate: 15, scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
             onClick={toggleTheme}
-            className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full mr-2"
+            className="p-2.5 text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/50 rounded-xl transition-all duration-200"
             aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           >
-            {theme === 'dark' ? (
-              <Sun size={20} className="text-yellow-400" />
-            ) : (
-              <Moon size={20} className="text-blue-600" />
-            )}
+            <motion.div
+              key={theme}
+              initial={{ rotate: -90 }}
+              animate={{ rotate: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {theme === 'dark' ? (
+                <Sun size={18} className="text-yellow-500" />
+              ) : (
+                <Moon size={18} className="text-blue-500" />
+              )}
+            </motion.div>
           </motion.button>
 
-         
+          {/* User Profile or Auth Buttons */}
           {currentUser ? (
             <div className="relative">
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
                 onClick={toggleProfile}
-                className="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="flex items-center space-x-2 p-2 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/50 transition-all duration-200"
               >
                 {currentUser.profilePicture ? (
                   <img
                     src={currentUser.profilePicture}
                     alt={currentUser.name}
-                    className="w-9 h-9 rounded-full object-cover border-2 border-primary-200 dark:border-primary-700"
+                    className="w-8 h-8 rounded-full object-cover border-2 border-primary-200 dark:border-primary-700 transition-colors duration-200"
                   />
                 ) : (
-                  <div className="w-9 h-9 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full flex items-center justify-center shadow-md">
-                    <span className="text-white font-medium">
+                  <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full flex items-center justify-center shadow-md transition-shadow duration-200">
+                    <span className="text-white font-medium text-sm">
                       {currentUser.name.charAt(0)}
                     </span>
                   </div>
                 )}
-                <span className="hidden md:block text-sm font-medium">
+                <span className="hidden lg:block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {currentUser.name}
                 </span>
               </motion.button>
 
-              
+              {/* Profile Dropdown */}
               <AnimatePresence>
                 {isProfileOpen && (
                   <motion.div
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute right-0 mt-2 w-56 bg-white dark:bg-neutral-800 rounded-xl shadow-lg py-2 z-40 border border-gray-200 dark:border-gray-700 overflow-hidden"
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-xl py-3 z-40 border border-gray-200/50 dark:border-gray-700/50 overflow-hidden backdrop-blur-xl"
                   >
-                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                    <div className="px-4 py-3 border-b border-gray-200/50 dark:border-gray-700/50">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                         {currentUser.name}
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
@@ -233,10 +243,10 @@ const Navbar: React.FC = () => {
                     </div>
                     <Link
                       to="/dashboard"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/30 group"
+                      className="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors duration-200"
                       onClick={closeMenus}
                     >
-                      <User size={16} className="mr-2 text-primary-500 group-hover:text-primary-600 dark:text-primary-400" />
+                      <User size={16} className="mr-3 text-primary-500 dark:text-primary-400" />
                       Your Dashboard
                     </Link>
                     <button
@@ -244,9 +254,9 @@ const Navbar: React.FC = () => {
                         logout();
                         closeMenus();
                       }}
-                      className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400 group"
+                      className="flex items-center w-full text-left px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
                     >
-                      <LogOut size={16} className="mr-2 text-gray-500 group-hover:text-red-500 dark:text-gray-400" />
+                      <LogOut size={16} className="mr-3 text-gray-500 dark:text-gray-400" />
                       Sign Out
                     </button>
                   </motion.div>
@@ -256,41 +266,30 @@ const Navbar: React.FC = () => {
           ) : (
             <div className="hidden md:flex items-center space-x-3">
               <Link to="/login">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="border-primary-300 dark:border-primary-700 hover:bg-primary-50 dark:hover:bg-primary-900/30 text-primary-600 dark:text-primary-400"
                 >
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="border-primary-300 dark:border-primary-700 hover:bg-primary-50 dark:hover:bg-primary-900/30"
-                  >
-                    Log In
-                  </Button>
-                </motion.div>
+                  Log In
+                </Button>
               </Link>
               <Link to="/signup">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <Button 
+                  size="sm"
+                  className="bg-gradient-to-r from-primary-500 to-blue-500 hover:from-primary-600 hover:to-blue-600 border-0 text-white shadow-lg shadow-primary-500/25 dark:shadow-primary-400/25"
                 >
-                  <Button 
-                    size="sm"
-                    className="bg-gradient-to-r from-primary-600 to-blue-500 hover:from-primary-500 hover:to-blue-400 border-0 text-white shadow-md shadow-primary-600/20 dark:shadow-primary-500/20"
-                  >
-                    Sign Up
-                  </Button>
-                </motion.div>
+                  <Sparkles size={14} className="mr-1" />
+                  Sign Up
+                </Button>
               </Link>
             </div>
           )}
 
-         
+          {/* Mobile Menu Button */}
           <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
             onClick={toggleMenu}
-            className="p-2 ml-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 md:hidden"
+            className="p-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/50 lg:hidden transition-all duration-200"
             aria-label="Toggle menu"
           >
             <AnimatePresence mode="wait">
@@ -300,9 +299,9 @@ const Navbar: React.FC = () => {
                   initial={{ opacity: 0, rotate: -90 }}
                   animate={{ opacity: 1, rotate: 0 }}
                   exit={{ opacity: 0, rotate: 90 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.15 }}
                 >
-                  <X size={24} />
+                  <X size={20} />
                 </motion.div>
               ) : (
                 <motion.div
@@ -310,9 +309,9 @@ const Navbar: React.FC = () => {
                   initial={{ opacity: 0, rotate: 90 }}
                   animate={{ opacity: 1, rotate: 0 }}
                   exit={{ opacity: 0, rotate: -90 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.15 }}
                 >
-                  <Menu size={24} />
+                  <Menu size={20} />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -320,29 +319,30 @@ const Navbar: React.FC = () => {
         </div>
       </nav>
 
-     
+      {/* Mobile Menu */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white dark:bg-neutral-800 border-t border-gray-200 dark:border-gray-700 overflow-hidden"
+            transition={{ duration: 0.2 }}
+            className="lg:hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-t border-gray-200/50 dark:border-gray-700/50 overflow-hidden"
           >
-            <div className="px-2 pt-2 pb-3 space-y-1">
+            <div className="px-4 pt-4 pb-6 space-y-2">
               {navItems.map((item, i) => (
                 <motion.div
                   key={item.path}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
+                  transition={{ delay: i * 0.03, duration: 0.2 }}
                 >
                   <Link
                     to={item.path}
-                    className={`flex items-center px-3 py-3 rounded-lg text-base font-medium ${
+                    className={`flex items-center px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                       isActive(item.path)
-                        ? 'text-white bg-gradient-to-r from-primary-600 to-blue-500 shadow-sm'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                        ? 'text-white bg-gradient-to-r from-primary-500 to-blue-500 shadow-lg shadow-primary-500/25'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/50'
                     }`}
                     onClick={closeMenus}
                   >
@@ -358,15 +358,15 @@ const Navbar: React.FC = () => {
                 <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: navItems.length * 0.05 }}
-                  className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-700"
+                  transition={{ delay: navItems.length * 0.03 }}
+                  className="pt-4 border-t border-gray-200/50 dark:border-gray-700/50"
                 >
-                  <div className="flex flex-col space-y-2 px-3">
+                  <div className="flex flex-col space-y-3 px-4">
                     <Link to="/login" className="w-full" onClick={closeMenus}>
                       <Button 
                         variant="outline" 
                         fullWidth
-                        className="justify-center py-3 border-primary-300 dark:border-primary-700"
+                        className="justify-center py-3 border-primary-300 dark:border-primary-700 text-primary-600 dark:text-primary-400"
                       >
                         Log In
                       </Button>
@@ -374,8 +374,9 @@ const Navbar: React.FC = () => {
                     <Link to="/signup" className="w-full" onClick={closeMenus}>
                       <Button 
                         fullWidth 
-                        className="justify-center py-3 bg-gradient-to-r from-primary-600 to-blue-500 border-0"
+                        className="justify-center py-3 bg-gradient-to-r from-primary-500 to-blue-500 border-0 shadow-lg shadow-primary-500/25"
                       >
+                        <Sparkles size={16} className="mr-2" />
                         Sign Up
                       </Button>
                     </Link>
