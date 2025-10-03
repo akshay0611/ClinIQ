@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ArrowRightIcon, EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '../context/AuthContext';
 
 interface LoginFormInputs {
   email: string;
@@ -12,32 +14,14 @@ interface LoginFormInputs {
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginFormInputs>();
+  const { login, isLoading } = useAuth();
+  const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     try {
-      // For demo purposes - replace with Supabase authentication later
-      console.log('Login attempt:', data);
-      
-      // Simulating API call
-      setTimeout(() => {
-        // Demo success message
-        toast.success('Login successful!');
-        // You would typically store auth token/session here
-        
-        // Redirect to dashboard or homepage
-        // window.location.href = '/dashboard';
-      }, 1000);
-      
-      // When implementing Supabase:
-      // const { data: authData, error } = await supabase.auth.signInWithPassword({
-      //   email: data.email,
-      //   password: data.password,
-      // });
-      // 
-      // if (error) throw error;
-      // toast.success('Login successful!');
-      // window.location.href = '/dashboard';
-      
+      await login(data.email, data.password);
+      toast.success('Login successful!');
+      navigate('/dashboard');
     } catch (error) {
       console.error(error);
       toast.error('Login failed. Please check your credentials.');
@@ -170,9 +154,9 @@ export default function Login() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full px-6 py-3.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 text-white font-medium shadow-lg shadow-blue-500/20 dark:shadow-blue-700/30 flex items-center justify-center gap-2 transition-all duration-200 hover:shadow-xl hover:shadow-blue-500/30"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isLoading}
               >
-                {isSubmitting ? 'Logging in...' : 'Sign In'}
+                {(isSubmitting || isLoading) ? 'Logging in...' : 'Sign In'}
                 <ArrowRightIcon className="w-5 h-5" />
               </motion.button>
             </form>
