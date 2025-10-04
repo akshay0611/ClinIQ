@@ -89,10 +89,10 @@ const TestimonialsSection: React.FC = () => {
 
   return (
     <section className="py-32 bg-gradient-to-br from-primary-700 via-primary-800 to-primary-900 text-white relative overflow-hidden">
-     
+      {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div 
-          className="absolute h-64 w-64 rounded-full bg-blue-500/20 blur-3xl"
+          className="absolute h-64 w-64 rounded-full bg-primary-400/20 blur-3xl"
           animate={pulseAnimation}
           style={{
             top: '20%',
@@ -101,7 +101,7 @@ const TestimonialsSection: React.FC = () => {
           }}
         />
         <motion.div 
-          className="absolute h-96 w-96 rounded-full bg-indigo-600/20 blur-3xl"
+          className="absolute h-96 w-96 rounded-full bg-accent-500/20 blur-3xl"
           animate={{
             ...pulseAnimation,
             transition: { ...pulseAnimation.transition, delay: 1 }
@@ -113,7 +113,7 @@ const TestimonialsSection: React.FC = () => {
           }}
         />
         <motion.div 
-          className="absolute h-80 w-80 rounded-full bg-teal-400/10 blur-3xl"
+          className="absolute h-80 w-80 rounded-full bg-secondary-400/10 blur-3xl"
           animate={{
             ...pulseAnimation,
             transition: { ...pulseAnimation.transition, delay: 0.5 }
@@ -126,14 +126,14 @@ const TestimonialsSection: React.FC = () => {
         />
       </div>
 
-      
+      {/* Grid Pattern Overlay */}
       <div className="absolute inset-0 bg-grid-white/[0.03] bg-[length:40px_40px]" />
 
-    
+      {/* Floating Icons */}
       <div className="absolute inset-0">
         <motion.div 
           animate={floatingAnimation} 
-          className="absolute top-20 left-10 text-blue-300/20"
+          className="absolute top-20 left-10 text-primary-300/20"
           aria-hidden="true"
         >
           <Stethoscope size={140} strokeWidth={1} />
@@ -143,7 +143,7 @@ const TestimonialsSection: React.FC = () => {
             ...floatingAnimation,
             transition: { ...floatingAnimation.transition, delay: 1 }
           }} 
-          className="absolute bottom-20 right-10 text-blue-400/20"
+          className="absolute bottom-20 right-10 text-accent-300/20"
           aria-hidden="true"
         >
           <Activity size={180} strokeWidth={1} />
@@ -153,7 +153,7 @@ const TestimonialsSection: React.FC = () => {
             ...floatingAnimation,
             transition: { ...floatingAnimation.transition, delay: 0.5 }
           }} 
-          className="absolute top-40 right-20 text-teal-300/20"
+          className="absolute top-40 right-20 text-secondary-300/20"
           aria-hidden="true"
         >
           <Shield size={120} strokeWidth={1} />
@@ -163,29 +163,30 @@ const TestimonialsSection: React.FC = () => {
             ...floatingAnimation,
             transition: { ...floatingAnimation.transition, delay: 1.5 }
           }} 
-          className="absolute bottom-40 left-20 text-indigo-300/20"
+          className="absolute bottom-40 left-20 text-primary-300/20"
           aria-hidden="true"
         >
           <Heart size={100} strokeWidth={1} />
         </motion.div>
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-6 relative z-10">
         <motion.div 
-          className="text-center max-w-3xl mx-auto mb-16"
+          className="text-center max-w-4xl mx-auto mb-20"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <div className="inline-block px-4 py-1.5 mb-4 rounded-full text-sm font-semibold bg-primary-600/80 text-white backdrop-blur-md">
+          <div className="inline-block px-4 py-1.5 mb-6 rounded-full text-sm font-semibold bg-primary-600/80 text-white backdrop-blur-md">
             Testimonials
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight font-heading">
             What Our Users Say
           </h2>
-          <p className="text-lg text-blue-50/90 max-w-2xl mx-auto">
-            Discover how ClinIQ is helping people take control of their health journey with our innovative platform.
+          <p className="text-lg md:text-xl text-primary-50/90 max-w-3xl mx-auto leading-relaxed">
+            Discover how ClinIQ is helping people take control of their health journey with our innovative platform. 
+            Real stories from real users who've experienced the difference.
           </p>
         </motion.div>
 
@@ -224,21 +225,21 @@ const TestimonialsSection: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
-                className="bg-primary-800/80 backdrop-blur-md rounded-2xl shadow-xl p-8 md:p-10 relative"
+                className="bg-primary-800/80 backdrop-blur-md rounded-2xl shadow-xl p-8 md:p-10 relative border border-primary-600/20"
               >
-               
-                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-t-2xl"></div>
+                {/* Top Accent Bar */}
+                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-primary-500 to-accent-500 rounded-t-2xl"></div>
                 
-               
-                <div className="absolute -top-6 left-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full p-3 shadow-lg">
+                {/* Quote Icon */}
+                <div className="absolute -top-6 left-10 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full p-3 shadow-lg">
                   <Quote size={24} className="text-white" />
                 </div>
                 
-                <div className="flex flex-col md:flex-row items-center md:items-start gap-8 pt-4">
+                <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 pt-4">
                   <div className="flex-shrink-0">
                     {testimonials[current].image ? (
                       <div className="relative">
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 p-1 animate-pulse-slow"></div>
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary-500 to-accent-500 p-1 animate-pulse-slow"></div>
                         <img
                           src={testimonials[current].image}
                           alt={testimonials[current].name}
@@ -247,11 +248,11 @@ const TestimonialsSection: React.FC = () => {
                       </div>
                     ) : (
                       <div className="w-24 h-24 rounded-full bg-primary-700 flex items-center justify-center">
-                        <User size={40} className="text-blue-400" />
+                        <User size={40} className="text-primary-300" />
                       </div>
                     )}
                     
-                    <div className="flex justify-center text-yellow-300 mt-3">
+                    <div className="flex justify-center text-accent-300 mt-3">
                       {[...Array(testimonials[current].rating)].map((_, i) => (
                         <Star key={i} fill="currentColor" size={16} />
                       ))}
@@ -259,17 +260,17 @@ const TestimonialsSection: React.FC = () => {
                   </div>
                   
                   <div className="flex-1">
-                    <blockquote className="text-lg md:text-xl text-blue-50 mb-6 leading-relaxed">
+                    <blockquote className="text-lg md:text-xl text-primary-50 mb-6 leading-relaxed">
                       "{testimonials[current].text}"
                     </blockquote>
                     
                     <div className="flex items-center">
-                      <div className="h-10 w-1 bg-gradient-to-b from-blue-500 to-indigo-600 mr-4"></div>
+                      <div className="h-10 w-1 bg-gradient-to-b from-primary-500 to-accent-500 mr-4"></div>
                       <div>
                         <p className="font-bold text-lg text-white">
                           {testimonials[current].name}
                         </p>
-                        <p className="text-blue-50/80">
+                        <p className="text-primary-50/80">
                           {testimonials[current].position}
                         </p>
                       </div>
@@ -293,8 +294,8 @@ const TestimonialsSection: React.FC = () => {
                 onClick={() => setCurrent(index)}
                 className={`w-12 h-1.5 rounded-full transition-all duration-300 ${
                   current === index 
-                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 w-16' 
-                    : 'bg-blue-400/50'
+                    ? 'bg-gradient-to-r from-primary-500 to-accent-500 w-16' 
+                    : 'bg-primary-400/50'
                 }`}
                 aria-label={`Go to testimonial ${index + 1}`}
               />
@@ -302,25 +303,25 @@ const TestimonialsSection: React.FC = () => {
           </motion.div>
         </div>
         
-        
+        {/* Stats Section */}
         <motion.div 
-          className="mt-16 flex flex-wrap justify-center gap-8"
+          className="mt-20 flex flex-wrap justify-center gap-8 sm:gap-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           viewport={{ once: true }}
         >
           <div className="text-center">
-            <div className="text-3xl font-bold text-blue-300 mb-1">98%</div>
-            <div className="text-sm text-blue-50/80">Satisfaction Rate</div>
+            <div className="text-4xl font-bold text-primary-300 mb-2 font-heading">98%</div>
+            <div className="text-sm text-primary-50/80 font-medium">Satisfaction Rate</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-blue-300 mb-1">50k+</div>
-            <div className="text-sm text-blue-50/80">Active Users</div>
+            <div className="text-4xl font-bold text-accent-300 mb-2 font-heading">50k+</div>
+            <div className="text-sm text-primary-50/80 font-medium">Active Users</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-blue-300 mb-1">4.9</div>
-            <div className="text-sm text-blue-50/80">App Store Rating</div>
+            <div className="text-4xl font-bold text-secondary-300 mb-2 font-heading">4.9</div>
+            <div className="text-sm text-primary-50/80 font-medium">App Store Rating</div>
           </div>
         </motion.div>
       </div>
