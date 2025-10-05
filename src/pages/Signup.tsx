@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { UserPlusIcon, EnvelopeIcon, UserIcon, LockClosedIcon, EyeIcon, EyeSlashIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '../context/AuthContext';
 
 interface SignupFormInputs {
   name: string;
@@ -17,39 +19,18 @@ export default function Signup() {
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   
   const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<SignupFormInputs>();
+  const { register: registerUser, isLoading } = useAuth();
+  const navigate = useNavigate();
   const password = watch('password', '');
 
   const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
     try {
       // Remove confirmPassword before sending to API
-      const { confirmPassword, ...registrationData } = data;
+      const { confirmPassword: _, ...registrationData } = data;
       
-      // For demo purposes - replace with Supabase authentication later
-      console.log('Registration data:', registrationData);
-      
-      // Simulating API call
-      setTimeout(() => {
-        // Demo success message
-        toast.success('Account created successfully!');
-        
-        // Redirect to login page
-        // window.location.href = '/login';
-      }, 1000);
-      
-      // When implementing Supabase:
-      // const { data: authData, error } = await supabase.auth.signUp({
-      //   email: registrationData.email,
-      //   password: registrationData.password,
-      //   options: {
-      //     data: {
-      //       name: registrationData.name,
-      //     }
-      //   }
-      // });
-      // 
-      // if (error) throw error;
-      // toast.success('Account created successfully!');
-      // window.location.href = '/login';
+      await registerUser(registrationData.name, registrationData.email, registrationData.password);
+      toast.success('Account created successfully!');
+      navigate('/dashboard');
       
     } catch (error) {
       console.error(error);
@@ -242,9 +223,9 @@ export default function Signup() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 className="w-full px-6 py-3.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 text-white font-medium shadow-lg shadow-blue-500/20 dark:shadow-blue-700/30 flex items-center justify-center gap-2 transition-all duration-200 hover:shadow-xl hover:shadow-blue-500/30"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isLoading}
               >
-                {isSubmitting ? 'Creating Account...' : 'Create Account'}
+                {(isSubmitting || isLoading) ? 'Creating Account...' : 'Create Account'}
                 <UserPlusIcon className="w-5 h-5" />
               </motion.button>
             </form>

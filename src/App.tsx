@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthContext';
 // Layout Components
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
+import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Pages
 import Home from './pages/Home';
@@ -46,7 +47,11 @@ function App() {
                 <Route path="/symptom-check" element={<SymptomChecker />} />
                 <Route path="/doctors" element={<Doctors />} />
                 <Route path="/appointment/:id" element={<Appointment />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } />
                 <Route path="/hospitals" element={<Hospitals />} />
                 <Route path="/faq" element={<Faq />} />
                 <Route path="/contact" element={<Contact />} />

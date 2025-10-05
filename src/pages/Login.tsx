@@ -1,3 +1,10 @@
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { ArrowRightIcon, EnvelopeIcon, LockClosedIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '../context/AuthContext';
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -17,6 +24,15 @@ interface LoginFormInputs {
 
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginFormInputs>();
+  const { login, isLoading } = useAuth();
+  const navigate = useNavigate();
+
+  const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
+    try {
+      await login(data.email, data.password);
+      toast.success('Login successful!');
+      navigate('/dashboard');
   const {
     register,
     handleSubmit,
@@ -47,7 +63,7 @@ export default function Login() {
       // if (error) throw error;
       // toast.success('Login successful!');
       // window.location.href = '/dashboard';
-    } catch (error) {
+   } catch (error) {
       console.error(error);
       toast.error("Login failed. Please check your credentials.");
     }
@@ -220,6 +236,26 @@ export default function Login() {
                   </a>
                 </p>
               </div>
+
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full px-6 py-3.5 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 text-white font-medium shadow-lg shadow-blue-500/20 dark:shadow-blue-700/30 flex items-center justify-center gap-2 transition-all duration-200 hover:shadow-xl hover:shadow-blue-500/30"
+                disabled={isSubmitting || isLoading}
+              >
+                {(isSubmitting || isLoading) ? 'Logging in...' : 'Sign In'}
+                <ArrowRightIcon className="w-5 h-5" />
+              </motion.button>
+            </form>
+
+            <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <p className="text-center text-gray-600 dark:text-gray-400">
+                Don't have an account?{' '}
+                <a href="/signup" className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">
+                  Sign up now
+                </a>
+              </p>
             </div>
           </motion.div>
 
