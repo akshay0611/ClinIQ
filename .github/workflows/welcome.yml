@@ -7,6 +7,8 @@ on:
 jobs:
   welcome-comment:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - name: Add welcome comment
         uses: actions/github-script@v6
