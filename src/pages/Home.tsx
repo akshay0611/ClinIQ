@@ -1,7 +1,9 @@
 import React from 'react';
 import Hero from '../components/home/Hero';
 import FeaturesSection from '../components/home/FeaturesSection';
-import TestimonialsSection from '../components/home/TestimonialsSection';
+import StepByStepProcess from '../components/home/StepByStepProcess';
+import UserReviewsCarousel from '../components/home/UserReviewsCarousel';
+import FeatureComparison from '../components/home/FeatureComparison';
 import TrustSection from '../components/home/TrustSection';
 
 const Home: React.FC = () => {
@@ -9,7 +11,9 @@ const Home: React.FC = () => {
     <div>
       <Hero />
       <FeaturesSection />
-      <TestimonialsSection />
+      <StepByStepProcess />
+      <UserReviewsCarousel />
+      <FeatureComparison />
       <TrustSection />
     </div>
   );
