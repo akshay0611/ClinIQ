@@ -1,49 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Custom utilities for better responsive design */
-@layer utilities {
-  .text-responsive-header {
-    word-break: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-  }
-
-  .safe-padding {
-    padding-left: max(1rem, env(safe-area-inset-left));
-    padding-right: max(1rem, env(safe-area-inset-right));
-  }
-
-  /* Ensure gradient text renders properly */
-  .gradient-text-fix {
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
-    width: 100%;
-  }
-
-  /* Prevent text overflow issues */
-  .header-container {
-    width: 100%;
-    max-width: 100%;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-  }
-}
-
-/* Animation styles */
+/* styles.css or component.module.css */
 .animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0) rotate(12deg);
+    animation: float 4s ease-in-out infinite;
   }
-  50% {
-    transform: translateY(-15px) rotate(15deg);
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) rotate(12deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(15deg);
+    }
   }
-}
+  
