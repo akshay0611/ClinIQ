@@ -5,6 +5,7 @@ import DoctorFilter from "../components/doctors/DoctorFilter";
 import { Doctor } from "../types";
 import { mockDoctors } from "../services/mockData";
 import { UserIcon, Stethoscope, Search, Calendar } from "lucide-react";
+import DoctorCardSkeleton from "../components/doctors/DoctorCardSkeleton";
 
 const Doctors: React.FC = () => {
   const [doctors, setDoctors] = useState<Doctor[]>(mockDoctors);
@@ -116,8 +117,10 @@ const Doctors: React.FC = () => {
         </motion.div>
 
         {isLoading ? (
-          <div className="flex justify-center items-center py-12">
-            <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full max-w-7xl mx-auto px-4">
+            {Array.from({ length: 6 }).map((_, idx) => (
+              <DoctorCardSkeleton key={idx} />
+            ))}
           </div>
         ) : filteredDoctors.length === 0 ? (
           <motion.div
