@@ -43,35 +43,11 @@ const coreValues = [
 const team = [
   {
     name: 'Akshay Kumar',
-    role: 'Frontend, UI/UX Developer',
+    role: 'Full Stack Developer',
     img: '/akshay.jpg',
     bio: 'Specializes in creating intuitive user interfaces and responsive designs that enhance user experience. Skilled in modern frontend frameworks and design systems.',
     linkedin: 'https://www.linkedin.com/in/akshaykumar0611/',
     github: 'https://github.com/akshay0611'
-  },
-  {
-    name: 'Jishnu Chauhan',
-    role: 'Backend, Database Developer',
-    img: '/jishnu1.jpg',
-    bio: 'Focused on building secure, efficient backend systems and optimizing database performance. Experienced in developing scalable APIs and handling server-side logic.',
-    linkedin: 'https://www.linkedin.com/in/jishnu-chauhan-87624b36a',
-    github: 'http://github.com/jishnukeyhack'
-  },
-  {
-    name: 'Raunak Jain',
-    role: 'Project Management',
-    img: '/raunak.jpeg',
-    bio: 'Drives project execution through effective planning, coordination, and leadership. Ensures timely delivery while aligning team efforts with business goals.',
-    linkedin: 'https://www.linkedin.com/in/raunak-jain-ba2a4920a',
-    github: 'https://github.com/raunak-jain-02'
-  },
-  {
-    name: 'Himanshu Maurya',
-    role: 'Research Management',
-    img: '/himanshu.jpeg',
-    bio: 'Leads innovation through in-depth research and trend analysis. Bridges the gap between emerging technologies and practical implementation.',
-    linkedin: 'https://www.linkedin.com/in/kumarhk2006',
-    github: 'https://github.com/himanshukum0r'
   }
 ];
 
