@@ -9,6 +9,9 @@ import { ExclamationCircleIcon as ExclamationIcon } from '@heroicons/react/24/ou
 import { ChartBarIcon, BellIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import toast, { Toaster } from 'react-hot-toast';
 
+import { supabase } from '../services/supabaseClient';
+import { useAuth } from '../context/AuthContext';
+
 interface SymptomData {
   date: string;
   input: string;
@@ -22,13 +25,6 @@ interface Stat {
   icon: React.ReactNode;
   bgColor: string;
 }
-
-const dummySymptomData: SymptomData[] = [
-  { date: '2025-04-19', input: 'Cough, Fever', result: 'Flu', severity: '🟡 Moderate' },
-  { date: '2025-04-15', input: 'Headache', result: 'Tension', severity: '🟢 Mild' },
-  { date: '2025-04-10', input: 'Sore throat, Runny nose', result: 'Common Cold', severity: '🟢 Mild' },
-  { date: '2025-04-02', input: 'Fatigue, Joint pain', result: 'Overexertion', severity: '🟡 Moderate' },
-];
 
 const getStats = (userName: string): Stat[] => [
   { 
@@ -58,8 +54,10 @@ const getStats = (userName: string): Stat[] => [
 ];
 
 export default function Dashboard(): JSX.Element {
-  const [userName, setUserName] = useState<string>('User');
+  const { currentUser, logout } = useAuth();
+  const [userName, setUserName] = useState<string>(currentUser?.name.split(' ')[0] || 'User');
   const [password, setPassword] = useState<string>('');
+  const [symptomData, setSymptomData] = useState<SymptomData[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedDetail, setSelectedDetail] = useState<SymptomData | null>(null);
   const [isBookingOpen, setIsBookingOpen] = useState<boolean>(false);
@@ -71,13 +69,69 @@ export default function Dashboard(): JSX.Element {
   
   const stats = getStats(userName);
 
+  React.useEffect(() => {
+    const fetchSymptomData = async () => {
+      if (currentUser) {
+        const { data, error } = await supabase
+          .from('symptoms')
+          .select('created_at, symptoms_input, result, severity')
+          .eq('user_id', currentUser.id)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching symptom data:', error);
+          toast.error('Could not fetch symptom history.');
+        } else if (data) {
+          const formattedData = data.map(item => ({
+            date: new Date(item.created_at).toLocaleDateString(),
+            input: item.symptoms_input,
+            result: item.result,
+            severity: item.severity,
+          }));
+          setSymptomData(formattedData);
+        }
+      }
+    };
+
+    fetchSymptomData();
+  }, [currentUser]);
+
   
-  const handleSaveProfile = () => {
-    toast.success('Profile updated successfully!');
+  const handleSaveProfile = async () => {
+    if (!currentUser) return;
+
+    const updates: { [key: string]: any } = {};
+    if (userName !== currentUser.name) {
+      updates.data = { full_name: userName };
+    }
+    if (password) {
+      updates.password = password;
+    }
+
+    if (Object.keys(updates).length === 0) {
+      toast.error('No changes to save.');
+      return;
+    }
+
+    const { error } = await supabase.auth.updateUser(updates);
+
+    if (error) {
+      console.error('Error updating profile:', error);
+      toast.error(error.message || 'Failed to update profile.');
+    } else {
+      toast.success('Profile updated successfully!');
+      if (updates.password) {
+        setPassword('');
+      }
+    }
   };
 
   
-  const handleBookAppointment = () => {
+  const handleBookAppointment = async () => {
+    if (!currentUser) {
+      toast.error('You must be logged in to book an appointment.');
+      return;
+    }
     if (!appointmentDate) {
       toast.error('Please select a date for your appointment.');
       return;
@@ -86,19 +140,33 @@ export default function Dashboard(): JSX.Element {
       toast.error('Please select a time for your appointment.');
       return;
     }
-    toast.success(`Appointment booked for ${appointmentDate} at ${appointmentTime}`);
-    setIsBookingOpen(false);
-    setAppointmentDate('');
-    setAppointmentTime('');
+
+    const { error } = await supabase.from('appointments').insert([
+      { 
+        user_id: currentUser.id, 
+        appointment_date: appointmentDate, 
+        appointment_time: appointmentTime 
+      },
+    ]);
+
+    if (error) {
+      console.error('Error booking appointment:', error);
+      toast.error(error.message || 'Failed to book appointment.');
+    } else {
+      toast.success(`Appointment booked for ${appointmentDate} at ${appointmentTime}`);
+      setIsBookingOpen(false);
+      setAppointmentDate('');
+      setAppointmentTime('');
+    }
   };
 
   
   const handleLogout = () => {
     setIsLoggingOut(true);
     setTimeout(() => {
+      logout();
       setIsLoggingOut(false);
       toast('Logged out successfully!', { icon: '👋' });
-    
     }, 1200);
   };
 
@@ -208,7 +276,7 @@ export default function Dashboard(): JSX.Element {
                     </tr>
                   </thead>
                   <tbody>
-                    {dummySymptomData.map((row, idx) => (
+                    {symptomData.map((row, idx) => (
                       <motion.tr 
                         key={idx} 
                         initial={{ opacity: 0, y: 20 }}
