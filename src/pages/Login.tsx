@@ -10,6 +10,8 @@ import {
   EyeSlashIcon,
 } from "@heroicons/react/24/outline";
 
+import { supabase } from "../services/supabaseClient";
+
 interface LoginFormInputs {
   email: string;
   password: string;
@@ -25,31 +27,25 @@ export default function Login() {
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     try {
-      // For demo purposes - replace with Supabase authentication later
-      console.log("Login attempt:", data);
+      const { error } = await supabase.auth.signInWithPassword({
+        email: data.email,
+        password: data.password,
+      });
 
-      // Simulating API call
+      if (error) {
+        throw error;
+      }
+
+      toast.success("Login successful!");
+
+      // Redirect to dashboard after a short delay
       setTimeout(() => {
-        // Demo success message
-        toast.success("Login successful!");
-        // You would typically store auth token/session here
-
-        // Redirect to dashboard or homepage
-        // window.location.href = '/dashboard';
+        window.location.href = "/dashboard";
       }, 1000);
 
-      // When implementing Supabase:
-      // const { data: authData, error } = await supabase.auth.signInWithPassword({
-      //   email: data.email,
-      //   password: data.password,
-      // });
-      //
-      // if (error) throw error;
-      // toast.success('Login successful!');
-      // window.location.href = '/dashboard';
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error("Login failed. Please check your credentials.");
+      toast.error(error.message || "Login failed. Please check your credentials.");
     }
   };
 

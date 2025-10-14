@@ -4,6 +4,8 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { UserPlusIcon, EnvelopeIcon, UserIcon, LockClosedIcon, EyeIcon, EyeSlashIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
+import { supabase } from '../services/supabaseClient';
+
 interface SignupFormInputs {
   name: string;
   email: string;
@@ -21,39 +23,32 @@ export default function Signup() {
 
   const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
     try {
-      // Remove confirmPassword before sending to API
-      const { confirmPassword, ...registrationData } = data;
-      
-      // For demo purposes - replace with Supabase authentication later
-      console.log('Registration data:', registrationData);
-      
-      // Simulating API call
+      const { name, email, password } = data;
+
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: name,
+          },
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      toast.success('Account created successfully! Please check your email to verify your account.');
+
+      // Redirect to login page after a short delay
       setTimeout(() => {
-        // Demo success message
-        toast.success('Account created successfully!');
-        
-        // Redirect to login page
-        // window.location.href = '/login';
-      }, 1000);
-      
-      // When implementing Supabase:
-      // const { data: authData, error } = await supabase.auth.signUp({
-      //   email: registrationData.email,
-      //   password: registrationData.password,
-      //   options: {
-      //     data: {
-      //       name: registrationData.name,
-      //     }
-      //   }
-      // });
-      // 
-      // if (error) throw error;
-      // toast.success('Account created successfully!');
-      // window.location.href = '/login';
-      
-    } catch (error) {
+        window.location.href = '/login';
+      }, 2000);
+
+    } catch (error: any) {
       console.error(error);
-      toast.error('Registration failed. Please try again.');
+      toast.error(error.message || 'Registration failed. Please try again.');
     }
   };
 
