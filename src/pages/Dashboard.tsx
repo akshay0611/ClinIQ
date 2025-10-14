@@ -188,31 +188,22 @@ export default function Dashboard(): JSX.Element {
           initial={{ opacity: 0, y: -40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className="mb-8 md:mb-12"
+          className="mb-8 md:mb-12 mt-16"
         >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="inline-flex justify-center items-center px-4 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/50 border border-blue-100 dark:border-blue-800 text-blue-600 dark:text-blue-300 text-sm font-medium mb-4"
-          >
-            <span>Dashboard</span>
-          </motion.div>
-          <div className="flex items-center gap-4">
-            <div className="p-2 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600">
-              <UserCircleIcon className="w-12 h-12 text-white" />
-            </div>
-            <div>
-              <h1 className="text-4xl md:text-5xl font-extrabold mb-1 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
-                Welcome, {userName}!
-              </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-300">
-                Your health dashboard is up to date. Here's your summary.
-              </p>
-            </div>
-          </div>
-        </motion.header>
-
+  <div className="flex items-center gap-4 mt-auto">
+    <div className="p-2 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600">
+      <UserCircleIcon className="w-12 h-12 text-white" />
+    </div>
+    <div>
+      <h1 className="text-4xl md:text-5xl font-extrabold mb-1 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+        Welcome, {userName}!
+      </h1>
+      <p className="text-lg text-gray-600 dark:text-gray-300">
+        Your health dashboard is up to date. Here's your summary.
+      </p>
+    </div>
+  </div>
+</motion.header>
        
         <motion.section
           initial={{ opacity: 0, y: 40 }}
@@ -478,13 +469,6 @@ export default function Dashboard(): JSX.Element {
             transition={{ duration: 1, delay: 0.5 }}
           >
             <CalendarIcon className="w-16 h-16 text-blue-300 dark:text-blue-700 absolute top-20 left-10 animate-pulse" />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 0.5, y: 0 }}
-            transition={{ duration: 1, delay: 0.8 }}
-          >
-            <CheckCircleIcon className="w-20 h-20 text-green-300 dark:text-green-700 absolute bottom-10 right-10 rotate-12 animate-float" />
           </motion.div>
         </div>
       </div>
