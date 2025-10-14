@@ -13,7 +13,8 @@ import {
   Users,
   Info,
   Hospital,
-  Sparkles
+  Sparkles,
+  UserCircleIcon
 } from 'lucide-react';
 import Button from '../common/Button';
 import { useAuth } from '../../context/AuthContext';
@@ -242,12 +243,12 @@ const Navbar: React.FC = () => {
                       </p>
                     </div>
                     <Link
-                      to="/dashboard"
+                      to="/profile"
                       className="flex items-center px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors duration-200"
                       onClick={closeMenus}
                     >
                       <User size={16} className="mr-3 text-primary-500 dark:text-primary-400" />
-                      Your Dashboard
+                      My Profile
                     </Link>
                     <button
                       onClick={() => {

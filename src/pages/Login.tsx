@@ -38,9 +38,9 @@ export default function Login() {
 
       toast.success("Login successful!");
 
-      // Redirect to dashboard after a short delay
+      // Redirect to profile page after a short delay
       setTimeout(() => {
-        window.location.href = "/dashboard";
+        window.location.href = "/profile";
       }, 1000);
 
     } catch (error: any) {
