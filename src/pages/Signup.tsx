@@ -12,6 +12,7 @@ interface SignupFormInputs {
   password: string;
   confirmPassword: string;
   acceptTerms: boolean;
+  role: 'patient' | 'doctor';
 }
 
 export default function Signup() {
@@ -23,7 +24,7 @@ export default function Signup() {
 
   const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
     try {
-      const { name, email, password } = data;
+      const { name, email, password, role } = data;
 
       const { error } = await supabase.auth.signUp({
         email,
@@ -31,6 +32,7 @@ export default function Signup() {
         options: {
           data: {
             full_name: name,
+            role: role,
           },
         },
       });
@@ -107,6 +109,20 @@ export default function Signup() {
               onSubmit={handleSubmit(onSubmit)}
               className="space-y-5"
             >
+              <div>
+                <label className="block font-semibold mb-2 text-gray-700 dark:text-gray-300">Role</label>
+                <div className="relative">
+                  <select
+                    {...register('role', { required: 'Role is required' })}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-neutral-700/80 bg-gray-50 dark:bg-neutral-900/50 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                  >
+                    <option value="patient">Patient</option>
+                    <option value="doctor">Doctor</option>
+                  </select>
+                </div>
+                {errors.role && <span className="text-red-500 text-sm mt-1 block">{errors.role.message}</span>}
+              </div>
+
               <div>
                 <label className="block font-semibold mb-2 text-gray-700 dark:text-gray-300">Full Name</label>
                 <div className="relative">

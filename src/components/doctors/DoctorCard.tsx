@@ -20,8 +20,8 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-indigo-400/20 dark:from-blue-900/30 dark:to-indigo-900/30" />
         
         <img
-          src={doctor.photoUrl}
-          alt={doctor.name}
+          src={doctor.photoUrl || 'https://via.placeholder.com/150'}
+          alt={doctor.full_name}
           className="relative w-full h-52 object-cover"
         />
         
@@ -32,19 +32,19 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
               <Star
                 key={i}
                 size={14}
-                fill={i < Math.floor(doctor.rating) ? "#facc15" : "none"}
-                color={i < Math.floor(doctor.rating) ? "#facc15" : "#d1d5db"}
+                fill={i < Math.floor(doctor.doctor_profiles.rating || 0) ? "#facc15" : "none"}
+                color={i < Math.floor(doctor.doctor_profiles.rating || 0) ? "#facc15" : "#d1d5db"}
                 strokeWidth={1.5}
               />
             ))}
           </div>
           <span className="ml-1 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-            {doctor.rating}
+            {doctor.doctor_profiles.rating || 0}
           </span>
         </div>
         
        
-        {doctor.isAvailableToday && (
+        {doctor.doctor_profiles.isAvailableToday && (
           <div className="absolute top-4 right-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs font-medium px-3 py-1.5 rounded-full flex items-center gap-1 shadow-lg">
             <Clock size={12} />
             <span>Available Today</span>
@@ -54,8 +54,8 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
         
         <div className="absolute -bottom-12 left-4 w-24 h-24 rounded-full border-4 border-white dark:border-neutral-800 overflow-hidden shadow-lg">
           <img 
-            src={doctor.photoUrl} 
-            alt={doctor.name} 
+            src={doctor.photoUrl || 'https://via.placeholder.com/150'} 
+            alt={doctor.full_name} 
             className="w-full h-full object-cover" 
           />
         </div>
@@ -65,14 +65,14 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
       <div className="p-5 pt-14 flex-1 flex flex-col">
         <div className="mb-4">
           <h3 className="text-xl font-bold text-neutral-800 dark:text-white mb-1">
-            {doctor.name}
+            {doctor.full_name}
           </h3>
           
           <div className="flex items-center">
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 border border-blue-100 dark:border-blue-800">
-              {doctor.specialization}
+              {doctor.doctor_profiles.specialization}
             </span>
-            {doctor.isVerified && (
+            {doctor.doctor_profiles.isVerified && (
               <div className="ml-2 flex items-center text-green-500 dark:text-green-400">
                 <Award size={14} className="mr-1" />
                 <span className="text-xs font-medium">Verified</span>
@@ -86,14 +86,14 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
             <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-blue-50 dark:bg-blue-900/30 mr-3">
               <MapPin size={16} className="text-blue-500 dark:text-blue-400" />
             </div>
-            <span>{doctor.location}</span>
+            <span>{doctor.doctor_profiles.clinic_address}</span>
           </div>
           
           <div className="flex items-center text-sm text-neutral-600 dark:text-neutral-400">
             <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-purple-50 dark:bg-purple-900/30 mr-3">
               <Calendar size={16} className="text-purple-500 dark:text-purple-400" />
             </div>
-            <span>Available: {doctor.availability.join(', ')}</span>
+            <span>Available: {Object.keys(doctor.doctor_profiles.availability_schedule || {}).join(', ')}</span>
           </div>
           
           <div className="flex items-center text-sm text-neutral-600 dark:text-neutral-400">
@@ -107,22 +107,22 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor }) => {
        
         <div className="flex justify-between mb-6 px-1">
           <div className="text-center">
-            <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{doctor.experience}+</p>
+            <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{doctor.doctor_profiles.experience_years}+</p>
             <p className="text-xs text-neutral-600 dark:text-neutral-400">Years Exp.</p>
           </div>
           <div className="text-center">
-            <p className="text-lg font-bold text-green-600 dark:text-green-400">{doctor.patientCount}+</p>
+            <p className="text-lg font-bold text-green-600 dark:text-green-400">{doctor.doctor_profiles.patientCount || 0}+</p>
             <p className="text-xs text-neutral-600 dark:text-neutral-400">Patients</p>
           </div>
           <div className="text-center">
-            <p className="text-lg font-bold text-purple-600 dark:text-purple-400">{doctor.reviews}</p>
+            <p className="text-lg font-bold text-purple-600 dark:text-purple-400">{doctor.doctor_profiles.reviews || 0}</p>
             <p className="text-xs text-neutral-600 dark:text-neutral-400">Reviews</p>
           </div>
         </div>
         
        
         <div className="mt-auto grid grid-cols-2 gap-3">
-          <Link to={`/doctor/${doctor.id}`} className="w-full">
+          <Link to={`/doctors/${doctor.id}`} className="w-full">
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}

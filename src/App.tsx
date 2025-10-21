@@ -31,6 +31,7 @@ import FirstAidGuides from "./pages/FirstAidGuides";
 import ResearchPapers from "./pages/ResearchPapers";
 import HealthBlog from "./pages/HealthBlog";
 import BlogPostPage from "./pages/BlogPostPage";
+import DoctorProfilePage from "./pages/DoctorProfilePage";
 import ForgotPassword from "./pages/ForgotPassword";
 import Profile from "./pages/Profile";
 
@@ -47,6 +48,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/symptom-check" element={<SymptomChecker />} />
                 <Route path="/doctors" element={<Doctors />} />
+                <Route path="/doctors/:id" element={<DoctorProfilePage />} />
                 <Route path="/appointment/:id" element={<Appointment />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/hospitals" element={<Hospitals />} />

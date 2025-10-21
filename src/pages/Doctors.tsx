@@ -2,21 +2,30 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import DoctorCard from "../components/doctors/DoctorCard";
 import DoctorFilter from "../components/doctors/DoctorFilter";
-import { Doctor } from "../types";
-import { mockDoctors } from "../services/mockData";
-import { UserIcon, Stethoscope, Search, Calendar } from "lucide-react";
+import { supabase } from "../services/supabaseClient";
 
 const Doctors: React.FC = () => {
-  const [doctors, setDoctors] = useState<Doctor[]>(mockDoctors);
-  const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>(mockDoctors);
+  const [doctors, setDoctors] = useState<any[]>([]);
+  const [filteredDoctors, setFilteredDoctors] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
+    const fetchDoctors = async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*, doctor_profiles(*)')
+        .eq('role', 'doctor');
 
-    return () => clearTimeout(timer);
+      if (error) {
+        console.error('Error fetching doctors:', error);
+      } else if (data) {
+        setDoctors(data);
+        setFilteredDoctors(data);
+      }
+      setIsLoading(false);
+    };
+
+    fetchDoctors();
   }, []);
 
   const handleFilter = (filters: {
