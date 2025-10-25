@@ -1,27 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import SymptomForm from '../components/symptom-checker/SymptomForm';
-import SymptomResults from '../components/symptom-checker/SymptomResults';
-import { SymptomResult } from '../types';
-import { getMockSymptomResult } from '../services/mockData';
-import GeminiSymptomService from '../services/GeminiSymptomService';
-import { ChevronDownIcon, ActivityIcon, HeartPulseIcon, BrainIcon, AlertTriangleIcon, ClockIcon } from 'lucide-react';
-import LocalStorageService, { SymptomHistoryEntry } from '../services/LocalStorageService';
-import HistoryPanel from '../components/HistoryPanel';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import SymptomForm from "../components/symptom-checker/SymptomForm";
+import SymptomResults from "../components/symptom-checker/SymptomResults";
+import SymptomResultsSkeleton from "../components/symptom-checker/SymptomResultsSkeleton";
+import { SymptomResult } from "../types";
+import { getMockSymptomResult } from "../services/mockData";
+import GeminiSymptomService from "../services/GeminiSymptomService";
+import {
+  ChevronDownIcon,
+  ActivityIcon,
+  HeartPulseIcon,
+  // BrainIcon,
+  AlertTriangleIcon,
+  ClockIcon,
+} from "lucide-react";
+import LocalStorageService, {
+  SymptomHistoryEntry,
+} from "../services/LocalStorageService";
+import HistoryPanel from "../components/HistoryPanel";
 
-
-const geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+const geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
 const USE_MOCK_DATA = !geminiApiKey;
 let geminiService: GeminiSymptomService | null = null;
 
 const SymptomChecker: React.FC = () => {
-  const [symptoms, setSymptoms] = useState('');
+  const [symptoms, setSymptoms] = useState("");
   const [result, setResult] = useState<SymptomResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isHistoryPanelOpen, setIsHistoryPanelOpen] = useState(false);
-  const [selectedHistoryEntry, setSelectedHistoryEntry] = useState<SymptomHistoryEntry | null>(null);
-  
+  const [selectedHistoryEntry, setSelectedHistoryEntry] =
+    useState<SymptomHistoryEntry | null>(null);
 
   useEffect(() => {
     if (geminiApiKey) {
@@ -29,7 +38,6 @@ const SymptomChecker: React.FC = () => {
     }
   }, []);
 
- 
   const openHistoryPanel = () => {
     setIsHistoryPanelOpen(true);
   };
@@ -42,70 +50,80 @@ const SymptomChecker: React.FC = () => {
     setSelectedHistoryEntry(entry);
     setSymptoms(entry.symptoms);
     setResult(entry.result);
+    setError(null);
+    setIsLoading(false);
     closeHistoryPanel();
-    
 
     setTimeout(() => {
-      document.getElementById('results-section')?.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
+      document.getElementById("results-section")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
       });
     }, 300);
   };
 
-  const handleSubmit = async (symptoms: string) => {
-    setSymptoms(symptoms);
+  const handleSubmit = async (submittedSymptoms: string) => {
+    setSymptoms(submittedSymptoms);
+    setResult(null);
     setIsLoading(true);
     setError(null);
     setSelectedHistoryEntry(null);
-    
+
     try {
       let analysisResult: SymptomResult;
-      
+
       if (USE_MOCK_DATA || !geminiService) {
-       
-        await new Promise(resolve => setTimeout(resolve, 1500)); 
-        analysisResult = getMockSymptomResult(symptoms);
-        
-      
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        analysisResult = getMockSymptomResult(submittedSymptoms);
+
         if (!geminiApiKey) {
-          console.warn('Using mock data: No Gemini API key provided. Set VITE_GEMINI_API_KEY in your environment variables.');
+          console.warn(
+            "Using mock data: No Gemini API key provided. Set VITE_GEMINI_API_KEY in your environment variables."
+          );
         }
       } else {
-        
-        analysisResult = await geminiService.analyzeSymptoms(symptoms);
+        analysisResult = await geminiService.analyzeSymptoms(submittedSymptoms);
       }
-      
+
       setResult(analysisResult);
-      
-     
-      LocalStorageService.saveSymptomCheck(symptoms, analysisResult);
-      
-    } catch (err) {
-      console.error('Error analyzing symptoms:', err);
-      setError(err instanceof Error ? err.message : 'An unknown error occurred while analyzing symptoms');
+
+      LocalStorageService.saveSymptomCheck(submittedSymptoms, analysisResult);
+    } catch (err: unknown) {
+      console.error("Error analyzing symptoms:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "An unknown error occurred while analyzing symptoms"
+      );
+      setResult(null);
     } finally {
       setIsLoading(false);
-      
-    
+
       setTimeout(() => {
-        document.getElementById('results-section')?.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
+        if (!error && document.getElementById("results-section")) {
+          document.getElementById("results-section")?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
       }, 300);
     }
   };
 
   const clearResults = () => {
     setResult(null);
-    setSymptoms('');
+    setSymptoms("");
     setSelectedHistoryEntry(null);
+    setError(null);
+    document.getElementById("symptom-form-section")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-neutral-50 via-white to-blue-50 dark:from-neutral-950 dark:via-neutral-900 dark:to-blue-950">
-    
+      {/* Background Blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-20 -right-20 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
         <div className="absolute bottom-40 -left-20 w-80 h-80 bg-blue-400/10 rounded-full blur-3xl" />
@@ -113,7 +131,7 @@ const SymptomChecker: React.FC = () => {
         <div className="absolute bottom-1/4 left-1/3 w-48 h-48 bg-purple-400/10 rounded-full blur-3xl" />
       </div>
 
-     
+      {/* History Button */}
       <div className="fixed top-20 right-4 z-40">
         <motion.button
           whileHover={{ scale: 1.05 }}
@@ -126,22 +144,22 @@ const SymptomChecker: React.FC = () => {
         </motion.button>
       </div>
 
-     
-      <HistoryPanel 
+      {/* History Panel */}
+      <HistoryPanel
         isOpen={isHistoryPanelOpen}
         onClose={closeHistoryPanel}
         onSelect={handleHistoryEntrySelect}
       />
 
       <div className="relative container mx-auto px-4 py-16 md:py-24">
-       
+        {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: -40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
           className="text-center mb-16 md:mb-24"
         >
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
@@ -154,20 +172,24 @@ const SymptomChecker: React.FC = () => {
             AI-Powered Symptom Checker
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            Describe your symptoms to get an instant analysis, possible conditions,
-            and guidance on what to do next. Your health is our priority.
+            Describe your symptoms to get an instant analysis, possible
+            conditions, and guidance on what to do next. Your health is our
+            priority.
           </p>
-          
+
           {USE_MOCK_DATA && (
             <div className="mt-4 inline-flex items-center px-4 py-2 rounded-full bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 text-yellow-700 dark:text-yellow-300">
               <AlertTriangleIcon className="w-4 h-4 mr-2" />
-              <span className="text-sm">Running in demo mode with mock data. Add Gemini API key for real analysis.</span>
+              <span className="text-sm">
+                Running in demo mode with mock data. Add Gemini API key for real
+                analysis.
+              </span>
             </div>
           )}
         </motion.div>
 
-       
-        <motion.div 
+        {/* Feature Cards */}
+        <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3 }}
@@ -177,28 +199,42 @@ const SymptomChecker: React.FC = () => {
             <div className="h-12 w-12 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
               <ActivityIcon className="h-6 w-6 text-blue-500" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">AI-Powered Analysis</h3>
-            <p className="text-gray-600 dark:text-gray-300">Advanced algorithms assess your symptoms against thousands of conditions for accuracy.</p>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              AI-Powered Analysis
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Advanced algorithms assess your symptoms against thousands of
+              conditions for accuracy.
+            </p>
           </div>
-          
+
           <div className="bg-white dark:bg-neutral-800/90 backdrop-blur-sm rounded-2xl border border-blue-50 dark:border-neutral-700/80 p-6 shadow-xl shadow-blue-900/5 dark:shadow-blue-900/30">
             <div className="h-12 w-12 bg-green-50 dark:bg-green-900/30 rounded-full flex items-center justify-center mb-4">
               <HeartPulseIcon className="h-6 w-6 text-green-500" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Personalized Guidance</h3>
-            <p className="text-gray-600 dark:text-gray-300">Get tailored recommendations based on your specific symptoms and medical profile.</p>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Personalized Guidance
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Get tailored recommendations based on your specific symptoms and
+              medical profile.
+            </p>
           </div>
-          
+
           <div className="bg-white dark:bg-neutral-800/90 backdrop-blur-sm rounded-2xl border border-blue-50 dark:border-neutral-700/80 p-6 shadow-xl shadow-blue-900/5 dark:shadow-blue-900/30">
             <div className="h-12 w-12 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center mb-4">
               <ClockIcon className="h-6 w-6 text-blue-500" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Symptom Timeline</h3>
-            <p className="text-gray-600 dark:text-gray-300">Track your health journey with a complete history of your symptom checks, stored securely on your device.</p>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Symptom Timeline
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300">
+              Track your health journey with a complete history of your symptom
+              checks, stored securely on your device.
+            </p>
           </div>
         </motion.div>
 
-       
         <div className="max-w-4xl mx-auto">
           {selectedHistoryEntry && (
             <motion.div
@@ -211,7 +247,8 @@ const SymptomChecker: React.FC = () => {
                 <div className="flex items-center">
                   <ClockIcon className="h-5 w-5 text-blue-500 mr-2" />
                   <p className="text-blue-700 dark:text-blue-300">
-                    Viewing saved symptom check from {new Date(selectedHistoryEntry.date).toLocaleString()}
+                    Viewing saved symptom check from{" "}
+                    {new Date(selectedHistoryEntry.date).toLocaleString()}
                   </p>
                 </div>
                 <button
@@ -225,46 +262,61 @@ const SymptomChecker: React.FC = () => {
           )}
 
           <motion.div
+            id="symptom-form-section"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.5 }}
           >
-            <SymptomForm 
-              onSubmit={handleSubmit} 
-              isLoading={isLoading} 
+            <SymptomForm
+              onSubmit={handleSubmit}
+              isLoading={isLoading}
               initialValue={symptoms}
               disabled={!!selectedHistoryEntry}
             />
           </motion.div>
-          
-          {error && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              className="mt-4 p-4 bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-800/50 rounded-xl text-red-700 dark:text-red-300"
-            >
-              <div className="flex items-center">
-                <AlertTriangleIcon className="h-5 w-5 mr-2" />
-                <p>{error}</p>
-              </div>
-            </motion.div>
-          )}
-          
-          {result && !isLoading && !error && (
-            <motion.div
-              id="results-section"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7 }}
-              className="mt-8 bg-white dark:bg-neutral-800/90 backdrop-blur-sm rounded-2xl border border-blue-50 dark:border-neutral-700/80 p-8 shadow-xl shadow-blue-900/5 dark:shadow-blue-900/30"
-            >
-              <SymptomResults result={result} />
-            </motion.div>
-          )}
+
+          <div id="results-section">
+            {" "}
+            {isLoading && (
+              <motion.div
+                key="skeleton"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <SymptomResultsSkeleton />
+              </motion.div>
+            )}
+            {!isLoading && error && (
+              <motion.div
+                key="error"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className="mt-8 p-4 bg-red-50 dark:bg-red-900/30 border border-red-100 dark:border-red-800/50 rounded-xl text-red-700 dark:text-red-300"
+              >
+                <div className="flex items-center">
+                  <AlertTriangleIcon className="h-5 w-5 mr-2" />
+                  <p>{error}</p>
+                </div>
+              </motion.div>
+            )}
+            {!isLoading && result && !error && (
+              <motion.div
+                key="results"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.7 }}
+                className="mt-8"
+              >
+                <SymptomResults result={result} symptoms={symptoms} />
+              </motion.div>
+            )}
+          </div>
         </div>
 
-       
+        {/* FAQ Section */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -272,70 +324,98 @@ const SymptomChecker: React.FC = () => {
           className="max-w-4xl mx-auto mt-20"
         >
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h2>
-            <p className="text-gray-600 dark:text-gray-300">Get answers to common questions about our symptom checker</p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300">
+              Get answers to common questions about our symptom checker
+            </p>
           </div>
-          
+
           <div className="space-y-4">
             <div className="bg-white dark:bg-neutral-800/90 backdrop-blur-sm rounded-xl border border-blue-50 dark:border-neutral-700/80 p-4 shadow-lg shadow-blue-900/5 dark:shadow-blue-900/30">
               <details className="group">
                 <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
-                  <span className="text-gray-900 dark:text-white">How accurate is the symptom checker?</span>
+                  <span className="text-gray-900 dark:text-white">
+                    How accurate is the symptom checker?
+                  </span>
                   <span className="transition group-open:rotate-180">
                     <ChevronDownIcon className="h-5 w-5 text-blue-500" />
                   </span>
                 </summary>
                 <p className="text-gray-600 dark:text-gray-300 mt-3">
-                  Our symptom checker uses advanced AI algorithms trained on vast medical datasets. While it provides valuable insights, it's important to remember it's not a substitute for professional medical advice. Always consult with a healthcare provider for proper diagnosis.
+                  Our symptom checker uses advanced AI algorithms trained on
+                  vast medical datasets. While it provides valuable insights,
+                  it's important to remember it's not a substitute for
+                  professional medical advice. Always consult with a healthcare
+                  provider for proper diagnosis.
                 </p>
               </details>
             </div>
-            
+
             <div className="bg-white dark:bg-neutral-800/90 backdrop-blur-sm rounded-xl border border-blue-50 dark:border-neutral-700/80 p-4 shadow-lg shadow-blue-900/5 dark:shadow-blue-900/30">
               <details className="group">
                 <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
-                  <span className="text-gray-900 dark:text-white">Is my medical data secure?</span>
+                  <span className="text-gray-900 dark:text-white">
+                    Is my medical data secure?
+                  </span>
                   <span className="transition group-open:rotate-180">
                     <ChevronDownIcon className="h-5 w-5 text-blue-500" />
                   </span>
                 </summary>
                 <p className="text-gray-600 dark:text-gray-300 mt-3">
-                  Yes, we take your privacy seriously. All information provided to our symptom checker is encrypted and protected. Your symptom history is stored locally on your device only and not on our servers. You can delete your history at any time.
+                  Yes, we take your privacy seriously. All information provided
+                  to our symptom checker is encrypted and protected. Your
+                  symptom history is stored locally on your device only and not
+                  on our servers. You can delete your history at any time.
                 </p>
               </details>
             </div>
-            
+
             <div className="bg-white dark:bg-neutral-800/90 backdrop-blur-sm rounded-xl border border-blue-50 dark:border-neutral-700/80 p-4 shadow-lg shadow-blue-900/5 dark:shadow-blue-900/30">
               <details className="group">
                 <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
-                  <span className="text-gray-900 dark:text-white">What should I do in a medical emergency?</span>
+                  <span className="text-gray-900 dark:text-white">
+                    What should I do in a medical emergency?
+                  </span>
                   <span className="transition group-open:rotate-180">
                     <ChevronDownIcon className="h-5 w-5 text-blue-500" />
                   </span>
                 </summary>
                 <p className="text-gray-600 dark:text-gray-300 mt-3">
-                  If you're experiencing severe symptoms like chest pain, difficulty breathing, or severe bleeding, please call emergency services immediately (911 in the US). Our symptom checker is not designed for emergency situations and should not delay seeking urgent medical care.
+                  If you're experiencing severe symptoms like chest pain,
+                  difficulty breathing, or severe bleeding, please call
+                  emergency services immediately (e.g., 112 or 108 in India).
+                  Our symptom checker is not designed for emergency situations
+                  and should not delay seeking urgent medical care.
                 </p>
               </details>
             </div>
-            
+
             <div className="bg-white dark:bg-neutral-800/90 backdrop-blur-sm rounded-xl border border-blue-50 dark:border-neutral-700/80 p-4 shadow-lg shadow-blue-900/5 dark:shadow-blue-900/30">
               <details className="group">
                 <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
-                  <span className="text-gray-900 dark:text-white">How does the symptom history feature work?</span>
+                  <span className="text-gray-900 dark:text-white">
+                    How does the symptom history feature work?
+                  </span>
                   <span className="transition group-open:rotate-180">
                     <ChevronDownIcon className="h-5 w-5 text-blue-500" />
                   </span>
                 </summary>
                 <p className="text-gray-600 dark:text-gray-300 mt-3">
-                  Our symptom history feature automatically saves your symptom checks locally on your device. No account or login is required. You can access your history by clicking the "History" button in the top-right corner. Your data remains private and is only stored on your current device. Clearing your browser data will erase this history.
+                  Our symptom history feature automatically saves your symptom
+                  checks locally on your device. No account or login is
+                  required. You can access your history by clicking the
+                  "History" button in the top-right corner. Your data remains
+                  private and is only stored on your current device. Clearing
+                  your browser data will erase this history.
                 </p>
               </details>
             </div>
           </div>
         </motion.div>
 
-       
+        {/* Decorative Elements */}
         <div className="relative pointer-events-none">
           <motion.div
             initial={{ opacity: 0, x: -50 }}

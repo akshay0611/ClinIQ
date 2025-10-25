@@ -1,28 +1,55 @@
+interface DoctorProfile {
+  id: string;
+  full_name: string;
+  email: string;
+  role: string;
+  photoUrl?: string;
+  doctor_profiles: {
+    specialization: string;
+    qualifications: string[];
+    experience_years: number;
+    consultation_fee: number;
+    clinic_address: string;
+    about: string;
+    rating?: number;
+    isAvailableToday?: boolean;
+    patientCount?: number;
+    reviews?: number;
+    isVerified?: boolean;
+    availability_schedule?: unknown;
+    profile_id?: string;
+  };
+}
+
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import DoctorCard from "../components/doctors/DoctorCard";
 import DoctorFilter from "../components/doctors/DoctorFilter";
+import DoctorCardSkeleton from "../components/doctors/DoctorCardSkeleton";
 import { supabase } from "../services/supabaseClient";
+import { Search, UserIcon, Stethoscope, Calendar } from "lucide-react";
 
 const Doctors: React.FC = () => {
-  const [doctors, setDoctors] = useState<any[]>([]);
-  const [filteredDoctors, setFilteredDoctors] = useState<any[]>([]);
+  const [doctors, setDoctors] = useState<DoctorProfile[]>([]); // Use DoctorProfile[]
+  const [filteredDoctors, setFilteredDoctors] = useState<DoctorProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchDoctors = async () => {
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*, doctor_profiles(*)')
-        .eq('role', 'doctor');
+        .from("profiles")
+        .select("*, doctor_profiles(*)")
+        .eq("role", "doctor");
 
       if (error) {
-        console.error('Error fetching doctors:', error);
+        console.error("Error fetching doctors:", error);
       } else if (data) {
         setDoctors(data);
         setFilteredDoctors(data);
       }
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
     };
 
     fetchDoctors();
@@ -40,25 +67,32 @@ const Doctors: React.FC = () => {
       const searchTerm = filters.search.toLowerCase();
       filtered = filtered.filter(
         (doctor) =>
-          doctor.name.toLowerCase().includes(searchTerm) ||
-          doctor.specialization.toLowerCase().includes(searchTerm)
+          doctor.full_name.toLowerCase().includes(searchTerm) || // Correct property
+          doctor.doctor_profiles.specialization
+            .toLowerCase()
+            .includes(searchTerm) // Correct nested property
       );
     }
 
     if (filters.specialization) {
       filtered = filtered.filter(
-        (doctor) => doctor.specialization === filters.specialization
+        (doctor) =>
+          doctor.doctor_profiles.specialization === filters.specialization
       );
     }
 
     if (filters.location) {
-      filtered = filtered.filter(
-        (doctor) => doctor.location === filters.location
+      filtered = filtered.filter((doctor) =>
+        doctor.doctor_profiles.clinic_address
+          ?.toLowerCase()
+          .includes(filters.location.toLowerCase())
       );
     }
 
     if (filters.availableToday) {
-      filtered = filtered.filter((doctor) => doctor.isAvailableToday);
+      filtered = filtered.filter(
+        (doctor) => doctor.doctor_profiles.isAvailableToday
+      );
     }
 
     setFilteredDoctors(filtered);
@@ -125,9 +159,18 @@ const Doctors: React.FC = () => {
         </motion.div>
 
         {isLoading ? (
-          <div className="flex justify-center items-center py-12">
-            <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          </div>
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full max-w-7xl mx-auto px-4"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {[...Array(6)].map((_, i) => (
+              <motion.div key={i} variants={itemVariants}>
+                <DoctorCardSkeleton />
+              </motion.div>
+            ))}
+          </motion.div>
         ) : filteredDoctors.length === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
@@ -185,7 +228,11 @@ const Doctors: React.FC = () => {
                 <Stethoscope className="w-8 h-8 text-green-500 dark:text-green-400" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {new Set(filteredDoctors.map((d) => d.specialization)).size}
+                {
+                  new Set(
+                    filteredDoctors.map((d) => d.doctor_profiles.specialization)
+                  ).size
+                }
               </h3>
               <p className="text-gray-600 dark:text-gray-300">Specialties</p>
             </div>
@@ -194,7 +241,11 @@ const Doctors: React.FC = () => {
                 <Calendar className="w-8 h-8 text-purple-500 dark:text-purple-400" />
               </div>
               <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {filteredDoctors.filter((d) => d.isAvailableToday).length}
+                {
+                  filteredDoctors.filter(
+                    (d) => d.doctor_profiles.isAvailableToday
+                  ).length
+                }
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Available Today
