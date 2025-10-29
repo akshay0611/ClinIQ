@@ -1,29 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { supabase } from '../services/supabaseClient';
+interface DoctorProfile {
+  id: string;
+  full_name: string;
+  email: string;
+  role: string;
+  photoUrl?: string;
+  doctor_profiles: {
+    specialization: string;
+    qualifications: string[];
+    experience_years: number;
+    consultation_fee: number;
+    clinic_address: string;
+    about: string;
+    rating?: number;
+    isAvailableToday?: boolean;
+    patientCount?: number;
+    reviews?: number;
+    isVerified?: boolean;
+    availability_schedule?: unknown;
+    profile_id?: string;
+  };
+}
+
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { motion } from "framer-motion";
+import { supabase } from "../services/supabaseClient";
+import DoctorProfileSkeleton from "../components/doctors/DoctorProfileSkeleton";
 
 export default function DoctorProfilePage(): JSX.Element {
   const { id } = useParams<{ id: string }>();
-  const [doctor, setDoctor] = useState<any>(null);
+  const [doctor, setDoctor] = useState<DoctorProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDoctor = async () => {
       if (id) {
         const { data, error } = await supabase
-          .from('profiles')
-          .select('*, doctor_profiles(*)')
-          .eq('id', id)
-          .eq('role', 'doctor')
+          .from("profiles")
+          .select("*, doctor_profiles(*)")
+          .eq("id", id)
+          .eq("role", "doctor")
           .single();
 
         if (error) {
-          console.error('Error fetching doctor profile:', error);
+          console.error("Error fetching doctor profile:", error);
         } else if (data) {
           setDoctor(data);
         }
-        setLoading(false);
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
       }
     };
 
@@ -31,7 +57,7 @@ export default function DoctorProfilePage(): JSX.Element {
   }, [id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <DoctorProfileSkeleton />;
   }
 
   if (!doctor) {
@@ -49,7 +75,9 @@ export default function DoctorProfilePage(): JSX.Element {
         <div className="flex items-center gap-8">
           <div>
             <h1 className="text-4xl font-bold">{doctor.full_name}</h1>
-            <p className="text-xl text-gray-600 dark:text-gray-400">{doctor.doctor_profiles.specialization}</p>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
+              {doctor.doctor_profiles.specialization}
+            </p>
           </div>
         </div>
         <div className="mt-8">
@@ -59,7 +87,11 @@ export default function DoctorProfilePage(): JSX.Element {
         <div className="mt-8">
           <h2 className="text-2xl font-bold mb-4">Qualifications</h2>
           <ul className="list-disc list-inside">
-            {doctor.doctor_profiles.qualifications.map((q: string, i: number) => <li key={i}>{q}</li>)}
+            {doctor.doctor_profiles.qualifications.map(
+              (q: string, i: number) => (
+                <li key={i}>{q}</li>
+              )
+            )}
           </ul>
         </div>
         <div className="mt-8">
