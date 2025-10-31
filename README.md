@@ -1,10 +1,12 @@
 # ClinIQ – AI-Powered Health Platform
 
-[![Hacktoberfest](https://img.shields.io/badge/Hacktoberfest-2025-orange.svg)](https://hacktoberfest.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Live Demo](https://img.shields.io/badge/demo-live-success.svg)](https://cliniq-iota.vercel.app/)
 
 ClinIQ is an innovative open-source health-tech platform that leverages AI to provide accurate symptom analysis and doctor discovery—all in one place. Our goal is to make healthcare more accessible and user-friendly for everyone.
+
+> **Note:** This project was successfully launched during Hacktoberfest 2025 and continues to welcome contributions from the open-source community.
 
 ---
 
@@ -82,20 +84,47 @@ Open [http://localhost:5173](http://localhost:5173) in your browser to view the 
 
 ---
 
+## 👨‍💼 Project Leadership
+
+As **Project Admin** during **Hacktoberfest 2025**, I spearheaded both the technical development and community growth of ClinIQ. Here's what that looked like:
+
+### 🏗️ Technical Contributions
+- **Full-Stack Architecture:** Designed and built the entire system using React, TypeScript, Supabase, and Gemini AI—from database schema to UI components
+- **Core Features:** Developed the AI symptom checker, doctor discovery system, appointment booking flow, and role-based dashboards for patients and doctors
+- **Database Engineering:** Architected PostgreSQL schema with proper relationships, Row Level Security (RLS) policies, and data integrity constraints
+- **UI/UX Development:** Created responsive, accessible interfaces with Tailwind CSS and smooth animations using Framer Motion
+
+### 🤝 Community & Project Management
+- **Open Source Leadership:** Managed issues and pull requests during Hacktoberfest, maintaining code quality while welcoming diverse contributions from the community
+- **Contributor Support:** Mentored developers (including first-time contributors) through code reviews, issue discussions, and technical guidance
+- **Documentation:** Wrote clear setup guides, contributing guidelines, and inline code documentation to lower the barrier for new contributors
+- **Deployment & DevOps:** Set up CI/CD pipeline and production deployment, ensuring the platform is accessible to real users
+
+### 🎯 Impact
+This project taught me how to balance technical excellence with community building—writing clean, maintainable code while fostering an inclusive environment for contributors of all skill levels. The result is a production-ready healthcare platform that's both technically sound and community-driven.
+
+---
+
 ## 🤝 Contributing
 
-We welcome contributions from everyone, especially during **Hacktoberfest**! Your help is essential for making ClinIQ better.
+We welcome contributions from developers of all skill levels! Whether you're fixing bugs, adding features, or improving documentation, your help makes ClinIQ better.
 
 Please read our [**CONTRIBUTING.md**](CONTRIBUTING.md) for detailed instructions.
 
-### Branch Naming & PR Guidelines
+### How to Contribute
 
-- Create a new branch for each PR (do not commit directly to `main`).  
-  Example: `fix/sign-in-text` or `feature/new-component`  
-- Reference the issue in your PR title or description.  
-  Example: `Fix: Sign-In Text Cut Off #2`  
-- Include screenshots or GIFs for UI changes.  
-- PRs will be reviewed by maintainers. Be prepared to make requested changes before merge.
+1. **Fork the repository** and create a new branch for your feature/fix
+2. **Make your changes** following our code style and conventions
+3. **Test thoroughly** to ensure nothing breaks
+4. **Submit a pull request** with a clear description of your changes
+5. **Respond to feedback** from maintainers during code review
+
+### Branch Naming Convention
+
+- `feature/feature-name` - For new features
+- `fix/bug-description` - For bug fixes
+- `docs/update-description` - For documentation updates
+- `refactor/component-name` - For code refactoring
 
 ### Issue Labels
 
@@ -119,6 +148,8 @@ Please read our [**CONTRIBUTING.md**](CONTRIBUTING.md) for detailed instructions
 [![TailwindCSS](https://img.shields.io/badge/Styled%20with-Tailwind%20CSS-teal.svg)](https://tailwindcss.com/)
 [![Supabase](https://img.shields.io/badge/Backend-Supabase-blueviolet.svg)](https://supabase.com/)
 [![Gemini API](https://img.shields.io/badge/AI-Gemini-orange.svg)](https://developers.google.com/)
+
+📐 **[View Full Architecture Overview →](./ARCHITECTURE_OVERVIEW.md)**
 
 ---
 
