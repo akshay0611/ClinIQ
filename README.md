@@ -1,5 +1,6 @@
 # ClinIQ – AI-Powered Health Platform
 
+[![CI](https://github.com/aksh-g/ClinIQ/actions/workflows/ci.yml/badge.svg)](https://github.com/aksh-g/ClinIQ/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Live Demo](https://img.shields.io/badge/demo-live-success.svg)](https://cliniq-iota.vercel.app/)
