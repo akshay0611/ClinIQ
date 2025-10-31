@@ -48,9 +48,10 @@ export default function Signup() {
         window.location.href = '/login';
       }, 2000);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      toast.error(error.message || 'Registration failed. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed. Please try again.';
+      toast.error(errorMessage);
     }
   };
 

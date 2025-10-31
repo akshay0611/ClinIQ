@@ -14,7 +14,6 @@ import Home from "./pages/Home";
 import SymptomChecker from "./pages/SymptomChecker";
 import Doctors from "./pages/Doctors";
 import Appointment from "./pages/Appointment";
-import Dashboard from "./pages/Dashboard";
 import Hospitals from "./pages/Hospitals";
 import Faq from "./pages/FAQ";
 import Contact from "./pages/Contact";

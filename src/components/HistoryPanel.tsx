@@ -50,7 +50,7 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ onClose, onSelect, isOpen }
     try {
       const date = new Date(dateString);
       return format(date, 'MMM d, yyyy h:mm a');
-    } catch (error) {
+    } catch {
       return 'Invalid date';
     }
   };

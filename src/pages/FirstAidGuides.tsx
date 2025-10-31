@@ -329,7 +329,7 @@ export default function FirstAidGuides() {
 
      
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {filteredGuides.map((guide, index) => (
+          {filteredGuides.map((guide) => (
             <div
               key={guide.id}
               className={`group relative bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl rounded-3xl border shadow-2xl hover:shadow-3xl transition-all duration-500 hover:-translate-y-2 overflow-hidden ${

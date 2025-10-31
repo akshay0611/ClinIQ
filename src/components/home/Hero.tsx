@@ -50,7 +50,7 @@ const Hero: React.FC = () => {
     }, 2000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [titles.length]);
 
   const animations = useMemo(() => {
     return {

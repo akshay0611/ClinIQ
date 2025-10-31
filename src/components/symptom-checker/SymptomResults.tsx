@@ -15,7 +15,7 @@ import {
   Pill,
   User
 } from 'lucide-react';
-import { SymptomResult, Doctor } from '../../types'; // Ensure Doctor type is imported
+import { SymptomResult } from '../../types';
 import { mockDoctors } from '../../services/mockData';
 import Card from '../common/Card';
 import Button from '../common/Button';
@@ -60,9 +60,6 @@ const SymptomResults: React.FC<SymptomResultsProps> = ({ result, symptoms = '' }
     })
     .slice(0, 3); // Limit to top 3 doctors
 
-  // ... (The rest of your SymptomResults.tsx component code remains the same as in the previous example)
-  // renderUrgencyLevel, containerVariants, itemVariants, JSX structure, etc.
-
   const renderUrgencyLevel = () => {
     const urgencyConfig = {
       mild: {
@@ -100,7 +97,7 @@ const SymptomResults: React.FC<SymptomResultsProps> = ({ result, symptoms = '' }
 
     const urgencyKey = result?.severity ? urgencyMap[result.severity] : undefined;
     const urgency = urgencyKey || 'moderate';
-    const config = urgencyConfig[urgency];
+    const config = urgencyConfig[urgency] as typeof urgencyConfig.mild;
 
     return (
       <motion.div
@@ -185,7 +182,7 @@ const SymptomResults: React.FC<SymptomResultsProps> = ({ result, symptoms = '' }
           </h3>
           <div className="text-sm text-neutral-500 dark:text-neutral-400 flex items-center">
             <Clock className="w-5 h-5 mr-2" />
-            <span>Analysis confidence: {(result as any).confidence || "High"}</span>
+            <span>Analysis confidence: {(result as { confidence?: string }).confidence || "High"}</span>
           </div>
         </div>
 

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../services/supabaseClient';
 
@@ -58,22 +56,6 @@ export default function DoctorProfileForm(): JSX.Element {
   const handleArrayChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof DoctorProfileData) => {
     const { value } = e.target;
     setDoctorProfile(prev => (prev ? { ...prev, [field]: value.split(',').map(item => item.trim()) } : null));
-  };
-
-  const handleSaveProfile = async () => {
-    if (!currentUser || !doctorProfile) return;
-
-    const { error } = await supabase.from('doctor_profiles').upsert({ 
-      profile_id: currentUser.id, 
-      ...doctorProfile 
-    });
-
-    if (error) {
-      console.error('Error updating doctor profile:', error);
-      toast.error(error.message || 'Failed to update doctor profile.');
-    } else {
-      toast.success('Doctor profile updated successfully!');
-    }
   };
 
   if (loading) {
