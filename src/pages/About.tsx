@@ -13,8 +13,7 @@ import {
   Users,
   ArrowUpRight,
   Clock,
-  MapPin,
-  Sparkles
+  MapPin
 } from 'lucide-react';
 
 const coreValues = [
@@ -149,7 +148,7 @@ export default function About() {
           className="mb-24"
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((stat, i) => (
+            {stats.map((stat) => (
               <motion.div 
                 key={stat.label}
                 whileHover={{ y: -5 }}

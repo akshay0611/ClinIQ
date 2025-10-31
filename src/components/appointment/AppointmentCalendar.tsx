@@ -125,7 +125,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
         {/* Calendar Section */}
         <div className="calendar-container">
           <Calendar
-            onChange={handleDateSelect as any}
+            onChange={handleDateSelect as (value: Date) => void}
             value={selectedDate}
             tileContent={({ date, view }) => (
               <span title={isDateAvailable(date) ? 'Available' : 'Unavailable'}>

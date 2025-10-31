@@ -216,7 +216,7 @@ export default class PDFExportService {
 
       doc.setFont('helvetica', 'normal');
       const recommendedFoods = result.diet?.recommendedFoods || ['Fresh fruits and vegetables', 'Whole grains', 'Lean proteins'];
-      recommendedFoods.forEach((food, index) => {
+      recommendedFoods.forEach((food) => {
         if (yPos > 270) {
           doc.addPage();
           yPos = 20;
@@ -233,7 +233,7 @@ export default class PDFExportService {
 
       doc.setFont('helvetica', 'normal');
       const foodsToAvoid = result.diet?.foodsToAvoid || ['Processed foods', 'High-sugar items', 'Excessive caffeine'];
-      foodsToAvoid.forEach((food, index) => {
+      foodsToAvoid.forEach((food) => {
         if (yPos > 270) {
           doc.addPage();
           yPos = 20;
@@ -273,7 +273,7 @@ export default class PDFExportService {
 
       doc.setFont('helvetica', 'normal');
       const recommendedMeds = result.medications?.recommended || ['Over-the-counter pain relievers', 'Antihistamines if needed'];
-      recommendedMeds.forEach((med, index) => {
+      recommendedMeds.forEach((med) => {
         if (yPos > 270) {
           doc.addPage();
           yPos = 20;
@@ -290,7 +290,7 @@ export default class PDFExportService {
 
       doc.setFont('helvetica', 'normal');
       const supplements = result.medications?.supplements || ['Vitamin C', 'Zinc', 'Probiotics'];
-      supplements.forEach((supp, index) => {
+      supplements.forEach((supp) => {
         if (yPos > 270) {
           doc.addPage();
           yPos = 20;

@@ -70,7 +70,7 @@ export async function getHospitalsNearby(coords: Coordinates, radius: number = 5
   }
 
   const data = await response.json();
-  return data.elements.filter((el: any) => el.tags?.name) as OSMHospital[];
+  return data.elements.filter((el: OSMHospital) => el.tags?.name) as OSMHospital[];
 }
 
 // Calculate distance between two coordinates in kilometers

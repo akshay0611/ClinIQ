@@ -43,9 +43,9 @@ interface SpeechRecognitionErrorEvent extends Event {
   message: string;
 }
 
-interface SpeechRecognition  {
+declare const SpeechRecognition: {
   new (): SpeechRecognition;
-}
+};
 
 interface SymptomFormProps {
   onSubmit: (symptoms: string) => void;
@@ -65,11 +65,11 @@ const SymptomForm: React.FC<SymptomFormProps> = ({
   const [error, setError] = useState('');
   const [speechSupported, setSpeechSupported] = useState(true);
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
-  const [demoExamples, setDemoExamples] = useState<string[]>([
+  const demoExamples = [
     "I've had a persistent cough and sore throat for the past 3 days, with mild fever in the evenings.",
     "I have severe headache in the front of my head and sensitivity to light for the last 6 hours.",
     "My lower back has been hurting for two weeks, especially when I bend over or sit for long periods."
-  ]);
+  ];
 
 
   useEffect(() => {
@@ -78,20 +78,21 @@ const SymptomForm: React.FC<SymptomFormProps> = ({
 
  
   useEffect(() => {
-    const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognitionAPI =
+      (window as unknown as { SpeechRecognition?: typeof SpeechRecognition; webkitSpeechRecognition?: typeof SpeechRecognition }).SpeechRecognition || 
+      (window as unknown as { SpeechRecognition?: typeof SpeechRecognition; webkitSpeechRecognition?: typeof SpeechRecognition }).webkitSpeechRecognition;
   
-    if (!SpeechRecognition) {
+    if (!SpeechRecognitionAPI) {
       setSpeechSupported(false);
       return;
     }
     
-    const recognitionInstance = new SpeechRecognition();
+    const recognitionInstance = new SpeechRecognitionAPI();
     recognitionInstance.continuous = true;
     recognitionInstance.interimResults = true;
     recognitionInstance.lang = 'en-US';
     
-    recognitionInstance.onresult = (event: any) => {
+    recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
       let transcript = '';
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
@@ -103,7 +104,7 @@ const SymptomForm: React.FC<SymptomFormProps> = ({
       }
     };
     
-    recognitionInstance.onerror = (event: any) => {
+    recognitionInstance.onerror = (event: SpeechRecognitionErrorEvent) => {
       console.error('Speech recognition error:', event.error);
       setError(`Speech recognition error: ${event.error}`);
       setIsRecording(false);

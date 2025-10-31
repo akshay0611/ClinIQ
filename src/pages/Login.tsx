@@ -43,9 +43,10 @@ export default function Login() {
         window.location.href = "/profile";
       }, 1000);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      toast.error(error.message || "Login failed. Please check your credentials.");
+      const errorMessage = error instanceof Error ? error.message : "Login failed. Please check your credentials.";
+      toast.error(errorMessage);
     }
   };
 

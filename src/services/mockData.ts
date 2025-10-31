@@ -9,7 +9,6 @@ export const getMockSymptomResult = (symptoms: string): SymptomResult => {
   const hasFatigue = symptoms.toLowerCase().includes('fatigue');
   
   let urgency = 'mild';
-  let conditions = [];
   let remedies = [];
   let consultDoctor = {
     required: false,
@@ -17,13 +16,14 @@ export const getMockSymptomResult = (symptoms: string): SymptomResult => {
   };
   
   // Very simple logic to determine conditions
+  const conditionsList = [];
   if (hasHeadache && hasFever) {
-    conditions.push({
+    conditionsList.push({
       name: "Common Cold",
       description: "A viral infection causing inflammation of the mucous membranes lining the respiratory passages."
     });
     
-    conditions.push({
+    conditionsList.push({
       name: "Influenza",
       description: "A contagious respiratory illness caused by influenza viruses that infect the nose, throat, and lungs."
     });
@@ -41,12 +41,12 @@ export const getMockSymptomResult = (symptoms: string): SymptomResult => {
       reason: "Your combination of fever and headache should be evaluated by a healthcare professional, especially if symptoms persist for more than 3 days."
     };
   } else if (hasCough && hasFever) {
-    conditions.push({
+    conditionsList.push({
       name: "Bronchitis",
       description: "Inflammation of the lining of your bronchial tubes, which carry air to and from your lungs."
     });
     
-    conditions.push({
+    conditionsList.push({
       name: "Pneumonia",
       description: "An infection that inflames the air sacs in one or both lungs, which may fill with fluid."
     });
@@ -64,12 +64,12 @@ export const getMockSymptomResult = (symptoms: string): SymptomResult => {
       reason: "Cough with fever may indicate a respiratory infection that should be evaluated by a doctor, especially if you have difficulty breathing."
     };
   } else if (hasHeadache) {
-    conditions.push({
+    conditionsList.push({
       name: "Tension Headache",
       description: "A mild to moderate pain often described as feeling like a tight band around the head."
     });
     
-    conditions.push({
+    conditionsList.push({
       name: "Migraine",
       description: "A headache of varying intensity, often accompanied by nausea and sensitivity to light and sound."
     });
@@ -83,12 +83,12 @@ export const getMockSymptomResult = (symptoms: string): SymptomResult => {
     
     urgency = "mild";
   } else if (hasFatigue) {
-    conditions.push({
+    conditionsList.push({
       name: "Chronic Fatigue Syndrome",
       description: "A complicated disorder characterized by extreme fatigue that can't be explained by any underlying medical condition."
     });
     
-    conditions.push({
+    conditionsList.push({
       name: "Iron Deficiency",
       description: "A condition in which blood lacks adequate healthy red blood cells that carry oxygen to the body's tissues."
     });
@@ -107,7 +107,7 @@ export const getMockSymptomResult = (symptoms: string): SymptomResult => {
     };
   } else {
     // Default case
-    conditions.push({
+    conditionsList.push({
       name: "General Malaise",
       description: "A general feeling of discomfort, illness, or uneasiness whose exact cause is difficult to identify."
     });
@@ -123,7 +123,7 @@ export const getMockSymptomResult = (symptoms: string): SymptomResult => {
   }
   
   return {
-    conditions,
+    conditions: conditionsList,
     urgency: urgency as 'mild' | 'moderate' | 'emergency',
     remedies,
     consultDoctor

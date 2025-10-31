@@ -11,7 +11,6 @@ import {
   BadgeCheck, 
   ChevronRight,
   PlusCircle,
-  FileText,
   Utensils,
   Pill
 } from 'lucide-react';

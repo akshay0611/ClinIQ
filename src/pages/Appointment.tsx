@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { stethoscope, MapPin, Star, Calendar, Clock, CheckCircle } from 'lucide-react';
+import { MapPin, Star, Calendar, Clock, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Doctor } from '../types';
 import { mockDoctors } from '../services/mockData';

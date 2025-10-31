@@ -4,6 +4,6 @@ declare namespace NodeJS {
   }
 }
 
-declare var process: {
+declare const process: {
   env: NodeJS.ProcessEnv;
 };
