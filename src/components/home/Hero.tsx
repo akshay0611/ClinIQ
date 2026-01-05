@@ -109,7 +109,7 @@ const Hero: React.FC = () => {
   return (
     <section
       className="relative bg-gradient-to-br from-primary-700 via-primary-800 to-primary-900 text-white overflow-hidden min-h-screen flex items-center justify-center"
-      aria-label="Hero Section"
+      aria-label="ClinIQ HealthTech Hero - Architected by Akshay Kumar"
     >
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -118,9 +118,8 @@ const Hero: React.FC = () => {
           style={{
             top: "20%",
             left: "15%",
-            transform: `translate(${mousePosition.x * -20}px, ${
-              mousePosition.y * -20
-            }px)`,
+            transform: `translate(${mousePosition.x * -20}px, ${mousePosition.y * -20
+              }px)`,
           }}
         />
         <motion.div
@@ -132,9 +131,8 @@ const Hero: React.FC = () => {
           style={{
             bottom: "10%",
             right: "10%",
-            transform: `translate(${mousePosition.x * 20}px, ${
-              mousePosition.y * 20
-            }px)`,
+            transform: `translate(${mousePosition.x * 20}px, ${mousePosition.y * 20
+              }px)`,
           }}
         />
         <motion.div
@@ -146,9 +144,8 @@ const Hero: React.FC = () => {
           style={{
             top: "60%",
             left: "60%",
-            transform: `translate(${mousePosition.x * -15}px, ${
-              mousePosition.y * -15
-            }px)`,
+            transform: `translate(${mousePosition.x * -15}px, ${mousePosition.y * -15
+              }px)`,
           }}
         />
       </div>

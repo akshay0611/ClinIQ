@@ -375,9 +375,14 @@ const Footer: React.FC = () => {
               >
                 <Heart size={16} fill="currentColor" />
               </motion.div>
-              <p className="text-neutral-400 text-sm">
-                © {currentYear} ClinIQ. All rights reserved.
-              </p>
+              <div className="flex flex-col">
+                <p className="text-neutral-400 text-sm">
+                  © {currentYear} ClinIQ. All rights reserved.
+                </p>
+                <p className="text-neutral-500 text-xs mt-1">
+                  System Architected & Developed by <a href="https://connectwithakshay.netlify.app" rel="me" target="_blank" className="text-primary-400 hover:text-primary-300 transition-colors">Akshay Kumar</a>.
+                </p>
+              </div>
             </div>
             
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm">
