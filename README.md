@@ -81,6 +81,17 @@ Follow these steps to get a local copy running:
     # or
     yarn dev
     ```
+
+### 🗄️ Database Setup (Supabase)
+
+ClinIQ uses Supabase for database and authentication. To set up the database:
+
+1.  Create a free project on [Supabase](https://supabase.com/).
+2.  Go to the **SQL Editor** in your Supabase dashboard.
+3.  Copy the content of [`supabase/schema.sql`](supabase/schema.sql) and run it to create the tables and policies.
+4.  (Optional) Run [`supabase/seed.sql`](supabase/seed.sql) to populate your database with initial sample data (doctors, webinars, etc.).
+5.  Get your `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from **Project Settings > API** and add them to your `.env` file.
+
 Open [http://localhost:5173](http://localhost:5173) in your browser to view the app.
 
 ---
