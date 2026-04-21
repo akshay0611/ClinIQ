@@ -39,58 +39,46 @@ ClinIQ addresses these challenges by providing:
 - 👩‍⚕️ **Doctor Directory:** Find verified specialists by expertise.
 - 💬 **Chat Interface:** An interactive way to get feedback on symptoms.
 - 📱 **Responsive UI:** A modern and smooth user experience on any device.
-- 📅 **Appointment Booking:** Book and manage appointments with ease.
 - 🏥 **Hospital Locator:** Find nearby hospitals using your PIN code.
 
 ---
 
 ## 🚀 Getting Started
 
-Follow these steps to get a local copy running:
+ClinIQ is a Vite + React + TypeScript app. Supabase is required for auth + profiles.
 
-### Prerequisites
+### Quickstart
 
-- Node.js (v18 or higher)  
-- npm or yarn  
+```sh
+git clone https://github.com/YOUR_USERNAME/ClinIQ.git
+cd ClinIQ
+npm install
+cp .env.example .env
+npm run dev
+```
 
-### Installation
+Then open `http://localhost:5173`.
 
-1. **Fork the repository**  
-2. **Clone the repository**  
-    ```sh
-    git clone https://github.com/YOUR_USERNAME/ClinIQ.git
-    ```
-3. **Navigate to the project directory**  
-    ```sh
-    cd ClinIQ
-    ```
-4. **Install dependencies**  
-    ```sh
-    npm install
-    # or
-    yarn install
-    ```
-5. **Set up environment variables**  
-   Copy `.env.example` to `.env` and fill in your keys.  
-   - **Supabase:** Sign up at [https://supabase.com/](https://supabase.com/) to get `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.  
-   - **Gemini API:** Get your key from [https://aistudio.google.com/api-keys](https://aistudio.google.com/api-keys).
+### Full local setup guide
 
-6. **Run the development server**  
-    ```sh
-    npm run dev
-    # or
-    yarn dev
-    ```
+See `SETUP.md` for:
+
+- Supabase project setup + required SQL
+- Required vs optional environment variables
+- Troubleshooting and FAQs
 
 ### 🗄️ Database Setup (Supabase)
 
-ClinIQ uses Supabase for database and authentication. To set up the database:
+ClinIQ uses Supabase for authentication and core data. To set up the database:
 
 1.  Create a free project on [Supabase](https://supabase.com/).
 2.  Go to the **SQL Editor** in your Supabase dashboard.
-3.  Copy the content of [`supabase/schema.sql`](supabase/schema.sql) and run it to create the tables and policies.
-4.  (Optional) Run [`supabase/seed.sql`](supabase/seed.sql) to populate your database with initial sample data (doctors, webinars, etc.).
-5.  Get your `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from **Project Settings > API** and add them to your `.env` file.
+3.  Copy the content of `supabase/schema.sql` and run it to create the **core tables** + policies.
+4.  Get your `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from **Project Settings > API** and add them to your `.env` file.
+
+Notes:
+
+- `VITE_GEMINI_API_KEY` is optional (symptom checker can fall back to mock results).
 
 Open [http://localhost:5173](http://localhost:5173) in your browser to view the app.
 

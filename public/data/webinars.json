@@ -1,0 +1,50 @@
+[
+  {
+    "id": "w1",
+    "title": "AI in Clinical Diagnosis: What Works in 2026",
+    "speakers": ["Dr. Aditi Rao", "Dr. Kunal Mehta"],
+    "date": "2026-06-08",
+    "time": "18:30",
+    "duration": "60 min",
+    "description": "A practical session on how AI is used in modern clinics, common pitfalls, and what to evaluate before adoption.",
+    "topic": "AI & Diagnostics",
+    "type": "upcoming",
+    "registration_link": "https://example.com/register-ai-dx",
+    "thumbnail": "/cliniqhome.png",
+    "featured": true,
+    "attendees": 320,
+    "rating": 4.6
+  },
+  {
+    "id": "w2",
+    "title": "Telemedicine Workflows: From Scheduling to Follow-ups",
+    "speakers": ["Dr. Neha Sharma"],
+    "date": "2026-06-15",
+    "time": "19:00",
+    "duration": "45 min",
+    "description": "End-to-end telemedicine workflow design, including patient experience, documentation, and safety checks.",
+    "topic": "Telemedicine",
+    "type": "upcoming",
+    "registration_link": "https://example.com/register-telemedicine",
+    "thumbnail": "/cliniqsymptomchecker.png",
+    "featured": false,
+    "attendees": 210,
+    "rating": 4.4
+  },
+  {
+    "id": "w3",
+    "title": "Digital Health Security Basics for Product Teams",
+    "speakers": ["Aman Verma"],
+    "date": "2026-04-02",
+    "time": "20:00",
+    "duration": "50 min",
+    "description": "Threat modeling, auth basics, and common security mistakes in health-tech apps (with real examples).",
+    "topic": "Digital Health",
+    "type": "past",
+    "recording_link": "https://example.com/recording-security",
+    "thumbnail": "/cliniqhome.png",
+    "featured": false,
+    "attendees": 540,
+    "rating": 4.7
+  }
+]

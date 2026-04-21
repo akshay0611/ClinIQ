@@ -4,6 +4,10 @@ First off, thank you for considering contributing to ClinIQ! We're excited to we
 
 We especially welcome contributors during **Hacktoberfest**!
 
+## Local Development Setup
+
+Use `SETUP.md` as the canonical setup guide (Supabase + env vars + optional tables).
+
 ## How to Contribute
 
 To ensure a smooth and effective collaboration, please follow these guidelines.
@@ -42,6 +46,16 @@ Once you've been assigned an issue and have completed the work, you can submit a
 -   **Write clean commit messages:** Follow a consistent style for your commit messages. A good commit message is concise and descriptive.
 
 **Review Process:** All PRs will be reviewed by our maintainers. Please be prepared to make any requested changes before your PR is merged.
+
+#### Before you open a PR
+
+-   Make sure the app starts locally (`npm run dev`) with your changes.
+-   Run:
+
+    ```sh
+    npm run lint
+    npm run build
+    ```
 
 ### 4. Coding Standards
 

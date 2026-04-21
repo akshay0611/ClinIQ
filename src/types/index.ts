@@ -121,22 +121,3 @@ export interface AuthFormData {
   password: string;
   name?: string;
 }
-
-// Webinars
-export interface Webinar {
-  id: string;
-  title: string;
-  speakers: string[];
-  date: string;
-  time: string;
-  duration: string;
-  description: string;
-  topic: string;
-  type: 'upcoming' | 'past';
-  registration_link?: string;
-  recording_link?: string;
-  thumbnail: string;
-  attendees?: number;
-  rating?: number;
-  featured?: boolean;
-}
