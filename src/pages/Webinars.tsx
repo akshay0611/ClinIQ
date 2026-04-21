@@ -1,31 +1,25 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { PlayCircle, Calendar, Filter } from "lucide-react";
 import {
   CalendarDaysIcon,
   ClockIcon,
   UserGroupIcon,
-  PlayCircleIcon,
-  AcademicCapIcon,
-  StarIcon,
-  TrophyIcon,
   VideoCameraIcon,
-  BellIcon,
-  CheckIcon,
 } from "@heroicons/react/24/outline";
-import { supabase } from "../services/supabaseClient";
-import WebinarCardSkeleton from "../components/webinars/WebinarCardSkeleton";
+import { ExternalLink, Filter, PlayCircle } from "lucide-react";
+
+type WebinarType = "upcoming" | "past";
 
 interface Webinar {
   id: string;
   title: string;
   speakers: string[];
-  date: string;
-  time: string;
+  date: string; // YYYY-MM-DD
+  time: string; // HH:mm
   duration: string;
   description: string;
   topic: string;
-  type: "upcoming" | "past";
+  type: WebinarType;
   registration_link?: string;
   recording_link?: string;
   thumbnail: string;
@@ -42,278 +36,113 @@ const TOPICS = [
   "Research & Development",
 ];
 
-export default function Webinars() {
-  const [activeTab, setActiveTab] = useState("upcoming");
+function formatWebinarDate(isoDate: string) {
+  const date = new Date(`${isoDate}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return isoDate;
+  return date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "2-digit",
+  });
+}
+
+export default function Webinars(): JSX.Element {
+  const [activeTab, setActiveTab] = useState<WebinarType>("upcoming");
   const [selectedTopic, setSelectedTopic] = useState("All");
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [email, setEmail] = useState("");
   const [webinars, setWebinars] = useState<Webinar[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchWebinars = async () => {
+    let cancelled = false;
+    const load = async () => {
       setLoading(true);
       setError(null);
       try {
-        const { data, error: fetchError } = await supabase
-          .from("webinars")
-          .select("*")
-          .order("date", { ascending: activeTab === "upcoming" });
-
-        if (fetchError) {
-          throw fetchError;
+        const res = await fetch("/data/webinars.json", { cache: "no-store" });
+        if (!res.ok) throw new Error(`Failed to load webinars.json (${res.status})`);
+        const data = (await res.json()) as Webinar[];
+        if (!cancelled) setWebinars(Array.isArray(data) ? data : []);
+      } catch (e: unknown) {
+        if (!cancelled) {
+          console.error("Webinars load error:", e);
+          setError("Could not load webinars data.");
         }
-        setWebinars(data || []);
-      } catch (err: unknown) {
-        setError("Failed to fetch webinars. Please try again later.");
-        console.error("Fetch Webinars Error:", err);
       } finally {
-        setTimeout(() => setLoading(false), 500);
+        if (!cancelled) setLoading(false);
       }
     };
-
-    fetchWebinars();
-  }, [activeTab]);
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const filteredWebinars = useMemo(() => {
-    return webinars.filter((webinar) => {
-      const matchesType = webinar.type === activeTab;
-      const matchesTopic =
-        selectedTopic === "All" || webinar.topic === selectedTopic;
-      return matchesType && matchesTopic;
-    });
+    return webinars
+      .filter((w) => w.type === activeTab)
+      .filter((w) => selectedTopic === "All" || w.topic === selectedTopic)
+      .sort((a, b) => {
+        const aTs = new Date(`${a.date}T${a.time || "00:00"}:00`).getTime();
+        const bTs = new Date(`${b.date}T${b.time || "00:00"}:00`).getTime();
+        return activeTab === "upcoming" ? aTs - bTs : bTs - aTs;
+      });
   }, [activeTab, selectedTopic, webinars]);
-
-  const handleSubscribe = () => {
-    if (email && email.includes("@")) {
-      setIsSubscribed(true);
-      setEmail("");
-      setTimeout(() => setIsSubscribed(false), 3000);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50 dark:from-slate-950 dark:via-blue-950/30 dark:to-indigo-950">
-        {/* Background blobs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse" />
-          <div
-            className="absolute bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/15 to-cyan-400/15 rounded-full blur-3xl animate-pulse"
-            style={{ animationDelay: "2s" }}
-          />
-        </div>
-        <div className="relative container mx-auto px-4 py-16 md:py-24">
-          {/* Header Section */}
-          <div className="text-center mb-16 md:mb-24">
-            <div className="inline-flex justify-center items-center px-6 py-2 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 border border-blue-200/50 dark:border-blue-700/50 text-blue-700 dark:text-blue-300 text-sm font-semibold mb-8 shadow-lg backdrop-blur-sm">
-              <VideoCameraIcon className="w-5 h-5 mr-2" />
-              <span>Educational Webinars</span>
-              <div className="ml-2 w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
-            </div>
-            <h1 className="text-6xl md:text-7xl font-black mb-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 dark:from-blue-400 dark:via-indigo-400 dark:to-blue-500 bg-clip-text text-transparent leading-tight">
-              Medical Webinars
-            </h1>
-            <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed font-light">
-              Join leading healthcare professionals and experts in cutting-edge
-              medical technology discussions
-            </p>
-          </div>
-          {/* Tabs and Filter */}
-          <div className="mb-12">
-            <div className="flex flex-col lg:flex-row gap-6 items-center justify-between mb-8">
-              <div className="flex bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl p-1.5 shadow-2xl border border-blue-100/50 dark:border-slate-700/50">
-                <button
-                  onClick={() => setActiveTab("upcoming")}
-                  className={`px-8 py-4 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden ${
-                    activeTab === "upcoming"
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xl shadow-blue-500/30 transform scale-105"
-                      : "text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-700/50"
-                  }`}
-                >
-                  <Calendar className="w-5 h-5 inline mr-2" />
-                  Upcoming
-                </button>
-                <button
-                  onClick={() => setActiveTab("past")}
-                  className={`px-8 py-4 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden ${
-                    activeTab === "past"
-                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xl shadow-blue-500/30 transform scale-105"
-                      : "text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-700/50"
-                  }`}
-                >
-                  <PlayCircle className="w-5 h-5 inline mr-2" />
-                  Past Recordings
-                </button>
-              </div>
-              <div className="flex items-center gap-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl px-6 py-4 shadow-xl border border-blue-100/50 dark:border-slate-700/50">
-                <Filter className="w-5 h-5 text-blue-500 dark:text-blue-400" />
-                <select
-                  value={selectedTopic}
-                  onChange={(e) => setSelectedTopic(e.target.value)}
-                  className="bg-transparent border-none outline-none text-slate-700 dark:text-slate-200 font-medium cursor-pointer"
-                >
-                  {TOPICS.map((topic) => (
-                    <option
-                      key={topic}
-                      value={topic}
-                      className="bg-white dark:bg-slate-800"
-                    >
-                      {topic}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-          {/* Skeleton Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {[...Array(6)].map((_, i) => (
-              <WebinarCardSkeleton key={i} />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return <div className="text-center py-16 text-red-500">{error}</div>;
-  }
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50 dark:from-slate-950 dark:via-blue-950/30 dark:to-indigo-950">
-      {/* Background Blobs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl animate-pulse" />
-        <div
-          className="absolute bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/15 to-cyan-400/15 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "2s" }}
-        />
-        <div
-          className="absolute top-1/3 right-1/4 w-64 h-64 bg-gradient-to-br from-indigo-400/10 to-purple-400/10 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "4s" }}
-        />
-        <div
-          className="absolute bottom-1/4 left-1/3 w-48 h-48 bg-gradient-to-br from-cyan-400/10 to-blue-400/10 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "6s" }}
-        />
-        <div
-          className="absolute top-20 left-20 w-2 h-2 bg-blue-400/60 rounded-full animate-bounce"
-          style={{ animationDelay: "1s" }}
-        />
-        <div
-          className="absolute top-40 right-32 w-1 h-1 bg-indigo-400/60 rounded-full animate-bounce"
-          style={{ animationDelay: "3s" }}
-        />
-        <div
-          className="absolute bottom-32 left-40 w-3 h-3 bg-cyan-400/60 rounded-full animate-bounce"
-          style={{ animationDelay: "5s" }}
-        />
-      </div>
-
-      <div className="relative container mx-auto px-4 py-16 md:py-24">
-        {/* Header Section */}
-        <div className="text-center mb-16 md:mb-24">
-          <div className="inline-flex justify-center items-center px-6 py-2 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 border border-blue-200/50 dark:border-blue-700/50 text-blue-700 dark:text-blue-300 text-sm font-semibold mb-8 shadow-lg backdrop-blur-sm">
+      <div className="relative container mx-auto px-4 py-16 md:py-20">
+        <div className="text-center mb-10 md:mb-14">
+          <div className="inline-flex justify-center items-center px-6 py-2 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 border border-blue-200/50 dark:border-blue-700/50 text-blue-700 dark:text-blue-300 text-sm font-semibold mb-6 shadow-lg backdrop-blur-sm">
             <VideoCameraIcon className="w-5 h-5 mr-2" />
             <span>Educational Webinars</span>
-            <div className="ml-2 w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
           </div>
-          <h1 className="text-6xl md:text-7xl font-black mb-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 dark:from-blue-400 dark:via-indigo-400 dark:to-blue-500 bg-clip-text text-transparent leading-tight">
+          <h1 className="text-4xl md:text-6xl font-black mb-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 dark:from-blue-400 dark:via-indigo-400 dark:to-blue-500 bg-clip-text text-transparent leading-tight">
             Medical Webinars
           </h1>
-          <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed font-light">
-            Join leading healthcare professionals and experts in cutting-edge
-            medical technology discussions
+          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed font-light">
+            Curated sessions for clinicians, students, and builders in health-tech.
           </p>
-          <div className="flex justify-center items-center gap-8 mt-12">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-                25+
-              </div>
-              <div className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-                Expert Speakers
-              </div>
-            </div>
-            <div className="w-px h-12 bg-slate-200 dark:bg-slate-700" />
-            <div className="text-center">
-              <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">
-                10K+
-              </div>
-              <div className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-                Participants
-              </div>
-            </div>
-            <div className="w-px h-12 bg-slate-200 dark:bg-slate-700" />
-            <div className="text-center">
-              <div className="text-3xl font-bold text-cyan-600 dark:text-cyan-400">
-                4.8★
-              </div>
-              <div className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-                Average Rating
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* Tabs and Filter */}
-        <div className="mb-12">
-          <div className="flex flex-col lg:flex-row gap-6 items-center justify-between mb-8">
-            <div className="flex bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl p-1.5 shadow-2xl border border-blue-100/50 dark:border-slate-700/50">
+        <div className="bg-white/80 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-4 md:p-5 shadow-xl shadow-black/5 backdrop-blur-sm mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-center gap-2">
               <button
                 onClick={() => setActiveTab("upcoming")}
-                className={`px-8 py-4 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden ${
+                className={`px-4 py-2 rounded-xl font-semibold transition-colors ${
                   activeTab === "upcoming"
-                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xl shadow-blue-500/30 transform scale-105"
-                    : "text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-700/50"
+                    ? "bg-blue-600 text-white"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700"
                 }`}
               >
-                <Calendar className="w-5 h-5 inline mr-2" />
                 Upcoming
-                {activeTab === "upcoming" && (
-                  <motion.div
-                    layoutId="webinarTabIndicator"
-                    className="absolute inset-0 bg-white/20 rounded-xl"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
               </button>
               <button
                 onClick={() => setActiveTab("past")}
-                className={`px-8 py-4 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden ${
+                className={`px-4 py-2 rounded-xl font-semibold transition-colors ${
                   activeTab === "past"
-                    ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xl shadow-blue-500/30 transform scale-105"
-                    : "text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-700/50"
+                    ? "bg-blue-600 text-white"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700"
                 }`}
               >
-                <PlayCircle className="w-5 h-5 inline mr-2" />
-                Past Recordings
-                {activeTab === "past" && (
-                  <motion.div
-                    layoutId="webinarTabIndicator"
-                    className="absolute inset-0 bg-white/20 rounded-xl"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
+                Past
               </button>
             </div>
 
-            <div className="flex items-center gap-4 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-2xl px-6 py-4 shadow-xl border border-blue-100/50 dark:border-slate-700/50">
-              <Filter className="w-5 h-5 text-blue-500 dark:text-blue-400" />
+            <div className="flex items-center gap-3">
+              <div className="hidden md:flex items-center text-slate-600 dark:text-slate-300">
+                <Filter className="w-4 h-4 mr-2" />
+                <span className="text-sm font-medium">Topic</span>
+              </div>
               <select
                 value={selectedTopic}
                 onChange={(e) => setSelectedTopic(e.target.value)}
-                className="bg-transparent border-none outline-none text-slate-700 dark:text-slate-200 font-medium cursor-pointer"
+                className="w-full md:w-72 px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
               >
-                {TOPICS.map((topic) => (
-                  <option
-                    key={topic}
-                    value={topic}
-                    className="bg-white dark:bg-slate-800"
-                  >
-                    {topic}
+                {TOPICS.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
                   </option>
                 ))}
               </select>
@@ -321,209 +150,121 @@ export default function Webinars() {
           </div>
         </div>
 
-        {/* Webinar Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {filteredWebinars.length > 0 ? (
-            filteredWebinars.map((webinar, index) => (
+        {error ? (
+          <div className="text-center py-10 text-red-600 dark:text-red-400">
+            {error}
+          </div>
+        ) : loading ? (
+          <div className="text-center py-10 text-slate-600 dark:text-slate-300">
+            Loading webinars…
+          </div>
+        ) : filteredWebinars.length === 0 ? (
+          <div className="text-center py-12 text-slate-600 dark:text-slate-300">
+            No {activeTab} webinars found for this topic.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {filteredWebinars.map((webinar, index) => (
               <motion.div
                 key={webinar.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`group relative bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl rounded-3xl border shadow-2xl hover:shadow-3xl transition-all duration-500 hover:-translate-y-2 overflow-hidden ${
-                  webinar.featured
-                    ? "border-gradient-to-r from-blue-200 to-indigo-200 dark:from-blue-700 dark:to-indigo-700 ring-2 ring-blue-500/20 dark:ring-blue-400/20"
-                    : "border-blue-100/50 dark:border-slate-700/50"
-                }`}
+                transition={{ duration: 0.35, delay: index * 0.04 }}
+                className="group bg-white/90 dark:bg-slate-900/70 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 shadow-xl shadow-black/5 overflow-hidden backdrop-blur-sm"
               >
-                {webinar.featured && (
-                  <div className="absolute top-4 left-4 z-10 flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 text-white text-xs font-bold shadow-lg">
-                    <TrophyIcon className="w-3 h-3" />
-                    <span>Featured</span>
-                  </div>
-                )}
-                <div className="relative overflow-hidden h-56">
+                <div className="relative h-44 bg-slate-100 dark:bg-slate-800 overflow-hidden">
                   <img
                     src={webinar.thumbnail}
                     alt={webinar.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                    loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                  <div className="absolute top-4 right-4">
-                    <span
-                      className={`px-3 py-1.5 rounded-full text-xs font-bold backdrop-blur-sm border ${
-                        webinar.type === "upcoming"
-                          ? "bg-emerald-500/90 text-white border-emerald-400/50 shadow-lg shadow-emerald-500/30"
-                          : "bg-blue-500/90 text-white border-blue-400/50 shadow-lg shadow-blue-500/30"
-                      }`}
-                    >
-                      {webinar.type === "upcoming" ? "Upcoming" : "Recording"}
-                    </span>
-                  </div>
-                  {webinar.type === "past" && (
-                    <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                      {webinar.attendees && (
-                        <div className="flex items-center gap-1 text-white text-sm font-medium bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full">
-                          <UserGroupIcon className="w-4 h-4" />
-                          <span>{webinar.attendees.toLocaleString()}</span>
-                        </div>
-                      )}
-                      {webinar.rating && (
-                        <div className="flex items-center gap-1 text-white text-sm font-medium bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full">
-                          <StarIcon className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                          <span>{webinar.rating}</span>
-                        </div>
-                      )}
+                  {webinar.featured ? (
+                    <div className="absolute top-3 left-3 text-xs font-semibold px-3 py-1 rounded-full bg-blue-600 text-white shadow-lg">
+                      Featured
                     </div>
-                  )}
-                </div>
-                <div className="p-8">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 text-blue-700 dark:text-blue-300 text-xs font-bold border border-blue-200/50 dark:border-blue-700/50">
-                      {webinar.topic}
-                    </span>
+                  ) : null}
+                  <div className="absolute top-3 right-3 text-xs font-semibold px-3 py-1 rounded-full bg-black/50 text-white backdrop-blur-sm">
+                    {webinar.topic}
                   </div>
-                  <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300 leading-tight">
+                </div>
+
+                <div className="p-5">
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-snug mb-2">
                     {webinar.title}
                   </h3>
-                  <p className="text-slate-600 dark:text-slate-300 text-sm mb-6 leading-relaxed line-clamp-3">
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 line-clamp-3">
                     {webinar.description}
                   </p>
-                  <div className="space-y-3 mb-8">
-                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm">
-                      <AcademicCapIcon className="w-4 h-4 text-blue-500" />
-                      <span className="font-medium">
-                        {Array.isArray(webinar.speakers)
-                          ? webinar.speakers.join(", ")
-                          : webinar.speakers}
+
+                  <div className="grid grid-cols-2 gap-3 text-sm text-slate-700 dark:text-slate-200 mb-5">
+                    <div className="flex items-center">
+                      <CalendarDaysIcon className="w-5 h-5 mr-2 text-blue-600 dark:text-blue-400" />
+                      <span>{formatWebinarDate(webinar.date)}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <ClockIcon className="w-5 h-5 mr-2 text-indigo-600 dark:text-indigo-400" />
+                      <span>
+                        {webinar.time} • {webinar.duration}
                       </span>
                     </div>
-                    <div className="flex items-center gap-4 text-slate-500 dark:text-slate-400 text-sm">
-                      <div className="flex items-center gap-1">
-                        <CalendarDaysIcon className="w-4 h-4 text-indigo-500" />
-                        <span className="font-medium">
-                          {new Date(webinar.date).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <ClockIcon className="w-4 h-4 text-cyan-500" />
-                        <span className="font-medium">
-                          {webinar.time} • {webinar.duration}
-                        </span>
-                      </div>
+                    <div className="flex items-center col-span-2">
+                      <UserGroupIcon className="w-5 h-5 mr-2 text-emerald-600 dark:text-emerald-400" />
+                      <span>
+                        {webinar.speakers.join(", ")}
+                        {typeof webinar.attendees === "number"
+                          ? ` • ${webinar.attendees} attendees`
+                          : ""}
+                      </span>
                     </div>
                   </div>
-                  {webinar.type === "upcoming" ? (
-                    <a
-                      href={webinar.registration_link || "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group/btn w-full inline-flex items-center justify-center px-6 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105 relative overflow-hidden"
-                    >
-                      <CalendarDaysIcon className="w-5 h-5 mr-2 group-hover/btn:animate-bounce" />
-                      Register Now
-                      <div className="absolute inset-0 bg-white/10 translate-x-full group-hover/btn:translate-x-0 transition-transform duration-500" />
-                    </a>
-                  ) : (
-                    <a
-                      href={webinar.recording_link || "#"}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group/btn w-full inline-flex items-center justify-center px-6 py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-bold shadow-xl shadow-emerald-500/30 hover:shadow-2xl hover:shadow-emerald-500/40 transition-all duration-300 transform hover:scale-105 relative overflow-hidden"
-                    >
-                      <PlayCircleIcon className="w-5 h-5 mr-2 group-hover/btn:animate-pulse" />
-                      Watch Recording
-                      <div className="absolute inset-0 bg-white/10 translate-x-full group-hover/btn:translate-x-0 transition-transform duration-500" />
-                    </a>
-                  )}
+
+                  <div className="flex items-center justify-between gap-3">
+                    {webinar.type === "upcoming" ? (
+                      <a
+                        href={webinar.registration_link || "#"}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={`inline-flex items-center justify-center px-4 py-2 rounded-xl font-semibold w-full transition-colors ${
+                          webinar.registration_link
+                            ? "bg-blue-600 hover:bg-blue-700 text-white"
+                            : "bg-slate-200 dark:bg-slate-800 text-slate-500 cursor-not-allowed"
+                        }`}
+                        aria-disabled={!webinar.registration_link}
+                        onClick={(e) => {
+                          if (!webinar.registration_link) e.preventDefault();
+                        }}
+                      >
+                        Register
+                        <ExternalLink className="w-4 h-4 ml-2" />
+                      </a>
+                    ) : (
+                      <a
+                        href={webinar.recording_link || "#"}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={`inline-flex items-center justify-center px-4 py-2 rounded-xl font-semibold w-full transition-colors ${
+                          webinar.recording_link
+                            ? "bg-indigo-600 hover:bg-indigo-700 text-white"
+                            : "bg-slate-200 dark:bg-slate-800 text-slate-500 cursor-not-allowed"
+                        }`}
+                        aria-disabled={!webinar.recording_link}
+                        onClick={(e) => {
+                          if (!webinar.recording_link) e.preventDefault();
+                        }}
+                      >
+                        Watch
+                        <PlayCircle className="w-4 h-4 ml-2" />
+                      </a>
+                    )}
+                  </div>
                 </div>
               </motion.div>
-            ))
-          ) : (
-            <div className="col-span-full text-center py-16 text-gray-500 dark:text-gray-400">
-              No {activeTab} webinars found{" "}
-              {selectedTopic !== "All" ? `for "${selectedTopic}"` : ""}.
-            </div>
-          )}
-        </div>
-
-        {/* Subscription Section */}
-        <div className="max-w-4xl mx-auto">
-          <div className="relative bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-slate-800/90 dark:to-slate-900/90 backdrop-blur-xl rounded-3xl border border-blue-100/50 dark:border-slate-700/50 p-12 md:p-16 shadow-3xl overflow-hidden">
-            <div className="absolute inset-0 opacity-5">
-              <div className="absolute top-10 left-10 w-32 h-32 border-2 border-blue-500 rounded-full" />
-              <div className="absolute bottom-10 right-10 w-24 h-24 border-2 border-indigo-500 rounded-full" />
-            </div>
-
-            <div className="relative z-10 text-center mb-10">
-              <div className="inline-flex justify-center items-center w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/50 dark:to-indigo-900/50 mb-6 shadow-xl">
-                <BellIcon className="w-10 h-10 text-blue-600 dark:text-blue-400 animate-pulse" />
-              </div>
-              <h2 className="text-4xl md:text-5xl font-black text-slate-800 dark:text-white mb-6 bg-gradient-to-r from-blue-700 to-indigo-700 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                Stay Updated
-              </h2>
-              <p className="text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
-                Subscribe to receive notifications about upcoming webinars and
-                exclusive medical content
-              </p>
-            </div>
-
-            <div className="max-w-xl mx-auto px-4">
-              <div className="flex flex-col sm:flex-row gap-4 items-stretch">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email address"
-                  className="w-full sm:w-96 px-6 py-4 rounded-2xl border border-blue-200/50 dark:border-slate-600/50 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-lg font-medium shadow-lg"
-                />
-                <button
-                  onClick={handleSubscribe}
-                  className="w-full sm:w-auto group px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold shadow-xl shadow-blue-500/30 hover:shadow-2xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center relative overflow-hidden"
-                  disabled={isSubscribed || !email || !email.includes("@")}
-                >
-                  {isSubscribed ? (
-                    <>
-                      <CheckIcon className="w-6 h-6 mr-2 animate-bounce" />
-                      Subscribed!
-                    </>
-                  ) : (
-                    <>
-                      <BellIcon className="w-6 h-6 mr-2 group-hover:animate-pulse" />
-                      Subscribe
-                    </>
-                  )}
-                  <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                </button>
-              </div>
-            </div>
-
-            {isSubscribed && (
-              <div className="mt-6 text-center text-emerald-600 dark:text-emerald-400 font-bold text-lg animate-pulse">
-                🎉 Thank you for subscribing! You'll receive updates about
-                future webinars.
-              </div>
-            )}
+            ))}
           </div>
-        </div>
-
-        {/* Decorative elements */}
-        <div className="relative pointer-events-none">
-          <div className="absolute top-20 left-10 opacity-20 animate-float">
-            <VideoCameraIcon className="w-20 h-20 text-blue-400 dark:text-blue-600" />
-          </div>
-          <div
-            className="absolute bottom-20 right-10 opacity-20 rotate-12 animate-float"
-            style={{ animationDelay: "2s" }}
-          >
-            <AcademicCapIcon className="w-24 h-24 text-indigo-400 dark:text-indigo-600" />
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
 }
+

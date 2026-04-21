@@ -28,6 +28,8 @@ Please provide clear and concise steps to test your changes locally.
 2.
 3.
 
+If you had to set up Supabase/env vars for testing, reference `SETUP.md`.
+
 ---
 
 ### Screenshots / GIFs (if applicable)
@@ -41,6 +43,7 @@ If your PR includes UI changes, please provide screenshots or a GIF to showcase 
 Please check all boxes that apply.
 - [ ] My PR references an existing issue.
 - [ ] My branch name follows the project's naming conventions (e.g., `fix/login-bug` or `feature/new-button`).
-- [ ] I have formatted my code correctly.
-- [ ] I have tested my changes locally and they work as expected.
+- [ ] I ran `npm run lint` and fixed any issues.
+- [ ] I ran `npm run build` successfully.
+- [ ] I tested my changes locally (`npm run dev`) and they work as expected.
 - [ ] I have updated the documentation if necessary.

@@ -15,6 +15,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../services/supabaseClient";
 import ProfileSkeleton from "../components/profile/ProfileSkeleton";
+import LocalStorageService from "../services/LocalStorageService";
 
 interface ProfileData {
   full_name: string;
@@ -178,28 +179,28 @@ export default function Profile(): JSX.Element {
     };
 
     const fetchSymptomData = async () => {
-      if (currentUser) {
-        const { data, error } = await supabase
-          .from("symptoms")
-          .select("created_at, symptoms_input, result, severity")
-          .eq("user_id", currentUser.id)
-          .order("created_at", { ascending: false });
+      const history = LocalStorageService.getSymptomHistory();
+      const formattedData: SymptomData[] = history.map((entry) => {
+        const severity =
+          entry.result.urgency ??
+          (entry.result.severity >= 8
+            ? "emergency"
+            : entry.result.severity >= 4
+              ? "moderate"
+              : "mild");
 
-        if (error) {
-          console.error("Error fetching symptom data:", error);
-          if (error.code !== "PGRST116" && error.code !== "42P01") {
-            toast.error("Could not fetch symptom history.");
-          }
-        } else if (data) {
-          const formattedData = data.map((item) => ({
-            date: new Date(item.created_at).toLocaleDateString(),
-            input: item.symptoms_input || "N/A",
-            result: item.result || "N/A",
-            severity: item.severity || "N/A",
-          }));
-          setSymptomData(formattedData);
-        }
-      }
+        const topCondition =
+          entry.result.possibleConditions?.[0]?.name ?? "N/A";
+
+        return {
+          date: new Date(entry.date).toLocaleDateString(),
+          input: entry.symptoms || "N/A",
+          result: topCondition,
+          severity,
+        };
+      });
+
+      setSymptomData(formattedData);
     };
 
     Promise.all([fetchProfile(), fetchSymptomData()]).then(() => {

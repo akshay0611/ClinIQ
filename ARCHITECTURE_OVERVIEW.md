@@ -4,6 +4,8 @@
 
 ClinIQ follows a modern **JAMstack architecture** with a React frontend, Supabase backend, and AI integration through Google's Gemini API. The system is designed for scalability, security, and real-time data synchronization.
 
+> **Note:** The canonical local setup steps live in `SETUP.md`. The only required Supabase tables for ClinIQ are `profiles` and `doctor_profiles`.
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                      Client Layer                           │
@@ -38,7 +40,7 @@ ClinIQ follows a modern **JAMstack architecture** with a React frontend, Supabas
 **Symptom Checker:**
 ```
 User Input → React Component → Gemini API → AI Analysis → 
-Display Results → Store in Supabase (symptoms table) → Update UI
+Display Results → Update UI
 ```
 
 **Doctor Discovery:**
@@ -48,27 +50,18 @@ Filter by specialization/location → Display cards →
 Click → Navigate to doctor profile page
 ```
 
-**Appointment Booking:**
-```
-Select Doctor → Choose Date/Time → Submit Form → 
-Insert into appointments table → Trigger email notification → 
-Update doctor's availability → Redirect to confirmation
-```
-
 **Role-Based Dashboards:**
 ```
 Login → Fetch user role from profiles table → 
 Conditional rendering (Patient vs Doctor UI) → 
-Load role-specific data (symptoms/appointments) → Display dashboard
+Load role-specific data → Display dashboard
 ```
 
 ## Database Schema
 
 ### Core Tables
-- **`profiles`**: User base info (name, email, role, medical data)
+- **`profiles`**: User base info (name, role, medical metadata)
 - **`doctor_profiles`**: Doctor-specific data (specialization, fees, qualifications)
-- **`appointments`**: Booking records (patient_id, doctor_id, date, status)
-- **`symptoms`**: Symptom check history (user_id, input, result, severity)
 
 ### Security
 - **Row Level Security (RLS)**: Users can only access their own data
@@ -79,9 +72,7 @@ Load role-specific data (symptoms/appointments) → Display dashboard
 
 ### Supabase REST API
 - **GET** `/profiles?id=eq.{userId}` - Fetch user profile
-- **POST** `/appointments` - Create appointment
 - **GET** `/doctor_profiles?specialization=eq.{spec}` - Search doctors
-- **POST** `/symptoms` - Save symptom check results
 
 ### External APIs
 - **Gemini AI API**: POST requests with symptom descriptions, returns diagnosis suggestions

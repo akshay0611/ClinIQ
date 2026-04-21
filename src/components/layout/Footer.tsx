@@ -205,9 +205,9 @@ const Footer: React.FC = () => {
                 { name: "Health Blog", path: "/health-blog" },
                 { name: "Medical Dictionary", path: "/medical-dictionary" },
                 { name: "Drug Database", path: "/drug-database" },
+                { name: "Webinars", path: "/webinars" },
                 { name: "Research Papers", path: "/research-papers" },
                 { name: "First Aid Guides", path: "/first-aid-guides" },
-                { name: "Webinars", path: "/webinars" }
               ].map((link, index) => (
                 <motion.li
                   key={index}
