@@ -11,6 +11,19 @@ ClinIQ is an innovative open-source health-tech platform that leverages AI to pr
 
 ---
 
+## ⭐ Community Support
+
+Before claiming an issue or submitting a pull request, contributors are encouraged to:
+
+- ⭐ Star this repository
+- 👀 Follow the maintainer on GitHub: https://github.com/akshay0611
+- 🍴 Fork the repository
+- 📖 Read CONTRIBUTING.md
+
+These actions help the project grow, reach more developers, and keep contributors updated on future improvements.
+
+---
+
 ## 🚀 Live Demo
 
 [🔗 Visit ClinIQ](https://cliniq-iota.vercel.app/)
