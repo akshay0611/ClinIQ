@@ -1,36 +1,52 @@
+<div align="center">
+
 # ClinIQ – AI-Powered Health Platform
 
-[![CI](https://github.com/aksh-g/ClinIQ/actions/workflows/ci.yml/badge.svg)](https://github.com/aksh-g/ClinIQ/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Live Demo](https://img.shields.io/badge/demo-live-success.svg)](https://cliniq-iota.vercel.app/)
+### Intelligent Symptom Analysis & Doctor Discovery for Everyone
 
-ClinIQ is an innovative open-source health-tech platform that leverages AI to provide accurate symptom analysis and doctor discovery—all in one place. Our goal is to make healthcare more accessible and user-friendly for everyone.
+[![CI](https://img.shields.io/badge/CI-Passing-00e5ff?style=for-the-badge&logo=githubactions&logoColor=black)](https://github.com/aksh-g/ClinIQ/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live%20Preview-Visit%20Site-00e5ff?style=for-the-badge&logo=vercel&logoColor=black)](https://cliniq-iota.vercel.app/)
+[![Issues](https://img.shields.io/badge/Open%20Issues-Contribute-ff66c4?style=for-the-badge&logo=github&logoColor=black)](https://github.com/aksh-g/ClinIQ/issues)
+[![Contributing](https://img.shields.io/badge/Guide-CONTRIBUTING.md-7dff6b?style=for-the-badge&logo=bookstack&logoColor=black)](./CONTRIBUTING.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
-> **Note:** This project was successfully launched during Hacktoberfest 2025 and continues to welcome contributions from the open-source community.
+</div>
+
+<div align="center">
+
+![React](https://img.shields.io/badge/React.js-0b0f1a?style=flat-square&logo=react&logoColor=6cf2ff)
+![TypeScript](https://img.shields.io/badge/TypeScript-0b0f1a?style=flat-square&logo=typescript&logoColor=6cf2ff)
+![Tailwind](https://img.shields.io/badge/Tailwind_CSS-0b0f1a?style=flat-square&logo=tailwindcss&logoColor=6cf2ff)
+![Supabase](https://img.shields.io/badge/Supabase-0b0f1a?style=flat-square&logo=supabase&logoColor=7dff6b)
+![Vite](https://img.shields.io/badge/Vite-0b0f1a?style=flat-square&logo=vite&logoColor=ff7cd8)
+![ELUSOC](https://img.shields.io/badge/ELUSOC_2026-0b0f1a?style=flat-square&logo=gamejolt&logoColor=ffd166)
+
+</div>
 
 ---
 
-## ⭐ Community Support
+## 🩺 `// CLINIQ :: MISSION BRIEF`
 
-Before claiming an issue or submitting a pull request, contributors are encouraged to:
+ClinIQ is an innovative open-source health-tech platform that leverages AI to provide accurate symptom analysis and doctor discovery—all in one place. Our goal is to make healthcare more accessible and user-friendly for everyone.
+
+> `ELUSOC 2026 Official Project`: This repo is officially selected and actively maintained for open-source collaboration.
+
+---
+
+## ⭐ `// CONTRIBUTOR CHECKPOINT`
+
+Before claiming an issue or submitting a PR, contributors are expected to:
 
 - ⭐ Star this repository
 - 👀 Follow the maintainer on GitHub: https://github.com/akshay0611
 - 🍴 Fork the repository
 - 📖 Read CONTRIBUTING.md
 
-These actions help the project grow, reach more developers, and keep contributors updated on future improvements.
+These steps help support the project and keep contributors informed about updates and announcements.
 
 ---
 
-## 🚀 Live Demo
-
-[🔗 Visit ClinIQ](https://cliniq-iota.vercel.app/)
-
----
-
-## 📸 Screenshots
+## 📸 `// SCREENSHOTS`
 
 **Homepage:**
 ![Home Page](./public/cliniqhome.png)
@@ -40,13 +56,13 @@ These actions help the project grow, reach more developers, and keep contributor
 
 ---
 
-## 💡 The Problem
+## 💡 `// THE PROBLEM`
 
 Millions face delays and confusion when accessing healthcare. Getting a preliminary understanding of symptoms can be difficult, and finding the right specialist is often a challenge.
 
-## 🩺 Our Solution
+---
 
-ClinIQ addresses these challenges by providing:
+## ✨ `// FEATURE LOADOUT`
 
 - 🧠 **AI Symptom Checker:** Get instant, personalized health insights.
 - 👩‍⚕️ **Doctor Directory:** Find verified specialists by expertise.
@@ -56,11 +72,20 @@ ClinIQ addresses these challenges by providing:
 
 ---
 
-## 🚀 Getting Started
+## 🧱 `// TECH STACK`
 
-ClinIQ is a Vite + React + TypeScript app. Supabase is required for auth + profiles.
+| Layer    | Technologies                                      |
+| :------- | :------------------------------------------------ |
+| Frontend | React.js, TypeScript, Tailwind CSS, Framer Motion |
+| Backend  | Supabase                                          |
+| Database | Supabase (PostgreSQL)                             |
+| AI API   | Gemini API                                        |
 
-### Quickstart
+📐 **[View Full Architecture Overview →](./ARCHITECTURE_OVERVIEW.md)**
+
+---
+
+## 🚀 `// CONTRIBUTOR START (10 MIN QUEST)`
 
 ```sh
 git clone https://github.com/YOUR_USERNAME/ClinIQ.git
@@ -72,34 +97,35 @@ npm run dev
 
 Then open `http://localhost:5173`.
 
-### Full local setup guide
-
-See `SETUP.md` for:
-
-- Supabase project setup + required SQL
-- Required vs optional environment variables
-- Troubleshooting and FAQs
+For complete setup and troubleshooting: [SETUP.md](./SETUP.md)
 
 ### 🗄️ Database Setup (Supabase)
 
-ClinIQ uses Supabase for authentication and core data. To set up the database:
+1. Create a free project on [Supabase](https://supabase.com/).
+2. Go to the **SQL Editor** in your Supabase dashboard.
+3. Copy the content of `supabase/schema.sql` and run it to create the **core tables** + policies.
+4. Get your `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from **Project Settings > API** and add them to your `.env` file.
 
-1.  Create a free project on [Supabase](https://supabase.com/).
-2.  Go to the **SQL Editor** in your Supabase dashboard.
-3.  Copy the content of `supabase/schema.sql` and run it to create the **core tables** + policies.
-4.  Get your `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from **Project Settings > API** and add them to your `.env` file.
-
-Notes:
-
-- `VITE_GEMINI_API_KEY` is optional (symptom checker can fall back to mock results).
-
-Open [http://localhost:5173](http://localhost:5173) in your browser to view the app.
+> `VITE_GEMINI_API_KEY` is optional — the symptom checker falls back to mock results without it.
 
 ---
 
-## 👨‍💼 Project Leadership
+## 🏆 `// ELUSOC 2026 :: CONTRIBUTION TIERS (PROJECT GUIDANCE)`
 
-As **Project Admin** during **Hacktoberfest 2025**, I spearheaded both the technical development and community growth of ClinIQ. Here's what that looked like:
+> These tiers are **project guidance** for onboarding and issue complexity.  
+> They are not official ELUSOC points/rank rules.
+
+| Tier | Focus Area | Typical Tasks |
+|---|---|---|
+| 🟩 **Beginner** | First contributions | README/docs updates, typo fixes, small UI polish |
+| 🟦 **Intermediate** | Feature and bug work | Component improvements, bug fixes, API/UI refinements |
+| 🟪 **Advanced** | System-level changes | Architecture refactors, performance work, deeper integrations |
+
+---
+
+## 👨‍💼 `// PROJECT LEADERSHIP`
+
+As **Project Admin** during **Hacktoberfest 2025** and **ELUSOC 2026**, I spearheaded both the technical development and community growth of ClinIQ.
 
 ### 🏗️ Technical Contributions
 - **Full-Stack Architecture:** Designed and built the entire system using React, TypeScript, Supabase, and Gemini AI—from database schema to UI components
@@ -108,84 +134,62 @@ As **Project Admin** during **Hacktoberfest 2025**, I spearheaded both the techn
 - **UI/UX Development:** Created responsive, accessible interfaces with Tailwind CSS and smooth animations using Framer Motion
 
 ### 🤝 Community & Project Management
-- **Open Source Leadership:** Managed issues and pull requests during Hacktoberfest, maintaining code quality while welcoming diverse contributions from the community
+- **Open Source Leadership:** Managed issues and pull requests, maintaining code quality while welcoming diverse contributions from the community
 - **Contributor Support:** Mentored developers (including first-time contributors) through code reviews, issue discussions, and technical guidance
 - **Documentation:** Wrote clear setup guides, contributing guidelines, and inline code documentation to lower the barrier for new contributors
 - **Deployment & DevOps:** Set up CI/CD pipeline and production deployment, ensuring the platform is accessible to real users
 
-### 🎯 Impact
-This project taught me how to balance technical excellence with community building—writing clean, maintainable code while fostering an inclusive environment for contributors of all skill levels. The result is a production-ready healthcare platform that's both technically sound and community-driven.
-
 ---
 
-## 🤝 Contributing
+## 🤝 `// CONTRIBUTING`
 
-We welcome contributions from developers of all skill levels! Whether you're fixing bugs, adding features, or improving documentation, your help makes ClinIQ better.
+We welcome contributors of all levels.  
+Start with open issues, claim one, and submit a focused PR with clean commit history.
 
-Please read our [**CONTRIBUTING.md**](CONTRIBUTING.md) for detailed instructions.
-
-### How to Contribute
-
-1. **Fork the repository** and create a new branch for your feature/fix
-2. **Make your changes** following our code style and conventions
-3. **Test thoroughly** to ensure nothing breaks
-4. **Submit a pull request** with a clear description of your changes
-5. **Respond to feedback** from maintainers during code review
+- Contribution guide: [CONTRIBUTING.md](./CONTRIBUTING.md)
+- Issues board: [GitHub Issues](https://github.com/aksh-g/ClinIQ/issues)
 
 ### Branch Naming Convention
 
-- `feature/feature-name` - For new features
-- `fix/bug-description` - For bug fixes
-- `docs/update-description` - For documentation updates
-- `refactor/component-name` - For code refactoring
+- `feature/feature-name` — For new features
+- `fix/bug-description` — For bug fixes
+- `docs/update-description` — For documentation updates
+- `refactor/component-name` — For code refactoring
 
 ### Issue Labels
 
-- `good first issue`: Ideal for newcomers.  
-- `hacktoberfest`: Issues for Hacktoberfest contributors.  
-- `bug`: Something isn’t working as expected.  
-- `UI/UX`: Involves improving interface or user experience.  
+- `good first issue` — Ideal for newcomers
+- `elusoc` — Issues for ELUSOC 2026 contributors
+- `bug` — Something isn't working as expected
+- `UI/UX` — Involves improving interface or user experience
 
 ---
 
-## 🧰 Tech Stack
+## 🗺️ `// ROADMAP`
 
-| Layer    | Technologies                               |
-| :------- | :----------------------------------------- |
-| Frontend | React.js, TypeScript, Tailwind CSS, Framer Motion |
-| Backend  | Supabase                                   |
-| Database | Supabase (PostgreSQL)                      |
-| AI API   | Gemini API                                 |
-
-[![Built with React](https://img.shields.io/badge/Built%20with-React-blue.svg)](https://reactjs.org/)
-[![TailwindCSS](https://img.shields.io/badge/Styled%20with-Tailwind%20CSS-teal.svg)](https://tailwindcss.com/)
-[![Supabase](https://img.shields.io/badge/Backend-Supabase-blueviolet.svg)](https://supabase.com/)
-[![Gemini API](https://img.shields.io/badge/AI-Gemini-orange.svg)](https://developers.google.com/)
-
-📐 **[View Full Architecture Overview →](./ARCHITECTURE_OVERVIEW.md)**
+- [ ] 📊 **Advanced Dashboards:** For patients, doctors, and admins with actionable insights.
+- [ ] 🔐 **Enhanced Security:** End-to-end encryption and role-based access controls.
+- [ ] 🔔 **Real-time Notifications:** Appointment alerts and health reminders.
 
 ---
 
-## 🗺️ Future Roadmap
+## 📄 `// LICENSE`
 
-- 📊 **Advanced Dashboards:** For patients, doctors, and admins with actionable insights.  
-- 🔐 **Enhanced Security:** End-to-end encryption and role-based access controls.  
-- 🔔 **Real-time Notifications:** Appointment alerts and health reminders.
-
----
-
-## 📝 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.  
+See [LICENSE](./LICENSE) for details.
 
 ---
 
-## ⭐ Star Our Repo!
+## ⭐ `// STAR THE REPO`
 
-If you find ClinIQ helpful, please give it a ⭐ star on [GitHub](https://github.com/aksh-g/ClinIQ)!
+If ClinIQ helps or inspires you, drop a star and share it with fellow builders.
 
----
+<div align="center">
 
-## 📬 Contact
+Built with care by [Akshay Kumar](https://github.com/akshay0611)
 
-For questions or feedback, reach out to [akshay.allen26200@gmail.com](mailto:akshay.allen26200@gmail.com)
+**Connect with me:**
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/akshaykumar0611/)
+[![X](https://img.shields.io/badge/X-0b0f1a?style=flat-square&logo=x&logoColor=ffffff)](https://x.com/Aksh0605)
+
+</div>
