@@ -1,0 +1,69 @@
+name: Welcome New Pull Requests
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  welcome-pr:
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Add welcome comment
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.issue.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const commentBody = `
+            🩺 **Pull Request Received — Under Review**
+
+            Thank you for contributing to **ClinIQ – AI-Powered Health Platform**.
+
+            ### 🧪 PR Clearance Checklist
+
+            - 🔗 Ensure your PR is linked to an **assigned issue**
+            - 🎯 Reference the issue number in the PR description (e.g. \`Closes #123\`)
+            - ✅ Your branch is up to date with \`main\`
+            - 🧪 All tests pass locally
+            - 📖 [Review the README.md](https://github.com/${owner}/${repo}/blob/main/README.md)
+            - 📚 [Review the CONTRIBUTING.md](https://github.com/${owner}/${repo}/blob/main/CONTRIBUTING.md)
+
+            ### 🚑 Review Protocol
+
+            - PRs **not linked to an assigned issue** may be closed without review
+            - Maintainers will review your contribution as soon as possible
+            - Requested changes should be addressed before approval
+
+            ### 📊 Review Status
+
+            🟡 **Awaiting Maintainer Review**
+
+            Your contribution has entered the ClinIQ review pipeline and will be evaluated for:
+
+            - Code Quality
+            - Documentation
+            - Project Standards
+            - User Experience
+
+            ---
+
+            🧬 **Contributor Status: Under Diagnostic Review**
+
+            Thank you for helping improve healthcare through open source.
+
+            **— ClinIQ Team**
+            `;
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: prNumber,
+              body: commentBody
+            });

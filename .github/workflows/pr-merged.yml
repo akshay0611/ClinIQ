@@ -1,0 +1,94 @@
+name: Thank You for Your Contribution
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  thank-contributor:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Post thank you comment
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = context.issue.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const contributor = context.payload.pull_request.user.login;
+
+            const commentBody = `
+            # 🎉 Contribution Successfully Deployed
+
+            Congratulations **@${contributor}**!
+
+            Your Pull Request has been successfully reviewed, approved, and merged into **ClinIQ – AI-Powered Health Platform**. 🩺
+
+            Welcome to the growing community of developers helping build accessible, AI-powered healthcare solutions through open source.
+
+            ---
+
+            ## 🧬 Contribution Record
+
+            | Status                    | Result        |
+            | ------------------------- | ------------- |
+            | Review Process            | ✅ Completed  |
+            | Code Quality Check        | ✅ Passed     |
+            | Merge Approval            | ✅ Granted    |
+            | Deployment to Main Branch | ✅ Successful |
+
+            ---
+
+            ## 🏅 Contributor Advancement
+
+            You have successfully completed a ClinIQ contribution and earned your place in the project history.
+
+            ### Current Rank
+            🟢 **Medical Intern**
+
+            Continue contributing to progress through the ClinIQ contributor pathway:
+
+            🟢 Medical Intern
+            🔵 Resident Doctor
+            🟣 Chief Surgeon
+
+            ---
+
+            ## 🚀 Continue Your Mission
+
+            Interested in contributing again?
+
+            - 🔎 Explore open issues
+            - 🧪 Pick up new challenges
+            - 💡 Suggest improvements
+            - 🤝 Help other contributors
+            - ⭐ Star the repository if you enjoyed contributing
+
+            Repository: https://github.com/akshay0611/ClinIQ
+
+            ---
+
+            ## 💙 Thank You
+
+            Every bug fixed, feature improved, and idea contributed helps make healthcare technology more accessible for everyone.
+
+            Thank you for being part of the ClinIQ mission, **@${contributor}**.
+
+            ### 📊 Contributor Status
+            🟢 Contribution Successfully Deployed
+
+            **— ClinIQ Team**
+            `;
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: prNumber,
+              body: commentBody
+            });
