@@ -25,7 +25,7 @@
 
 ---
 
-## 🩺 `// CLINIQ :: MISSION BRIEF`
+## 🩺 PATIENT ZERO REPORT
 
 ClinIQ is an innovative open-source health-tech platform that leverages AI to provide accurate symptom analysis and doctor discovery—all in one place. Our goal is to make healthcare more accessible and user-friendly for everyone.
 
@@ -33,7 +33,7 @@ ClinIQ is an innovative open-source health-tech platform that leverages AI to pr
 
 ---
 
-## ⭐ `// CONTRIBUTOR CHECKPOINT`
+## 🧪 CONTRIBUTOR CLEARANCE
 
 Before claiming an issue or submitting a PR, contributors are expected to:
 
@@ -46,7 +46,7 @@ These steps help support the project and keep contributors informed about update
 
 ---
 
-## 📸 `// SCREENSHOTS`
+## 📸 DIAGNOSTIC SNAPSHOTS
 
 **Homepage:**
 ![Home Page](./public/cliniqhome.png)
@@ -56,13 +56,13 @@ These steps help support the project and keep contributors informed about update
 
 ---
 
-## 💡 `// THE PROBLEM`
+## 🚨 CRITICAL CONDITION
 
 Millions face delays and confusion when accessing healthcare. Getting a preliminary understanding of symptoms can be difficult, and finding the right specialist is often a challenge.
 
 ---
 
-## ✨ `// FEATURE LOADOUT`
+- ## 🧬 CORE SYSTEMS ONLINE
 
 - 🧠 **AI Symptom Checker:** Get instant, personalized health insights.
 - 👩‍⚕️ **Doctor Directory:** Find verified specialists by expertise.
@@ -72,7 +72,7 @@ Millions face delays and confusion when accessing healthcare. Getting a prelimin
 
 ---
 
-## 🧱 `// TECH STACK`
+## 🏥 MEDICAL STACK
 
 | Layer    | Technologies                                      |
 | :------- | :------------------------------------------------ |
@@ -85,7 +85,7 @@ Millions face delays and confusion when accessing healthcare. Getting a prelimin
 
 ---
 
-## 🚀 `// CONTRIBUTOR START (10 MIN QUEST)`
+## 🚑 RAPID DEPLOYMENT PROTOCOL
 
 ```sh
 git clone https://github.com/YOUR_USERNAME/ClinIQ.git
@@ -110,20 +110,20 @@ For complete setup and troubleshooting: [SETUP.md](./SETUP.md)
 
 ---
 
-## 🏆 `// ELUSOC 2026 :: CONTRIBUTION TIERS (PROJECT GUIDANCE)`
+## 🧑‍⚕️ CONTRIBUTOR SPECIALIZATIONS
 
 > These tiers are **project guidance** for onboarding and issue complexity.  
 > They are not official ELUSOC points/rank rules.
 
 | Tier | Focus Area | Typical Tasks |
 |---|---|---|
-| 🟩 **Beginner** | First contributions | README/docs updates, typo fixes, small UI polish |
-| 🟦 **Intermediate** | Feature and bug work | Component improvements, bug fixes, API/UI refinements |
-| 🟪 **Advanced** | System-level changes | Architecture refactors, performance work, deeper integrations |
+| 🟩 **Medical Intern** | First contributions | README/docs updates, typo fixes, small UI polish |
+| 🟦 **Resident Doctor** | Feature and bug work | Component improvements, bug fixes, API/UI refinements |
+| 🟪 **Chief Surgeon** | System-level changes | Architecture refactors, performance work, deeper integrations |
 
 ---
 
-## 👨‍💼 `// PROJECT LEADERSHIP`
+## 📑 `// PROJECT DOSSIER`
 
 As **Project Admin** during **Hacktoberfest 2025** and **ELUSOC 2026**, I spearheaded both the technical development and community growth of ClinIQ.
 
@@ -141,7 +141,7 @@ As **Project Admin** during **Hacktoberfest 2025** and **ELUSOC 2026**, I spearh
 
 ---
 
-## 🤝 `// CONTRIBUTING`
+## 🤝 OPEN COLLABORATION
 
 We welcome contributors of all levels.  
 Start with open issues, claim one, and submit a focused PR with clean commit history.
@@ -165,7 +165,7 @@ Start with open issues, claim one, and submit a focused PR with clean commit his
 
 ---
 
-## 🗺️ `// ROADMAP`
+## 🔬 RESEARCH PIPELINE
 
 - [ ] 📊 **Advanced Dashboards:** For patients, doctors, and admins with actionable insights.
 - [ ] 🔐 **Enhanced Security:** End-to-end encryption and role-based access controls.
@@ -173,14 +173,14 @@ Start with open issues, claim one, and submit a focused PR with clean commit his
 
 ---
 
-## 📄 `// LICENSE`
+## 📄 LICENSE
 
 This project is licensed under the MIT License.  
 See [LICENSE](./LICENSE) for details.
 
 ---
 
-## ⭐ `// STAR THE REPO`
+## 💙 SUPPORT THE MISSION
 
 If ClinIQ helps or inspires you, drop a star and share it with fellow builders.
 
