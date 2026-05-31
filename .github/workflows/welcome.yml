@@ -20,14 +20,33 @@ jobs:
             const repo = context.repo.repo;
 
             const commentBody = `
-              👋 Hello and thank you for contributing to **ClinIQ**! We appreciate you taking the time to open this issue.
+🩺 **Contributor Clearance Received**
 
-              Please make sure you have read our [**README.md**](https://github.com/${owner}/${repo}/blob/main/README.md) and [**CONTRIBUTING.md**](https://github.com/${owner}/${repo}/blob/main/CONTRIBUTING.md) guides.
+Thank you for opening an issue in **ClinIQ – AI-Powered Health Platform**.
 
-              **Important:** Please do not open a Pull Request until this issue has been assigned to you.
+Before joining the mission, please complete the following checklist:
 
-              Our maintainers will review your issue shortly. Happy coding! 🚀
-            `;
+### 🧪 Contributor Clearance
+
+* ⭐ [Star this repository](https://github.com/akshay0611/ClinIQ)
+* 👀 [Follow the maintainer](https://github.com/akshay0611)
+* 📖 [Review the README.md](https://github.com/${owner}/${repo}/blob/main/README.md)
+* 📚 [Review the CONTRIBUTING.md](https://github.com/${owner}/${repo}/blob/main/CONTRIBUTING.md)
+
+These steps help support the project and ensure contributors stay informed about updates, contribution guidelines, and ELUSOC activities.
+
+### 🚑 Deployment Protocol
+
+Please do **not open a Pull Request** until this issue has been officially assigned to you.
+
+This helps ensure fair contribution opportunities for all **ELUSOC 2026** participants and prevents duplicate work.
+
+Our maintainers will review your issue and respond as soon as possible.
+
+🧬 **Good luck, Medical Intern. Your Contributor Clearance is now under review.** 🚀
+
+**— ClinIQ Team**
+`;
 
             await github.rest.issues.createComment({
               owner: owner,
