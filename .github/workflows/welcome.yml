@@ -1,56 +1,60 @@
 name: Welcome New Issues
 
 on:
-  issues:
-    types: [opened]
+issues:
+types: [opened]
 
 jobs:
-  welcome-comment:
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-    steps:
-      - name: Add welcome comment
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            const issueNumber = context.issue.number;
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
+welcome-comment:
+runs-on: ubuntu-latest
 
-            const commentBody = `
-🩺 **Contributor Clearance Received**
+```
+permissions:
+  issues: write
 
-Thank you for opening an issue in **ClinIQ – AI-Powered Health Platform**.
+steps:
+  - name: Add welcome comment
+    uses: actions/github-script@v6
+    with:
+      github-token: ${{ secrets.GITHUB_TOKEN }}
+      script: |
+        const issueNumber = context.issue.number;
+        const owner = context.repo.owner;
+        const repo = context.repo.repo;
 
-Before joining the mission, please complete the following checklist:
+        const commentBody = `
+        🩺 **Contributor Clearance Received**
 
-### 🧪 Contributor Clearance
+        Thank you for opening an issue in **ClinIQ – AI-Powered Health Platform**.
 
-* ⭐ [Star this repository](https://github.com/akshay0611/ClinIQ)
-* 👀 [Follow the maintainer](https://github.com/akshay0611)
-* 📖 [Review the README.md](https://github.com/${owner}/${repo}/blob/main/README.md)
-* 📚 [Review the CONTRIBUTING.md](https://github.com/${owner}/${repo}/blob/main/CONTRIBUTING.md)
+        Before joining the mission, please complete the following checklist:
 
-These steps help support the project and ensure contributors stay informed about updates, contribution guidelines, and ELUSOC activities.
+        ### 🧪 Contributor Clearance
 
-### 🚑 Deployment Protocol
+        - ⭐ [Star this repository](https://github.com/akshay0611/ClinIQ)
+        - 👀 [Follow the maintainer](https://github.com/akshay0611)
+        - 📖 [Review the README.md](https://github.com/${owner}/${repo}/blob/main/README.md)
+        - 📚 [Review the CONTRIBUTING.md](https://github.com/${owner}/${repo}/blob/main/CONTRIBUTING.md)
 
-Please do **not open a Pull Request** until this issue has been officially assigned to you.
+        These steps help support the project and ensure contributors stay informed about updates, contribution guidelines, and ELUSOC activities.
 
-This helps ensure fair contribution opportunities for all **ELUSOC 2026** participants and prevents duplicate work.
+        ### 🚑 Deployment Protocol
 
-Our maintainers will review your issue and respond as soon as possible.
+        Please do **not open a Pull Request** until this issue has been officially assigned to you.
 
-🧬 **Good luck, Medical Intern. Your Contributor Clearance is now under review.** 🚀
+        This helps ensure fair contribution opportunities for all **ELUSOC 2026** participants and prevents duplicate work.
 
-**— ClinIQ Team**
-`;
+        Our maintainers will review your issue and respond as soon as possible.
 
-            await github.rest.issues.createComment({
-              owner: owner,
-              repo: repo,
-              issue_number: issueNumber,
-              body: commentBody
-            });
+        🧬 **Good luck, Medical Intern. Your Contributor Clearance is now under review.** 🚀
+
+        **— ClinIQ Team**
+        `;
+
+        await github.rest.issues.createComment({
+          owner,
+          repo,
+          issue_number: issueNumber,
+          body: commentBody
+        });
+```
