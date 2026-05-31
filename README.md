@@ -1,6 +1,6 @@
 <div align="center">
 
-# ClinIQ – AI-Powered Health Platform
+<img src="./public/cliniq_readme.png" alt="ClinIQ ELUSOC Healthcare Banner" width="100%" />
 
 ### Intelligent Symptom Analysis & Doctor Discovery for Everyone
 
@@ -62,7 +62,7 @@ Millions face delays and confusion when accessing healthcare. Getting a prelimin
 
 ---
 
-- ## 🧬 CORE SYSTEMS ONLINE
+## 🧬 CORE SYSTEMS ONLINE
 
 - 🧠 **AI Symptom Checker:** Get instant, personalized health insights.
 - 👩‍⚕️ **Doctor Directory:** Find verified specialists by expertise.
