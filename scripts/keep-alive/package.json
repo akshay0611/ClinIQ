@@ -1,0 +1,16 @@
+{
+  "name": "supabase-keep-alive",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --import tsx/esm index.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.49.4"
+  },
+  "devDependencies": {
+    "tsx": "4.19.2",
+    "typescript": "5.8.3"
+  }
+}
