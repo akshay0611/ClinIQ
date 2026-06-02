@@ -1,39 +1,40 @@
-import React from "react";
+import { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
 
-// Layout Components
+// Layout Components (kept eager — they render on every page)
 import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import BackToTop from "./components/common/BackToTop";
+import PageLoader from "./components/common/PageLoader";
 
-// Pages
-import Home from "./pages/Home";
-import SymptomChecker from "./pages/SymptomChecker";
-import Doctors from "./pages/Doctors";
-import Appointment from "./pages/Appointment";
-import Hospitals from "./pages/Hospitals";
-import Faq from "./pages/FAQ";
-import Contact from "./pages/Contact";
-import About from "./pages/About";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsOfService from "./pages/TermsOfService";
-import Accessibility from "./pages/Accessibility";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import MedicalDictionary from "./pages/MedicalDictionary";
-import DrugDatabase from "./pages/DrugDatabase";
-import Webinars from "./pages/Webinars";
-import FirstAidGuides from "./pages/FirstAidGuides";
-import ResearchPapers from "./pages/ResearchPapers";
-import HealthBlog from "./pages/HealthBlog";
-import BlogPostPage from "./pages/BlogPostPage";
-import DoctorProfilePage from "./pages/DoctorProfilePage";
-import ForgotPassword from "./pages/ForgotPassword";
-import Profile from "./pages/Profile";
-import NotFound from "./pages/NotFound";
+// Pages (lazy-loaded so each route is split into its own chunk)
+const Home = lazy(() => import("./pages/Home"));
+const SymptomChecker = lazy(() => import("./pages/SymptomChecker"));
+const Doctors = lazy(() => import("./pages/Doctors"));
+const Appointment = lazy(() => import("./pages/Appointment"));
+const Hospitals = lazy(() => import("./pages/Hospitals"));
+const Faq = lazy(() => import("./pages/FAQ"));
+const Contact = lazy(() => import("./pages/Contact"));
+const About = lazy(() => import("./pages/About"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService"));
+const Accessibility = lazy(() => import("./pages/Accessibility"));
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const MedicalDictionary = lazy(() => import("./pages/MedicalDictionary"));
+const DrugDatabase = lazy(() => import("./pages/DrugDatabase"));
+const Webinars = lazy(() => import("./pages/Webinars"));
+const FirstAidGuides = lazy(() => import("./pages/FirstAidGuides"));
+const ResearchPapers = lazy(() => import("./pages/ResearchPapers"));
+const HealthBlog = lazy(() => import("./pages/HealthBlog"));
+const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
+const DoctorProfilePage = lazy(() => import("./pages/DoctorProfilePage"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const Profile = lazy(() => import("./pages/Profile"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 function App() {
   return (
@@ -44,40 +45,39 @@ function App() {
             <Navbar />
 
             <main className="flex-grow">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/symptom-check" element={<SymptomChecker />} />
-                <Route path="/doctors" element={<Doctors />} />
-                <Route path="/doctors/:id" element={<DoctorProfilePage />} />
-                <Route path="/appointment/:id" element={<Appointment />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/hospitals" element={<Hospitals />} />
-                <Route path="/faq" element={<Faq />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/privacypolicy" element={<PrivacyPolicy />} />
-                <Route path="/termsofservice" element={<TermsOfService />} />
-                <Route path="/accessibility" element={<Accessibility />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route
-                  path="/medical-dictionary"
-                  element={<MedicalDictionary />}
-                />
-                <Route path="/drug-database" element={<DrugDatabase />} />
-                <Route path="/webinars" element={<Webinars />} />
-                <Route path="/first-aid-guides" element={<FirstAidGuides />} />
-                <Route path="/research-papers" element={<ResearchPapers />} />
-                <Route path="/health-blog" element={<HealthBlog />} />
-                <Route path="/health-blog/:id" element={<BlogPostPage />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/symptom-check" element={<SymptomChecker />} />
+                  <Route path="/doctors" element={<Doctors />} />
+                  <Route path="/doctors/:id" element={<DoctorProfilePage />} />
+                  <Route path="/appointment/:id" element={<Appointment />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/hospitals" element={<Hospitals />} />
+                  <Route path="/faq" element={<Faq />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+                  <Route path="/termsofservice" element={<TermsOfService />} />
+                  <Route path="/accessibility" element={<Accessibility />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route
+                    path="/medical-dictionary"
+                    element={<MedicalDictionary />}
+                  />
+                  <Route path="/drug-database" element={<DrugDatabase />} />
+                  <Route path="/webinars" element={<Webinars />} />
+                  <Route path="/first-aid-guides" element={<FirstAidGuides />} />
+                  <Route path="/research-papers" element={<ResearchPapers />} />
+                  <Route path="/health-blog" element={<HealthBlog />} />
+                  <Route path="/health-blog/:id" element={<BlogPostPage />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
 
-                {/* Catch-all route for unknown URLs */}
-                <Route path="*" element={<NotFound />} />
-                {/* Add more routes as needed */}
-
-                {/* Add routes for other pages as they're implemented */}
-              </Routes>
+                  {/* Catch-all route for unknown URLs */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
             </main>
 
             <Footer />
