@@ -33,6 +33,7 @@ import BlogPostPage from "./pages/BlogPostPage";
 import DoctorProfilePage from "./pages/DoctorProfilePage";
 import ForgotPassword from "./pages/ForgotPassword";
 import Profile from "./pages/Profile";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -70,6 +71,9 @@ function App() {
                 <Route path="/health-blog" element={<HealthBlog />} />
                 <Route path="/health-blog/:id" element={<BlogPostPage />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
+
+                {/* Catch-all route for unknown URLs */}
+                <Route path="*" element={<NotFound />} />
                 {/* Add more routes as needed */}
 
                 {/* Add routes for other pages as they're implemented */}
