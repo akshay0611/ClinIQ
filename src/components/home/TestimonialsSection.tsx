@@ -88,11 +88,11 @@ const TestimonialsSection: React.FC = () => {
   };
 
   return (
-    <section className="py-32 bg-gradient-to-br from-primary-700 via-primary-800 to-primary-900 text-white relative overflow-hidden">
+    <section className="py-32 bg-gradient-to-br from-gray-50 via-white to-cyan-50 dark:from-primary-700 dark:via-primary-800 dark:to-primary-900 text-gray-900 dark:text-white relative overflow-hidden">
      
       <div className="absolute inset-0 overflow-hidden">
         <motion.div 
-          className="absolute h-64 w-64 rounded-full bg-blue-500/20 blur-3xl"
+          className="absolute h-64 w-64 rounded-full bg-primary-300/10 dark:bg-blue-500/20 blur-3xl"
           animate={pulseAnimation}
           style={{
             top: '20%',
@@ -101,7 +101,7 @@ const TestimonialsSection: React.FC = () => {
           }}
         />
         <motion.div 
-          className="absolute h-96 w-96 rounded-full bg-indigo-600/20 blur-3xl"
+          className="absolute h-96 w-96 rounded-full bg-primary-200/5 dark:bg-indigo-600/20 blur-3xl"
           animate={{
             ...pulseAnimation,
             transition: { ...pulseAnimation.transition, delay: 1 }
@@ -113,7 +113,7 @@ const TestimonialsSection: React.FC = () => {
           }}
         />
         <motion.div 
-          className="absolute h-80 w-80 rounded-full bg-teal-400/10 blur-3xl"
+          className="absolute h-80 w-80 rounded-full bg-primary-400/10 dark:bg-teal-400/10 blur-3xl"
           animate={{
             ...pulseAnimation,
             transition: { ...pulseAnimation.transition, delay: 0.5 }
@@ -127,13 +127,13 @@ const TestimonialsSection: React.FC = () => {
       </div>
 
       
-      <div className="absolute inset-0 bg-grid-white/[0.03] bg-[length:40px_40px]" />
+      <div className="absolute inset-0 bg-grid-gray-200/30 dark:bg-grid-white/[0.03] bg-[length:40px_40px]" />
 
     
       <div className="absolute inset-0">
         <motion.div 
           animate={floatingAnimation} 
-          className="absolute top-20 left-10 text-blue-300/20"
+          className="absolute top-20 left-10 text-primary-400/15 dark:text-blue-300/20"
           aria-hidden="true"
         >
           <Stethoscope size={140} strokeWidth={1} />
@@ -143,7 +143,7 @@ const TestimonialsSection: React.FC = () => {
             ...floatingAnimation,
             transition: { ...floatingAnimation.transition, delay: 1 }
           }} 
-          className="absolute bottom-20 right-10 text-blue-400/20"
+          className="absolute bottom-20 right-10 text-primary-500/15 dark:text-blue-400/20"
           aria-hidden="true"
         >
           <Activity size={180} strokeWidth={1} />
@@ -153,7 +153,7 @@ const TestimonialsSection: React.FC = () => {
             ...floatingAnimation,
             transition: { ...floatingAnimation.transition, delay: 0.5 }
           }} 
-          className="absolute top-40 right-20 text-teal-300/20"
+          className="absolute top-40 right-20 text-primary-400/20 dark:text-teal-300/20"
           aria-hidden="true"
         >
           <Shield size={120} strokeWidth={1} />
@@ -163,7 +163,7 @@ const TestimonialsSection: React.FC = () => {
             ...floatingAnimation,
             transition: { ...floatingAnimation.transition, delay: 1.5 }
           }} 
-          className="absolute bottom-40 left-20 text-indigo-300/20"
+          className="absolute bottom-40 left-20 text-primary-500/15 dark:text-indigo-300/20"
           aria-hidden="true"
         >
           <Heart size={100} strokeWidth={1} />
@@ -178,13 +178,13 @@ const TestimonialsSection: React.FC = () => {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <div className="inline-block px-4 py-1.5 mb-4 rounded-full text-sm font-semibold bg-primary-600/80 text-white backdrop-blur-md">
+          <div className="inline-block px-4 py-1.5 mb-4 rounded-full text-sm font-semibold bg-primary-600/10 dark:bg-primary-600/80 text-primary-700 dark:text-white backdrop-blur-md border border-primary-200/40 dark:border-primary-500/40">
             Testimonials
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
             What Our Users Say
           </h2>
-          <p className="text-lg text-blue-50/90 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-700 dark:text-blue-50/90 max-w-2xl mx-auto">
             Discover how ClinIQ is helping people take control of their health journey with our innovative platform.
           </p>
         </motion.div>
@@ -194,7 +194,7 @@ const TestimonialsSection: React.FC = () => {
           <div className="absolute inset-y-0 left-0 flex items-center -ml-5 md:-ml-10 z-10">
             <motion.button
               onClick={prev}
-              className="p-3 rounded-full bg-primary-600/80 backdrop-blur-md text-white hover:bg-primary-500 transition-colors duration-200 shadow-lg"
+              className="p-3 rounded-full bg-primary-600 dark:bg-primary-600/80 text-white hover:bg-primary-700 dark:hover:bg-primary-500 transition-colors duration-200 shadow-lg backdrop-blur-md"
               aria-label="Previous testimonial"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
@@ -206,7 +206,7 @@ const TestimonialsSection: React.FC = () => {
           <div className="absolute inset-y-0 right-0 flex items-center -mr-5 md:-mr-10 z-10">
             <motion.button
               onClick={next}
-              className="p-3 rounded-full bg-primary-600/80 backdrop-blur-md text-white hover:bg-primary-500 transition-colors duration-200 shadow-lg"
+              className="p-3 rounded-full bg-primary-600 dark:bg-primary-600/80 text-white hover:bg-primary-700 dark:hover:bg-primary-500 transition-colors duration-200 shadow-lg backdrop-blur-md"
               aria-label="Next testimonial"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
@@ -224,13 +224,13 @@ const TestimonialsSection: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
-                className="bg-primary-800/80 backdrop-blur-md rounded-2xl shadow-xl p-8 md:p-10 relative"
+                className="bg-white dark:bg-primary-800/80 backdrop-blur-md rounded-2xl shadow-xl p-8 md:p-10 relative border border-gray-200 dark:border-primary-700/50"
               >
                
-                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-t-2xl"></div>
+                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-primary-500 to-primary-600 dark:from-blue-500 dark:to-indigo-600 rounded-t-2xl"></div>
                 
                
-                <div className="absolute -top-6 left-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full p-3 shadow-lg">
+                <div className="absolute -top-6 left-10 bg-gradient-to-r from-primary-500 to-primary-600 dark:from-blue-500 dark:to-indigo-600 rounded-full p-3 shadow-lg">
                   <Quote size={24} className="text-white" />
                 </div>
                 
@@ -238,20 +238,20 @@ const TestimonialsSection: React.FC = () => {
                   <div className="flex-shrink-0">
                     {testimonials[current].image ? (
                       <div className="relative">
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 p-1 animate-pulse-slow"></div>
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 dark:from-blue-500 dark:to-indigo-600 p-1 animate-pulse-slow"></div>
                         <img
                           src={testimonials[current].image}
                           alt={testimonials[current].name}
-                          className="w-24 h-24 rounded-full object-cover border-4 border-primary-900 relative z-10"
+                          className="w-24 h-24 rounded-full object-cover border-4 border-white dark:border-primary-900 relative z-10"
                         />
                       </div>
                     ) : (
-                      <div className="w-24 h-24 rounded-full bg-primary-700 flex items-center justify-center">
-                        <User size={40} className="text-blue-400" />
+                      <div className="w-24 h-24 rounded-full bg-gray-100 dark:bg-primary-700 flex items-center justify-center">
+                        <User size={40} className="text-primary-500 dark:text-blue-400" />
                       </div>
                     )}
                     
-                    <div className="flex justify-center text-yellow-300 mt-3">
+                    <div className="flex justify-center text-amber-500 dark:text-yellow-300 mt-3">
                       {[...Array(testimonials[current].rating)].map((_, i) => (
                         <Star key={i} fill="currentColor" size={16} />
                       ))}
@@ -259,17 +259,17 @@ const TestimonialsSection: React.FC = () => {
                   </div>
                   
                   <div className="flex-1">
-                    <blockquote className="text-lg md:text-xl text-blue-50 mb-6 leading-relaxed">
+                    <blockquote className="text-lg md:text-xl text-gray-700 dark:text-blue-50 mb-6 leading-relaxed">
                       "{testimonials[current].text}"
                     </blockquote>
                     
                     <div className="flex items-center">
-                      <div className="h-10 w-1 bg-gradient-to-b from-blue-500 to-indigo-600 mr-4"></div>
+                      <div className="h-10 w-1 bg-gradient-to-b from-primary-500 to-primary-600 dark:from-blue-500 dark:to-indigo-600 mr-4"></div>
                       <div>
-                        <p className="font-bold text-lg text-white">
+                        <p className="font-bold text-lg text-gray-900 dark:text-white">
                           {testimonials[current].name}
                         </p>
-                        <p className="text-blue-50/80">
+                        <p className="text-gray-600 dark:text-blue-50/80">
                           {testimonials[current].position}
                         </p>
                       </div>
@@ -293,8 +293,8 @@ const TestimonialsSection: React.FC = () => {
                 onClick={() => setCurrent(index)}
                 className={`w-12 h-1.5 rounded-full transition-all duration-300 ${
                   current === index 
-                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 w-16' 
-                    : 'bg-blue-400/50'
+                    ? 'bg-gradient-to-r from-primary-500 to-primary-600 dark:from-blue-500 dark:to-indigo-600 w-16' 
+                    : 'bg-gray-300 dark:bg-blue-400/50'
                 }`}
                 aria-label={`Go to testimonial ${index + 1}`}
               />

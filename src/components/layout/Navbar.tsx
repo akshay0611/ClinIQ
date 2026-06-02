@@ -12,9 +12,12 @@ import {
   Info,
   Hospital,
   Sparkles,
+  Sun,
+  Moon,
 } from "lucide-react";
 import Button from "../common/Button";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,6 +25,7 @@ const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
   const { currentUser, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
@@ -170,6 +174,37 @@ const Navbar: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-2">
+          <motion.button
+            onClick={toggleTheme}
+            className="p-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/50 transition-all duration-200"
+            aria-label="Toggle theme"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <AnimatePresence mode="wait">
+              {theme === 'dark' ? (
+                <motion.div
+                  key="sun"
+                  initial={{ opacity: 0, rotate: -90 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  exit={{ opacity: 0, rotate: 90 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <Sun size={20} />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="moon"
+                  initial={{ opacity: 0, rotate: 90 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  exit={{ opacity: 0, rotate: -90 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <Moon size={20} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.button>
           {currentUser ? (
             <div className="relative">
               <motion.button
