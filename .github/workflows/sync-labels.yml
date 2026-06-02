@@ -1,0 +1,69 @@
+name: Sync Issue Labels to PR
+
+on:
+  pull_request_target:
+    types: [closed]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: write
+
+jobs:
+  sync-labels:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const prBody = context.payload.pull_request.body || '';
+            const prNumber = context.payload.pull_request.number;
+
+            // Extract issue numbers from keywords like Closes #123, Fixes #45, Resolves #67
+            const patterns = [
+              /close[s]?\s+#(\d+)/gi,
+              /fix(?:es|ed)?\s+#(\d+)/gi,
+              /resolve[s]?\s+#(\d+)/gi,
+              /#(\d+)/g
+            ];
+            const issues = new Set();
+            for (const pattern of patterns) {
+              let match;
+              while ((match = pattern.exec(prBody)) !== null) {
+                issues.add(parseInt(match[1], 10));
+              }
+            }
+
+            if (issues.size === 0) {
+              console.log('No linked issues found in PR description');
+              return;
+            }
+
+            for (const issueNumber of issues) {
+              try {
+                const issue = await github.rest.issues.get({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber,
+                });
+
+                const labels = issue.data.labels.map(l => l.name);
+
+                if (labels.length === 0) {
+                  console.log(`Issue #${issueNumber} has no labels`);
+                  continue;
+                }
+
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  labels: labels,
+                });
+
+                console.log(`Copied labels [${labels.join(', ')}] from issue #${issueNumber} to PR #${prNumber}`);
+              } catch (error) {
+                console.log(`Failed to process issue #${issueNumber}: ${error.message}`);
+              }
+            }
