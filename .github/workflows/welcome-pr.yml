@@ -10,10 +10,11 @@ jobs:
 
     permissions:
       pull-requests: write
+      issues: write
 
     steps:
       - name: Add welcome comment
-        uses: actions/github-script@v6
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
