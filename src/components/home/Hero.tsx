@@ -108,12 +108,12 @@ const Hero: React.FC = () => {
 
   return (
     <section
-      className="relative bg-gradient-to-br from-primary-700 via-primary-800 to-primary-900 text-white overflow-hidden min-h-screen flex items-center justify-center"
+      className="relative bg-gradient-to-br from-gray-50 via-white to-cyan-50 dark:from-primary-700 dark:via-primary-800 dark:to-primary-900 text-gray-900 dark:text-white overflow-hidden min-h-screen flex items-center justify-center"
       aria-label="ClinIQ HealthTech Hero - Architected by Akshay Kumar"
     >
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute h-64 w-64 rounded-full bg-blue-500/20 blur-3xl"
+          className="absolute h-64 w-64 rounded-full bg-primary-300/10 dark:bg-blue-500/20 blur-3xl"
           animate={animations.pulseAnimation}
           style={{
             top: "20%",
@@ -123,7 +123,7 @@ const Hero: React.FC = () => {
           }}
         />
         <motion.div
-          className="absolute h-96 w-96 rounded-full bg-indigo-600/20 blur-3xl"
+          className="absolute h-96 w-96 rounded-full bg-primary-200/5 dark:bg-indigo-600/20 blur-3xl"
           animate={{
             ...animations.pulseAnimation,
             transition: { ...animations.pulseAnimation.transition, delay: 1 },
@@ -136,7 +136,7 @@ const Hero: React.FC = () => {
           }}
         />
         <motion.div
-          className="absolute h-80 w-80 rounded-full bg-teal-400/10 blur-3xl"
+          className="absolute h-80 w-80 rounded-full bg-primary-400/10 dark:bg-teal-400/10 blur-3xl"
           animate={{
             ...animations.pulseAnimation,
             transition: { ...animations.pulseAnimation.transition, delay: 0.5 },
@@ -150,12 +150,12 @@ const Hero: React.FC = () => {
         />
       </div>
 
-      <div className="absolute inset-0 bg-grid-white/[0.03] bg-[length:40px_40px]" />
+      <div className="absolute inset-0 bg-grid-gray-200/30 dark:bg-grid-white/[0.03] bg-[length:40px_40px]" />
 
       <div className="absolute inset-0">
         <motion.div
           animate={animations.floatingAnimation}
-          className="absolute top-20 left-10 text-blue-300/20"
+          className="absolute top-20 left-10 text-primary-400/15 dark:text-blue-300/20"
           aria-hidden="true"
         >
           <Stethoscope size={140} strokeWidth={1} />
@@ -168,7 +168,7 @@ const Hero: React.FC = () => {
               delay: 1,
             },
           }}
-          className="absolute bottom-20 right-10 text-blue-400/20"
+          className="absolute bottom-20 right-10 text-primary-500/15 dark:text-blue-400/20"
           aria-hidden="true"
         >
           <Activity size={180} strokeWidth={1} />
@@ -181,7 +181,7 @@ const Hero: React.FC = () => {
               delay: 0.5,
             },
           }}
-          className="absolute top-40 right-20 text-teal-300/20"
+          className="absolute top-40 right-20 text-primary-400/20 dark:text-teal-300/20"
           aria-hidden="true"
         >
           <Shield size={120} strokeWidth={1} />
@@ -194,7 +194,7 @@ const Hero: React.FC = () => {
               delay: 1.5,
             },
           }}
-          className="absolute bottom-40 left-20 text-indigo-300/20"
+          className="absolute bottom-40 left-20 text-primary-500/15 dark:text-indigo-300/20"
           aria-hidden="true"
         >
           <Heart size={100} strokeWidth={1} />
@@ -212,12 +212,12 @@ const Hero: React.FC = () => {
             className="flex justify-center mb-8"
             variants={animations.itemVariants}
           >
-            <div className="inline-flex items-center bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-md px-6 py-3 rounded-full border border-blue-300/20 shadow-lg shadow-blue-500/10">
+            <div className="inline-flex items-center bg-gradient-to-r from-primary-100/40 to-cyan-100/40 dark:from-blue-500/20 dark:to-indigo-500/20 backdrop-blur-md px-6 py-3 rounded-full border border-primary-200/40 dark:border-blue-300/20 shadow-lg shadow-primary-500/10 dark:shadow-blue-500/10">
               <Award
-                className="h-5 w-5 mr-2 text-yellow-300"
+                className="h-5 w-5 mr-2 text-amber-500 dark:text-yellow-300"
                 aria-hidden="true"
               />
-              <span className="font-medium text-sm text-blue-50">
+              <span className="font-medium text-sm text-primary-700 dark:text-blue-50">
                 Rated #1 Healthcare AI Platform of 2025
               </span>
             </div>
@@ -227,10 +227,10 @@ const Hero: React.FC = () => {
             className="text-center mb-6"
             variants={animations.itemVariants}
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight drop-shadow-md mb-4">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight drop-shadow-md mb-4 text-gray-900 dark:text-white">
               Your Health, Our Priority
             </h1>
-            <motion.h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-teal-300">
+            <motion.h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-cyan-500 dark:from-blue-300 dark:to-teal-300">
               <motion.span
                 key={currentTitle}
                 initial={{ y: 20, opacity: 0 }}
@@ -245,7 +245,7 @@ const Hero: React.FC = () => {
           </motion.div>
 
           <motion.p
-            className="text-center text-lg md:text-xl text-blue-50/90 mb-12 max-w-2xl mx-auto leading-relaxed"
+            className="text-center text-lg md:text-xl text-gray-700 dark:text-blue-50/90 mb-12 max-w-2xl mx-auto leading-relaxed"
             variants={animations.itemVariants}
           >
             Experience seamless healthcare with AI-powered symptom analysis and
@@ -261,7 +261,7 @@ const Hero: React.FC = () => {
                 size="lg"
                 variant="secondary"
                 leftIcon={<Stethoscope size={20} aria-hidden="true" />}
-                className="bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-300 hover:to-blue-500 text-white shadow-lg shadow-blue-600/30 transition-all duration-300 hover:shadow-xl hover:scale-105 rounded-xl border-0 w-full sm:w-auto text-center"
+                className="bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 dark:from-blue-400 dark:to-blue-600 dark:hover:from-blue-300 dark:hover:to-blue-500 text-white shadow-lg shadow-primary-500/30 dark:shadow-blue-600/30 transition-all duration-300 hover:shadow-xl hover:scale-105 rounded-xl border-0 w-full sm:w-auto text-center"
               >
                 Check Symptoms Now
               </Button>
@@ -271,7 +271,7 @@ const Hero: React.FC = () => {
                 size="lg"
                 variant="outline"
                 leftIcon={<UserPlus size={20} aria-hidden="true" />}
-                className="bg-white/5 backdrop-blur-md border border-white/20 text-white hover:bg-white/10 transition-all duration-300 hover:shadow-xl hover:scale-105 rounded-xl w-full sm:w-auto text-center"
+                className="bg-primary-100/20 dark:bg-white/5 backdrop-blur-md border border-primary-300/40 dark:border-white/20 text-primary-700 dark:text-white hover:bg-primary-100/40 dark:hover:bg-white/10 transition-all duration-300 hover:shadow-xl hover:scale-105 rounded-xl w-full sm:w-auto text-center"
               >
                 Find a Doctor
               </Button>
@@ -279,20 +279,20 @@ const Hero: React.FC = () => {
           </motion.div>
 
           <motion.div
-            className="mt-16 pt-10 border-t border-white/10 grid grid-cols-1 md:grid-cols-3 gap-8"
+            className="mt-16 pt-10 border-t border-gray-200 dark:border-white/10 grid grid-cols-1 md:grid-cols-3 gap-8"
             variants={animations.itemVariants}
           >
             <motion.div
-              className="flex flex-col items-center justify-center p-6 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-lg"
+              className="flex flex-col items-center justify-center p-6 bg-gray-100/30 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-gray-200/40 dark:border-white/10 shadow-lg"
               whileHover={{
                 scale: 1.05,
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                backgroundColor: "rgba(229, 231, 235, 0.5)",
               }}
               transition={{ duration: 0.2 }}
             >
-              <div className="mb-4 bg-blue-500/20 p-3 rounded-full">
+              <div className="mb-4 bg-primary-200/50 dark:bg-blue-500/20 p-3 rounded-full">
                 <CheckCircle
-                  className="w-6 h-6 text-blue-300"
+                  className="w-6 h-6 text-primary-600 dark:text-blue-300"
                   aria-hidden="true"
                 />
               </div>
@@ -300,52 +300,52 @@ const Hero: React.FC = () => {
                 {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
-                    className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 ring-2 ring-primary-900 flex items-center justify-center text-primary-900 font-semibold text-xs shadow-lg"
+                    className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-primary-500 dark:from-blue-400 dark:to-indigo-500 ring-2 ring-white dark:ring-primary-900 flex items-center justify-center text-white font-semibold text-xs shadow-lg"
                     aria-hidden="true"
                   >
                     {i}
                   </div>
                 ))}
               </div>
-              <p className="text-center font-medium">10,000+ satisfied users</p>
+              <p className="text-center font-medium text-gray-900 dark:text-white">10,000+ satisfied users</p>
             </motion.div>
 
             <motion.div
-              className="flex flex-col items-center justify-center p-6 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-lg"
+              className="flex flex-col items-center justify-center p-6 bg-gray-100/30 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-gray-200/40 dark:border-white/10 shadow-lg"
               whileHover={{
                 scale: 1.05,
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                backgroundColor: "rgba(229, 231, 235, 0.5)",
               }}
               transition={{ duration: 0.2 }}
             >
-              <div className="mb-4 bg-indigo-500/20 p-3 rounded-full">
+              <div className="mb-4 bg-primary-200/50 dark:bg-indigo-500/20 p-3 rounded-full">
                 <Shield
-                  className="w-6 h-6 text-indigo-300"
+                  className="w-6 h-6 text-primary-600 dark:text-indigo-300"
                   aria-hidden="true"
                 />
               </div>
-              <h3 className="text-lg font-semibold mb-1">100% Secure</h3>
-              <p className="text-center text-sm text-green-50/80">
+              <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">100% Secure</h3>
+              <p className="text-center text-sm text-gray-600 dark:text-green-50/80">
                 DPDP & DISHA-compliant, end-to-end encrypted
               </p>
             </motion.div>
 
             <motion.div
-              className="flex flex-col items-center justify-center p-6 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-lg"
+              className="flex flex-col items-center justify-center p-6 bg-gray-100/30 dark:bg-white/5 backdrop-blur-md rounded-2xl border border-gray-200/40 dark:border-white/10 shadow-lg"
               whileHover={{
                 scale: 1.05,
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
+                backgroundColor: "rgba(229, 231, 235, 0.5)",
               }}
               transition={{ duration: 0.2 }}
             >
-              <div className="mb-4 bg-teal-500/20 p-3 rounded-full">
+              <div className="mb-4 bg-cyan-200/50 dark:bg-teal-500/20 p-3 rounded-full">
                 <Stethoscope
-                  className="w-6 h-6 text-teal-300"
+                  className="w-6 h-6 text-cyan-600 dark:text-teal-300"
                   aria-hidden="true"
                 />
               </div>
-              <h3 className="text-lg font-semibold mb-1">Expert Verified</h3>
-              <p className="text-center text-sm text-blue-50/80">
+              <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-white">Expert Verified</h3>
+              <p className="text-center text-sm text-gray-600 dark:text-blue-50/80">
                 Results reviewed by medical professionals
               </p>
             </motion.div>
