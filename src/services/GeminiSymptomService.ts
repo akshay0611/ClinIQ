@@ -180,24 +180,91 @@ class GeminiSymptomService {
   }
 
   
+  // Maps a canonical urgency level to the numeric severity the UI consumes.
+  private static readonly SEVERITY_MAP: Record<GeminiResponse['urgencyLevel'], number> = {
+    low: 1,
+    medium: 2,
+    high: 3,
+    emergency: 4
+  };
+
+  // Common ways the model deviates from the exact enum, mapped to the canonical
+  // value. Anything not covered here (or by the canonical keys themselves) is
+  // treated as unrecognized -> we surface an "unable to assess" error rather
+  // than silently downgrading to "low".
+  private static readonly URGENCY_SYNONYMS: Record<string, GeminiResponse['urgencyLevel']> = {
+    urgent: 'emergency',
+    critical: 'emergency',
+    severe: 'emergency',
+    moderate: 'medium',
+    mild: 'low'
+  };
+
+  // Normalize the model's urgencyLevel: trim + lowercase, then resolve canonical
+  // values and known synonyms. Returns null if the value cannot be safely
+  // interpreted, so the caller can fail to a validation state instead of
+  // guessing a clinical severity from malformed output.
+  private normalizeUrgencyLevel(raw: unknown): GeminiResponse['urgencyLevel'] | null {
+    if (typeof raw !== 'string') {
+      return null;
+    }
+    const value = raw.trim().toLowerCase();
+    if (value in GeminiSymptomService.SEVERITY_MAP) {
+      return value as GeminiResponse['urgencyLevel'];
+    }
+    if (value in GeminiSymptomService.URGENCY_SYNONYMS) {
+      return GeminiSymptomService.URGENCY_SYNONYMS[value];
+    }
+    return null;
+  }
+
+  // Runtime validation that the parsed object actually matches the shape the
+  // `as GeminiResponse` cast only promises at compile time. Throws a specific
+  // error so the UI can show a meaningful retry/consult state.
+  private validateGeminiResponse(resp: GeminiResponse): void {
+    if (!resp || typeof resp !== 'object') {
+      throw new Error('Symptom analysis returned an empty or malformed result.');
+    }
+    if (!Array.isArray(resp.possibleConditions) || resp.possibleConditions.length === 0) {
+      throw new Error('Symptom analysis did not return any possible conditions.');
+    }
+    const everyConditionValid = resp.possibleConditions.every(
+      (c) => c && typeof c.name === 'string' && typeof c.description === 'string'
+    );
+    if (!everyConditionValid) {
+      throw new Error('Symptom analysis returned an incomplete condition entry.');
+    }
+    if (!Array.isArray(resp.recommendations)) {
+      throw new Error('Symptom analysis did not return recommendations.');
+    }
+  }
+
   private processGeminiResponse(geminiResponse: GeminiResponse, originalSymptoms: string): SymptomResult {
-    
-    const severityMap: Record<string, number> = {
-      'low': 1,
-      'medium': 2,
-      'high': 3,
-      'emergency': 4
-    };
-    
-   
+    // Validate the parsed shape before consuming any fields, so a
+    // malformed-but-successful response surfaces a clear error instead of
+    // crashing on .map or silently dropping data.
+    this.validateGeminiResponse(geminiResponse);
+
+    // Resolve urgency safely. An unrecognized value is NOT downgraded to "low";
+    // it raises a validation error so the user is told the result could not be
+    // assessed rather than being shown a potentially dangerous "mild" reading.
+    const normalizedUrgency = this.normalizeUrgencyLevel(geminiResponse.urgencyLevel);
+    if (normalizedUrgency === null) {
+      throw new Error(
+        `Unable to assess urgency from the analysis (received: ${JSON.stringify(
+          geminiResponse.urgencyLevel
+        )}). Please try again or consult a doctor.`
+      );
+    }
+
     return {
-      summary: this.generateSummary(geminiResponse, originalSymptoms),
+      summary: this.generateSummary({ ...geminiResponse, urgencyLevel: normalizedUrgency }, originalSymptoms),
       possibleConditions: geminiResponse.possibleConditions.map(condition => ({
         name: condition.name,
-        probability: condition.probability * 100, 
+        probability: condition.probability * 100,
         description: condition.description
       })),
-      severity: severityMap[geminiResponse.urgencyLevel] || 1,
+      severity: GeminiSymptomService.SEVERITY_MAP[normalizedUrgency],
       recommendations: geminiResponse.recommendations,
       requiresAttention: geminiResponse.requiresAttention,
       disclaimer: geminiResponse.disclaimer,
