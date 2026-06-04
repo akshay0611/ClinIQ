@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -18,33 +18,6 @@ import {
 import Button from "../common/Button";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
-
-const Navbar: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const { pathname } = useLocation();
-  const { currentUser, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
-
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
-
-  const closeMenus = () => {
-    setIsMenuOpen(false);
-    setIsProfileOpen(false);
-  };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const offset = window.scrollY;
-      setScrolled(offset > 20);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   const navItems = [
     { name: "Home", path: "/", icon: <Home size={16} /> },
     {
@@ -57,7 +30,63 @@ const Navbar: React.FC = () => {
     { name: "About", path: "/about", icon: <Info size={16} /> },
   ];
 
+const Navbar: React.FC = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [pillStyle, setPillStyle] = useState<{
+    left: number;
+    width: number;
+    opacity: number;
+  }>({ left: 0, width: 0, opacity: 0 });
+
+  const { pathname } = useLocation();
+  const { currentUser, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
+  const closeMenus = () => {
+    setIsMenuOpen(false);
+    setIsProfileOpen(false);
+  };
+
+
   const isActive = (path: string) => pathname === path;
+  // One ref per nav item
+  const navRefs = useRef<(HTMLAnchorElement | null)[]>([]);
+  // Ref for the nav container the pill sits inside
+  const navContainerRef = useRef<HTMLDivElement>(null);
+
+  // Measure and move the pill whenever pathname changes
+  useEffect(() => {
+    const activeIndex = navItems.findIndex((item) => item.path === pathname);
+    if (activeIndex === -1) {
+      setPillStyle((prev) => ({ ...prev, opacity: 0 }));
+      return;
+    }
+
+    const activeEl = navRefs.current[activeIndex];
+    const containerEl = navContainerRef.current;
+    if (!activeEl || !containerEl) return;
+
+    // offsetLeft is relative to the offsetParent — scroll-independent
+    const containerRect = containerEl.getBoundingClientRect();
+    const activeRect = activeEl.getBoundingClientRect();
+
+    setPillStyle({
+      // Position relative to container, not viewport — scroll doesn't affect this
+      left: activeRect.left - containerRect.left,
+      width: activeRect.width,
+      opacity: 1,
+    });
+  }, [pathname]);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navbarVariants = {
     initial: { opacity: 0, y: -20 },
@@ -133,20 +162,33 @@ const Navbar: React.FC = () => {
           </div>
         </Link>
 
-        <div className="hidden lg:flex items-center space-x-1">
+        <div ref={navContainerRef} className="hidden lg:flex items-center space-x-1 relative">
+          <motion.div
+            className="absolute top-0 h-full bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl shadow-lg shadow-primary-500/25 dark:shadow-primary-400/25 -z-10 pointer-events-none"
+            animate={{
+              left: pillStyle.left,
+              width: pillStyle.width,
+              opacity: pillStyle.opacity,
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 400,
+              damping: 30,
+            }}
+          />
+
           {navItems.map((item, index) => (
             <motion.div
               key={item.path}
               custom={index}
               variants={menuItemVariants}
-              initial="hidden"
-              animate="visible"
             >
               <Link
+                ref={(el) => { navRefs.current[index] = el; }}
                 to={item.path}
-                className={`relative px-4 py-2.5 rounded-xl text-sm font-medium flex items-center space-x-2 transition-all duration-300 group ${
+                className={`relative px-4 py-2.5 rounded-xl text-sm font-medium flex items-center space-x-2 transition-colors duration-200 group ${
                   isActive(item.path)
-                    ? "text-white bg-gradient-to-r from-primary-500 to-blue-500 shadow-lg shadow-primary-500/25 dark:shadow-primary-400/25"
+                    ? "text-white"
                     : "text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/50"
                 }`}
               >
@@ -160,14 +202,6 @@ const Navbar: React.FC = () => {
                   {item.icon}
                 </span>
                 <span>{item.name}</span>
-                {isActive(item.path) && (
-                  <motion.div
-                    layoutId="activeIndicator"
-                    className="absolute inset-0 bg-gradient-to-r from-primary-500 to-blue-500 rounded-xl -z-10"
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  />
-                )}
               </Link>
             </motion.div>
           ))}
@@ -215,10 +249,10 @@ const Navbar: React.FC = () => {
                   <img
                     src={currentUser.profilePicture}
                     alt={currentUser.name}
-                    className="w-8 h-8 rounded-full object-cover border-2 border-primary-200 dark:border-primary-700 transition-colors duration-200"
+                    className="w-8 h-8 rounded-full object-cover border-2 border-primary-200 dark:border-primary-700"
                   />
                 ) : (
-                  <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full flex items-center justify-center shadow-md transition-shadow duration-200">
+                  <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full flex items-center justify-center shadow-md">
                     <span className="text-white font-medium text-sm">
                       {currentUser.name
                         ? currentUser.name.charAt(0).toUpperCase()
@@ -350,7 +384,7 @@ const Navbar: React.FC = () => {
                 >
                   <Link
                     to={item.path}
-                    className={`flex items-center px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
+                    className={`flex items-center px-4 py-3 rounded-xl text-base font-medium transition-colors duration-200 ${
                       isActive(item.path)
                         ? "text-white bg-gradient-to-r from-primary-500 to-blue-500 shadow-lg shadow-primary-500/25"
                         : "text-gray-700 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/50"
