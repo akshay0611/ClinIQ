@@ -12,12 +12,12 @@ jobs:
     permissions:
       pull-requests: write
       issues: write
+      contents: read
 
     steps:
       - name: Post thank you comment
         uses: actions/github-script@v9
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = context.issue.number;
             const owner = context.repo.owner;
