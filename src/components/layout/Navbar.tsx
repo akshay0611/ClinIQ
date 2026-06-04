@@ -28,7 +28,7 @@ import { useTheme } from "../../context/ThemeContext";
     { name: "Find Doctors", path: "/doctors", icon: <Users size={16} /> },
     { name: "Hospitals", path: "/hospitals", icon: <Hospital size={16} /> },
     { name: "About", path: "/about", icon: <Info size={16} /> },
-  ];
+  ] as const;
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -249,10 +249,10 @@ const Navbar: React.FC = () => {
                   <img
                     src={currentUser.profilePicture}
                     alt={currentUser.name}
-                    className="w-8 h-8 rounded-full object-cover border-2 border-primary-200 dark:border-primary-700"
+                    className="w-8 h-8 rounded-full object-cover border-2 border-primary-200 dark:border-primary-700 transition-colors duration-200"
                   />
                 ) : (
-                  <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full flex items-center justify-center shadow-md">
+                  <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-blue-500 rounded-full flex items-center justify-center shadow-md transition-shadow duration-200">
                     <span className="text-white font-medium text-sm">
                       {currentUser.name
                         ? currentUser.name.charAt(0).toUpperCase()
