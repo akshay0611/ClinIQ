@@ -10,6 +10,8 @@ import Navbar from "./components/layout/Navbar";
 import Footer from "./components/layout/Footer";
 import BackToTop from "./components/common/BackToTop";
 import PageLoader from "./components/common/PageLoader";
+import ProtectedRoute from "./components/common/ProtectedRoute";
+import AutoScrollToTop from "./components/common/autoScrollToTop";
 
 // Pages (lazy-loaded so each route is split into its own chunk)
 const Home = lazy(() => import("./pages/Home"));
@@ -37,11 +39,13 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const Profile = lazy(() => import("./pages/Profile"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
+
 function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
         <Router>
+          <AutoScrollToTop />
           <div className="flex flex-col min-h-screen bg-neutral-50 dark:bg-neutral-900 text-neutral-900 dark:text-white">
             <Navbar />
 
@@ -52,8 +56,8 @@ function App() {
                   <Route path="/symptom-check" element={<SymptomChecker />} />
                   <Route path="/doctors" element={<Doctors />} />
                   <Route path="/doctors/:id" element={<DoctorProfilePage />} />
-                  <Route path="/appointment/:id" element={<Appointment />} />
-                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/appointment/:id" element={<ProtectedRoute><Appointment /></ProtectedRoute>} />
+                  <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                   <Route path="/hospitals" element={<Hospitals />} />
                   <Route path="/faq" element={<Faq />} />
                   <Route path="/contact" element={<Contact />} />
