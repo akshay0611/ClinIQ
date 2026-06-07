@@ -71,12 +71,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     getSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session) {
-        setCurrentUser(await buildUserFromSession(session));
-      } else {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!session) {
         setCurrentUser(null);
+        return;
       }
+
+      // Supabase fires onAuthStateChange on TOKEN_REFRESHED (roughly hourly).
+      // Rebuilding the user on those events would re-run the profiles role
+      // lookup every time for no reason, since the identity hasn't changed.
+      // Only rebuild (and re-query the role) on events that can actually
+      // change who the user is or their profile data.
+      if (event === 'TOKEN_REFRESHED') {
+        return;
+      }
+
+      setCurrentUser(await buildUserFromSession(session));
     });
 
     return () => {
