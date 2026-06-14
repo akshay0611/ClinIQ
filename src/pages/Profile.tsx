@@ -134,7 +134,12 @@ export default function Profile(): JSX.Element {
           return;
         }
 
-        const role = baseProfileData?.role || "patient";
+        // Role now comes from AuthContext (currentUser.role), which is the
+        // single source of truth resolved once in buildUserFromSession.
+        // We still fetch the full profile row below for the form fields
+        // (name, DOB, blood type, etc.), but we no longer derive role from it,
+        // so the context and this page can't disagree on the user's role.
+        const role = currentUser.role || "patient";
         setUserRole(role);
         setProfile(
           baseProfileData || {

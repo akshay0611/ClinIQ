@@ -13,7 +13,8 @@ import {
   Linkedin,
   Shield,
   Globe,
-  AlertCircle
+  AlertCircle,
+  FileText
 } from 'lucide-react';
 import Button from '../common/Button';
 
@@ -390,6 +391,15 @@ const Footer: React.FC = () => {
                 <Shield size={14} className="mr-1" />
                 Privacy Policy
               </Link>
+              <a
+                href="https://github.com/akshay0611/ClinIQ/blob/main/PRIVACY_POLICY.md"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-700 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center"
+              >
+                <FileText size={14} className="mr-1" />
+                AI Data Policy
+              </a>
               <Link to="/termsofservice" className="text-gray-700 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center">
                 <AlertCircle size={14} className="mr-1" />
                 Terms of Service

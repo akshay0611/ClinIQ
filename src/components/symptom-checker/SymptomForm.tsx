@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Mic, Brain, PencilIcon, Loader2 } from 'lucide-react';
 import TextArea from '../common/TextArea';
+import AiDisclaimerBanner from './AiDisclaimerBanner';
 
 interface SpeechRecognition extends EventTarget {
   continuous: boolean;
@@ -65,6 +66,7 @@ const SymptomForm: React.FC<SymptomFormProps> = ({
   const [error, setError] = useState('');
   const [speechSupported, setSpeechSupported] = useState(true);
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
+  const [disclaimerAgreed, setDisclaimerAgreed] = useState(false);
   const demoExamples = [
     "I've had a persistent cough and sore throat for the past 3 days, with mild fever in the evenings.",
     "I have severe headache in the front of my head and sensitivity to light for the last 6 hours.",
@@ -234,6 +236,11 @@ const SymptomForm: React.FC<SymptomFormProps> = ({
           </div>
         </div>
         
+        <AiDisclaimerBanner
+          agreed={disclaimerAgreed}
+          onAgreementChange={setDisclaimerAgreed}
+        />
+
         <div className="flex items-center justify-between mt-6">
           {speechSupported ? (
             <motion.button
@@ -266,9 +273,11 @@ const SymptomForm: React.FC<SymptomFormProps> = ({
             type="submit"
             whileHover={{ scale: disabled ? 1 : 1.05 }}
             whileTap={{ scale: disabled ? 1 : 0.95 }}
-            disabled={isLoading || !symptoms.trim() || disabled}
+            disabled={isLoading || !symptoms.trim() || disabled || !disclaimerAgreed}
+            aria-disabled={isLoading || !symptoms.trim() || disabled || !disclaimerAgreed}
+            title={!disclaimerAgreed ? 'Please acknowledge the AI disclaimer above to continue' : undefined}
             className={`flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-medium shadow-lg
-              ${isLoading || !symptoms.trim() || disabled
+              ${isLoading || !symptoms.trim() || disabled || !disclaimerAgreed
                 ? 'bg-neutral-400 dark:bg-neutral-700 text-white cursor-not-allowed'
                 : 'bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 text-white shadow-blue-500/20 dark:shadow-blue-700/30 hover:shadow-xl hover:shadow-blue-500/30'
               }`}
@@ -297,18 +306,7 @@ const SymptomForm: React.FC<SymptomFormProps> = ({
         </div>
       )}
       
-      <div className="mt-8 bg-neutral-50 dark:bg-neutral-800/50 rounded-lg p-4 border border-neutral-100 dark:border-neutral-700/50">
-        <div className="flex items-start">
-          <div className="shrink-0 mt-1 text-blue-500">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path fillRule="evenodd" d="M18 10a88 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clipRule="evenodd"></path>
-            </svg>
-          </div>
-          <p className="ml-3 text-sm text-neutral-500 dark:text-neutral-400">
-            This tool is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician with any questions you have regarding a medical condition.
-          </p>
-        </div>
-      </div>
+
     </motion.div>
   );
 };
