@@ -13,6 +13,7 @@ import {
   // BrainIcon,
   AlertTriangleIcon,
   ClockIcon,
+  Trash2,
 } from "lucide-react";
 import LocalStorageService, {
   SymptomHistoryEntry,
@@ -121,6 +122,19 @@ const SymptomChecker: React.FC = () => {
     });
   };
 
+  const clearConversation = () => {
+    // Hard-delete all session data from localStorage
+    LocalStorageService.clearSymptomHistory();
+    setResult(null);
+    setSymptoms("");
+    setSelectedHistoryEntry(null);
+    setError(null);
+    document.getElementById("symptom-form-section")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-neutral-50 via-white to-blue-50 dark:from-neutral-950 dark:via-neutral-900 dark:to-blue-950">
       {/* Background Blobs */}
@@ -131,8 +145,8 @@ const SymptomChecker: React.FC = () => {
         <div className="absolute bottom-1/4 left-1/3 w-48 h-48 bg-purple-400/10 rounded-full blur-3xl" />
       </div>
 
-      {/* History Button */}
-      <div className="fixed top-20 right-4 z-40">
+      {/* History & Clear Buttons */}
+      <div className="fixed top-20 right-4 z-40 flex flex-col gap-2 items-end">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -141,6 +155,16 @@ const SymptomChecker: React.FC = () => {
         >
           <ClockIcon className="w-4 h-4 mr-2" />
           History
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={clearConversation}
+          title="Hard-delete all session data from this device"
+          className="flex items-center px-4 py-2 bg-white dark:bg-neutral-800 rounded-full shadow-lg shadow-red-900/10 dark:shadow-red-900/30 border border-red-100 dark:border-red-800/50 text-red-500 dark:text-red-400 font-medium"
+        >
+          <Trash2 className="w-4 h-4 mr-2" />
+          Clear Data
         </motion.button>
       </div>
 
