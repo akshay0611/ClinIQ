@@ -44,6 +44,7 @@ export async function getPincodeCoordinates(pincode: string): Promise<Coordinate
 }
 
 // Get hospitals near coordinates using Overpass API
+// FIX #69: Added User-Agent header for Overpass API compatibility
 export async function getHospitalsNearby(coords: Coordinates, radius: number = 5000): Promise<OSMHospital[]> {
   const query = `
     [out:json][timeout:25];
@@ -62,6 +63,9 @@ export async function getHospitalsNearby(coords: Coordinates, radius: number = 5
 
   const response = await fetch("https://overpass-api.de/api/interpreter", {
     method: "POST",
+    headers: {
+      "User-Agent": "ClinIQ/1.0",
+    },
     body: query,
   });
 
