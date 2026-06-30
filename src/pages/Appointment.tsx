@@ -5,6 +5,7 @@ import { MapPin, Star, Calendar, Clock, CheckCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Doctor } from '../types';
 import { mockDoctors } from '../services/mockData';
+import { AppointmentValidationService } from '../services/AppointmentValidationService';
 import AppointmentCalendar from '../components/appointment/AppointmentCalendar';
 import Modal from '../components/common/Modal';
 import Button from '../components/common/Button';
@@ -46,6 +47,20 @@ const Appointment: React.FC = () => {
   };
 
   const confirmBooking = () => {
+    if (!selectedDate || !selectedTime || !doctor) return;
+
+    const validation = AppointmentValidationService.validateAppointment(
+      selectedDate,
+      selectedTime,
+      doctor.availability
+    );
+
+    if (!validation.isValid) {
+      validation.errors.forEach(err => toast.error(err));
+      setIsConfirmModalOpen(false);
+      return;
+    }
+
     setIsConfirmModalOpen(false);
     
     // Simulate API call to book appointment
