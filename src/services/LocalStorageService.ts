@@ -2,6 +2,8 @@ import { SymptomResult } from '../types';
 
 // Key for storing symptom history in localStorage
 const SYMPTOM_HISTORY_KEY = 'symptom_checker_history';
+// Key for storing encryption key in sessionStorage
+const ENCRYPTION_KEY_NAME = 'symptom_checker_encryption_key';
 
 // Maximum number of entries to store
 const MAX_HISTORY_ENTRIES = 10;
@@ -15,15 +17,87 @@ export interface SymptomHistoryEntry {
 }
 
 class LocalStorageService {
-  /**
-   * Save a symptom check to localStorage
-   */
-  saveSymptomCheck(symptoms: string, result: SymptomResult): void {
-    try {
-      // Get current history
-      const history = this.getSymptomHistory();
+  private keyPromise: Promise<CryptoKey> | null = null;
+
+  private async getEncryptionKey(): Promise<CryptoKey> {
+    if (this.keyPromise) return this.keyPromise;
+
+    this.keyPromise = (async () => {
+      const storedKeyStr = sessionStorage.getItem(ENCRYPTION_KEY_NAME);
+      if (storedKeyStr) {
+        try {
+          const rawKey = Uint8Array.from(atob(storedKeyStr), c => c.charCodeAt(0));
+          return await window.crypto.subtle.importKey(
+            'raw',
+            rawKey,
+            'AES-GCM',
+            true,
+            ['encrypt', 'decrypt']
+          );
+        } catch (e) {
+          console.error('Failed to import key, generating a new one', e);
+        }
+      }
+
+      const key = await window.crypto.subtle.generateKey(
+        { name: 'AES-GCM', length: 256 },
+        true,
+        ['encrypt', 'decrypt']
+      );
+
+      const rawKey = await window.crypto.subtle.exportKey('raw', key);
+      const rawKeyStr = btoa(String.fromCharCode(...new Uint8Array(rawKey)));
+      sessionStorage.setItem(ENCRYPTION_KEY_NAME, rawKeyStr);
       
-      // Create new entry with unique ID
+      // Clear old unreadable data
+      localStorage.removeItem(SYMPTOM_HISTORY_KEY);
+
+      return key;
+    })();
+
+    return this.keyPromise;
+  }
+
+  private async encrypt(text: string): Promise<string> {
+    const key = await this.getEncryptionKey();
+    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+    const encoded = new TextEncoder().encode(text);
+    
+    const ciphertext = await window.crypto.subtle.encrypt(
+      { name: 'AES-GCM', iv },
+      key,
+      encoded
+    );
+
+    const combined = new Uint8Array(iv.length + ciphertext.byteLength);
+    combined.set(iv, 0);
+    combined.set(new Uint8Array(ciphertext), iv.length);
+    
+    return btoa(String.fromCharCode(...combined));
+  }
+
+  private async decrypt(encryptedText: string): Promise<string> {
+    const key = await this.getEncryptionKey();
+    const combined = Uint8Array.from(atob(encryptedText), c => c.charCodeAt(0));
+    const iv = combined.slice(0, 12);
+    const ciphertext = combined.slice(12);
+
+    const decrypted = await window.crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv },
+      key,
+      ciphertext
+    );
+
+    return new TextDecoder().decode(decrypted);
+  }
+
+  /**
+   * Save a symptom check to localStorage securely
+   */
+  async saveSymptomCheck(symptoms: string, result: SymptomResult): Promise<void> {
+    try {
+      const history = await this.getSymptomHistory();
+      
       const newEntry: SymptomHistoryEntry = {
         id: this.generateId(),
         date: new Date().toISOString(),
@@ -31,31 +105,27 @@ class LocalStorageService {
         result
       };
       
-      // Add new entry to the beginning of the array (most recent first)
       history.unshift(newEntry);
-      
-      // Limit to MAX_HISTORY_ENTRIES
       const limitedHistory = history.slice(0, MAX_HISTORY_ENTRIES);
       
-      // Save back to localStorage
-      localStorage.setItem(SYMPTOM_HISTORY_KEY, JSON.stringify(limitedHistory));
-      
+      const encryptedData = await this.encrypt(JSON.stringify(limitedHistory));
+      localStorage.setItem(SYMPTOM_HISTORY_KEY, encryptedData);
     } catch (error) {
       console.error('Error saving to localStorage:', error);
-      // Fail silently - localStorage functionality is non-critical
     }
   }
   
   /**
-   * Get all symptom history entries
+   * Get all symptom history entries securely
    */
-  getSymptomHistory(): SymptomHistoryEntry[] {
+  async getSymptomHistory(): Promise<SymptomHistoryEntry[]> {
     try {
-      const historyJson = localStorage.getItem(SYMPTOM_HISTORY_KEY);
-      if (!historyJson) {
+      const encryptedJson = localStorage.getItem(SYMPTOM_HISTORY_KEY);
+      if (!encryptedJson) {
         return [];
       }
       
+      const historyJson = await this.decrypt(encryptedJson);
       return JSON.parse(historyJson) as SymptomHistoryEntry[];
     } catch (error) {
       console.error('Error retrieving from localStorage:', error);
@@ -64,11 +134,11 @@ class LocalStorageService {
   }
   
   /**
-   * Get a specific symptom check by ID
+   * Get a specific symptom check by ID securely
    */
-  getSymptomCheckById(id: string): SymptomHistoryEntry | null {
+  async getSymptomCheckById(id: string): Promise<SymptomHistoryEntry | null> {
     try {
-      const history = this.getSymptomHistory();
+      const history = await this.getSymptomHistory();
       return history.find(entry => entry.id === id) || null;
     } catch (error) {
       console.error('Error retrieving entry by ID:', error);
@@ -77,16 +147,16 @@ class LocalStorageService {
   }
   
   /**
-   * Delete a specific symptom check by ID
+   * Delete a specific symptom check by ID securely
    */
-  deleteSymptomCheckById(id: string): boolean {
+  async deleteSymptomCheckById(id: string): Promise<boolean> {
     try {
-      const history = this.getSymptomHistory();
+      const history = await this.getSymptomHistory();
       const updatedHistory = history.filter(entry => entry.id !== id);
       
-      // Only update if an item was actually removed
       if (updatedHistory.length < history.length) {
-        localStorage.setItem(SYMPTOM_HISTORY_KEY, JSON.stringify(updatedHistory));
+        const encryptedData = await this.encrypt(JSON.stringify(updatedHistory));
+        localStorage.setItem(SYMPTOM_HISTORY_KEY, encryptedData);
         return true;
       }
       
@@ -100,7 +170,7 @@ class LocalStorageService {
   /**
    * Clear all symptom history
    */
-  clearSymptomHistory(): void {
+  async clearSymptomHistory(): Promise<void> {
     try {
       localStorage.removeItem(SYMPTOM_HISTORY_KEY);
     } catch (error) {
@@ -110,7 +180,6 @@ class LocalStorageService {
   
   /**
    * Generate a simple unique ID for entries
-   * This is a simple implementation - for production, consider using a more robust ID generator
    */
   private generateId(): string {
     return Date.now().toString(36) + Math.random().toString(36).substring(2, 9);

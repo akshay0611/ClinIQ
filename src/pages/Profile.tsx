@@ -184,7 +184,7 @@ export default function Profile(): JSX.Element {
     };
 
     const fetchSymptomData = async () => {
-      const history = LocalStorageService.getSymptomHistory();
+      const history = await LocalStorageService.getSymptomHistory();
       const formattedData: SymptomData[] = history.map((entry) => {
         const severity =
           entry.result.urgency ??
