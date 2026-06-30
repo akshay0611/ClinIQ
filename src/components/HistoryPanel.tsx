@@ -21,27 +21,28 @@ const HistoryPanel: React.FC<HistoryPanelProps> = ({ onClose, onSelect, isOpen }
     }
   }, [isOpen]);
 
-  const loadHistory = () => {
+  const loadHistory = async () => {
     setIsLoading(true);
    
-    setTimeout(() => {
-      const entries = LocalStorageService.getSymptomHistory();
+    try {
+      const entries = await LocalStorageService.getSymptomHistory();
       setHistory(entries);
+    } finally {
       setIsLoading(false);
-    }, 300);
+    }
   };
 
-  const handleDelete = (id: string, e: React.MouseEvent) => {
+  const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation(); 
-    const success = LocalStorageService.deleteSymptomCheckById(id);
+    const success = await LocalStorageService.deleteSymptomCheckById(id);
     if (success) {
       setHistory(history.filter(entry => entry.id !== id));
     }
   };
 
-  const handleClearAll = () => {
+  const handleClearAll = async () => {
     if (window.confirm('Are you sure you want to clear all history?')) {
-      LocalStorageService.clearSymptomHistory();
+      await LocalStorageService.clearSymptomHistory();
       setHistory([]);
     }
   };

@@ -88,7 +88,7 @@ const SymptomChecker: React.FC = () => {
 
       setResult(analysisResult);
 
-      LocalStorageService.saveSymptomCheck(submittedSymptoms, analysisResult);
+      await LocalStorageService.saveSymptomCheck(submittedSymptoms, analysisResult);
     } catch (err: unknown) {
       console.error("Error analyzing symptoms:", err);
       setError(
@@ -122,9 +122,9 @@ const SymptomChecker: React.FC = () => {
     });
   };
 
-  const clearConversation = () => {
+  const clearConversation = async () => {
     // Hard-delete all session data from localStorage
-    LocalStorageService.clearSymptomHistory();
+    await LocalStorageService.clearSymptomHistory();
     setResult(null);
     setSymptoms("");
     setSelectedHistoryEntry(null);
