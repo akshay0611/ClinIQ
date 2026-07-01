@@ -14,6 +14,7 @@ import {
   Sparkles,
   Sun,
   Moon,
+  Eye,
 } from "lucide-react";
 import Button from "../common/Button";
 import { useAuth } from "../../context/AuthContext";
@@ -218,16 +219,6 @@ const Navbar: React.FC = () => {
             <AnimatePresence mode="wait">
               {theme === 'dark' ? (
                 <motion.div
-                  key="sun"
-                  initial={{ opacity: 0, rotate: -90 }}
-                  animate={{ opacity: 1, rotate: 0 }}
-                  exit={{ opacity: 0, rotate: 90 }}
-                  transition={{ duration: 0.15 }}
-                >
-                  <Sun size={20} />
-                </motion.div>
-              ) : (
-                <motion.div
                   key="moon"
                   initial={{ opacity: 0, rotate: 90 }}
                   animate={{ opacity: 1, rotate: 0 }}
@@ -235,6 +226,26 @@ const Navbar: React.FC = () => {
                   transition={{ duration: 0.15 }}
                 >
                   <Moon size={20} />
+                </motion.div>
+              ) : theme === 'grayscale' ? (
+                <motion.div
+                  key="eye"
+                  initial={{ opacity: 0, rotate: 90 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  exit={{ opacity: 0, rotate: -90 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <Eye size={20} />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="sun"
+                  initial={{ opacity: 0, rotate: -90 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  exit={{ opacity: 0, rotate: 90 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  <Sun size={20} />
                 </motion.div>
               )}
             </AnimatePresence>

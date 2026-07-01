@@ -47,3 +47,8 @@
     transform: translateY(-15px) rotate(15deg);
   }
 }
+
+/* Accessibility Theme */
+html.grayscale-theme {
+  filter: grayscale(100%);
+}
