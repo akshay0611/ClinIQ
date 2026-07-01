@@ -1,9 +1,11 @@
-declare namespace NodeJS {
-  interface ProcessEnv {
-    readonly REACT_APP_GEMINI_API_KEY?: string;
-  }
+/// <reference types="vite/client" />
+
+interface ImportMetaEnv {
+  readonly VITE_GEMINI_API_KEY?: string;
+  readonly VITE_SUPABASE_URL?: string;
+  readonly VITE_SUPABASE_ANON_KEY?: string;
 }
 
-declare const process: {
-  env: NodeJS.ProcessEnv;
-};
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
