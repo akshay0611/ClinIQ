@@ -30,7 +30,7 @@ export default function Contact() {
     try {
       const res = await sendContactForm(data);
       if (res.success) {
-        toast.success('Message sent successfully!');
+        toast.success('Demo Mode: Message logged to console!');
         reset();
       } else {
         toast.error('Failed to send message. Please try again.');
