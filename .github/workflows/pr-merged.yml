@@ -1,7 +1,7 @@
 name: Thank You for Your Contribution
 
 on:
-  pull_request:
+  pull_request_target:
     types: [closed]
 
 jobs:
