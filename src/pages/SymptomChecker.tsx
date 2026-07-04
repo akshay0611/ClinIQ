@@ -334,6 +334,17 @@ const SymptomChecker: React.FC = () => {
                 transition={{ duration: 0.7 }}
                 className="mt-8"
               >
+                {USE_MOCK_DATA && (
+                  <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800/50 rounded-xl text-yellow-800 dark:text-yellow-300 flex items-start">
+                    <AlertTriangleIcon className="w-6 h-6 mr-3 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-semibold mb-1">Demo Mode Active</h4>
+                      <p className="text-sm">
+                        The conditions, urgency, and recommendations below are <strong>fabricated placeholder data</strong> because no Gemini API key is configured. Please configure an API key to receive genuine symptom analysis.
+                      </p>
+                    </div>
+                  </div>
+                )}
                 <SymptomResults result={result} symptoms={symptoms} />
               </motion.div>
             )}
