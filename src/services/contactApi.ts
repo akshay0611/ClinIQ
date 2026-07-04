@@ -8,9 +8,12 @@ export interface ContactFormPayload {
   message: string;
 }
 
-export async function sendContactForm(): Promise<{ success: boolean }> {
+export async function sendContactForm(data: ContactFormPayload): Promise<{ success: boolean }> {
   // Simulate a network call (replace with real API call in production)
   await new Promise(res => setTimeout(res, 1200));
+  
+  console.log('Demo mode: Contact form data received:', data);
+  
   // Always succeed for demo
   return { success: true };
 }
