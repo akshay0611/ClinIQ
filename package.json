@@ -22,7 +22,6 @@
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
     "lucide-react": "^0.513.0",
-    "mongodb": "^6.16.0",
     "react": "^18.3.1",
     "react-calendar": "^4.8.0",
     "react-dom": "^18.3.1",
@@ -49,8 +48,15 @@
     "vitest": "^2.1.0"
   },
   "description": "ClinIQ is an innovative full-stack healthtech platform that leverages AI to provide accurate symptom analysis, doctor discovery, and appointment booking — all in one place. Designed for the **FullStack Forge Hackathon**, ClinIQ blends powerful AI with scalable architecture to solve real-world healthcare challenges.",
-  "main": "eslint.config.js",
   "keywords": [],
-  "author": "",
+  "author": "Akshay Kumar",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/akshay0611/ClinIQ.git"
+  },
+  "bugs": {
+    "url": "https://github.com/akshay0611/ClinIQ/issues"
+  },
+  "homepage": "https://github.com/akshay0611/ClinIQ#readme",
   "license": "MIT"
 }
