@@ -23,7 +23,7 @@ class LocalStorageService {
     if (this.keyPromise) return this.keyPromise;
 
     this.keyPromise = (async () => {
-      const storedKeyStr = sessionStorage.getItem(ENCRYPTION_KEY_NAME);
+      const storedKeyStr = localStorage.getItem(ENCRYPTION_KEY_NAME);
       if (storedKeyStr) {
         try {
           const rawKey = Uint8Array.from(atob(storedKeyStr), c => c.charCodeAt(0));
@@ -47,7 +47,7 @@ class LocalStorageService {
 
       const rawKey = await window.crypto.subtle.exportKey('raw', key);
       const rawKeyStr = btoa(String.fromCharCode(...new Uint8Array(rawKey)));
-      sessionStorage.setItem(ENCRYPTION_KEY_NAME, rawKeyStr);
+      localStorage.setItem(ENCRYPTION_KEY_NAME, rawKeyStr);
       
       // Clear old unreadable data
       localStorage.removeItem(SYMPTOM_HISTORY_KEY);
