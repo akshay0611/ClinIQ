@@ -60,8 +60,8 @@ export default class PDFExportService {
       doc.setFontSize(11);
       doc.setFont('helvetica', 'normal');
       
-      // Handle multi-line text for symptoms
-      const splitSymptoms = doc.splitTextToSize(symptoms, contentWidth);
+      // Handle multi-line text for symptoms (subtract buffer for Safari)
+      const splitSymptoms = doc.splitTextToSize(symptoms, contentWidth - 10);
       doc.text(splitSymptoms, margin, yPos);
       
       // Update y position based on the height of the symptoms text
@@ -121,10 +121,15 @@ export default class PDFExportService {
         result.possibleConditions.forEach((condition, index) => {
           yPos += 7;
           doc.setFont('helvetica', 'normal');
-          doc.text(condition.name, margin + 3, yPos);
+          
+          // Split condition name if it's too long
+          const splitName = doc.splitTextToSize(condition.name, contentWidth - 40);
+          doc.text(splitName, margin + 3, yPos);
           
           const probability = `${condition.probability?.toFixed(0) || "87"}%`;
           doc.text(probability, pageWidth - margin - 15, yPos, { align: 'right' });
+          
+          yPos += (splitName.length > 1 ? (splitName.length - 1) * 5 : 0);
           
           // Add a light line between conditions
           if (index < result.possibleConditions!.length - 1) {
@@ -160,7 +165,7 @@ export default class PDFExportService {
           const bulletPoint = `${index + 1}. `;
           doc.text(bulletPoint, margin, yPos);
           
-          const recText = doc.splitTextToSize(recommendation, contentWidth - 7);
+          const recText = doc.splitTextToSize(recommendation, contentWidth - 17);
           doc.text(recText, margin + 7, yPos);
           
           yPos += (recText.length * 5) + 5;
@@ -191,7 +196,7 @@ export default class PDFExportService {
         ? "Professional medical consultation recommended. Based on your symptom analysis, you should consult a healthcare provider."
         : "Medical consultation may not be necessary at this time. Monitor your symptoms and seek medical attention if they worsen.";
       
-      const splitConsultation = doc.splitTextToSize(consultationText, contentWidth);
+      const splitConsultation = doc.splitTextToSize(consultationText, contentWidth - 10);
       doc.text(splitConsultation, margin, yPos);
       yPos += (splitConsultation.length * 5) + 15;
 
@@ -221,8 +226,10 @@ export default class PDFExportService {
           doc.addPage();
           yPos = 20;
         }
-        doc.text(`• ${food}`, margin + 3, yPos);
-        yPos += 7;
+        
+        const splitFood = doc.splitTextToSize(`• ${food}`, contentWidth - 10);
+        doc.text(splitFood, margin + 3, yPos);
+        yPos += (splitFood.length * 5) + 2;
       });
 
       // Foods to Avoid
@@ -238,8 +245,10 @@ export default class PDFExportService {
           doc.addPage();
           yPos = 20;
         }
-        doc.text(`• ${food}`, margin + 3, yPos);
-        yPos += 7;
+        
+        const splitAvoid = doc.splitTextToSize(`• ${food}`, contentWidth - 10);
+        doc.text(splitAvoid, margin + 3, yPos);
+        yPos += (splitAvoid.length * 5) + 2;
       });
 
       // Hydration
@@ -250,7 +259,7 @@ export default class PDFExportService {
 
       doc.setFont('helvetica', 'normal');
       const hydration = result.diet?.hydration || 'Drink plenty of water throughout the day. Aim for 8-10 glasses daily.';
-      const splitHydration = doc.splitTextToSize(hydration, contentWidth);
+      const splitHydration = doc.splitTextToSize(hydration, contentWidth - 10);
       doc.text(splitHydration, margin, yPos);
       yPos += (splitHydration.length * 5) + 10;
 
@@ -278,8 +287,10 @@ export default class PDFExportService {
           doc.addPage();
           yPos = 20;
         }
-        doc.text(`• ${med}`, margin + 3, yPos);
-        yPos += 7;
+        
+        const splitMed = doc.splitTextToSize(`• ${med}`, contentWidth - 10);
+        doc.text(splitMed, margin + 3, yPos);
+        yPos += (splitMed.length * 5) + 2;
       });
 
       // Supplements
@@ -295,8 +306,10 @@ export default class PDFExportService {
           doc.addPage();
           yPos = 20;
         }
-        doc.text(`• ${supp}`, margin + 3, yPos);
-        yPos += 7;
+        
+        const splitSupp = doc.splitTextToSize(`• ${supp}`, contentWidth - 10);
+        doc.text(splitSupp, margin + 3, yPos);
+        yPos += (splitSupp.length * 5) + 2;
       });
 
       // Precautions
@@ -307,7 +320,7 @@ export default class PDFExportService {
 
       doc.setFont('helvetica', 'normal');
       const precautions = result.medications?.precautions || 'Always read medication labels carefully and follow dosage instructions. Report any adverse reactions to your healthcare provider immediately.';
-      const splitPrecautions = doc.splitTextToSize(precautions, contentWidth);
+      const splitPrecautions = doc.splitTextToSize(precautions, contentWidth - 10);
       doc.text(splitPrecautions, margin, yPos);
       yPos += (splitPrecautions.length * 5) + 15;
 
@@ -327,7 +340,7 @@ export default class PDFExportService {
       doc.setFont('helvetica', 'normal');
       const disclaimer = result.disclaimer || "This analysis is for informational purposes only and is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.";
       
-      const splitDisclaimer = doc.splitTextToSize(disclaimer, contentWidth - 6);
+      const splitDisclaimer = doc.splitTextToSize(disclaimer, contentWidth - 10);
       doc.text(splitDisclaimer, margin + 3, yPos + 5);
       
       // Footer
