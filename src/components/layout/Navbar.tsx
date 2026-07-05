@@ -44,12 +44,18 @@ const Navbar: React.FC = () => {
   const { pathname } = useLocation();
   const { currentUser, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { i18n } = useTranslation();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
   const closeMenus = () => {
     setIsMenuOpen(false);
     setIsProfileOpen(false);
+  };
+
+  const toggleLanguage = () => {
+    const nextLang = i18n.language.startsWith('en') ? 'es' : i18n.language.startsWith('es') ? 'hi' : 'en';
+    i18n.changeLanguage(nextLang);
   };
 
 
@@ -209,6 +215,17 @@ const Navbar: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-2">
+          <motion.button
+            onClick={toggleLanguage}
+            className="flex items-center p-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/50 transition-all duration-200"
+            aria-label="Toggle language"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Globe size={20} className="mr-1" />
+            <span className="text-xs font-bold uppercase">{i18n.language.substring(0, 2)}</span>
+          </motion.button>
+          
           <motion.button
             onClick={toggleTheme}
             className="p-2.5 rounded-xl text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-gray-100/80 dark:hover:bg-gray-800/50 transition-all duration-200"
