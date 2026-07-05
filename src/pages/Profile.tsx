@@ -15,6 +15,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../services/supabaseClient";
 import ProfileSkeleton from "../components/profile/ProfileSkeleton";
+import BMICalculator from "../components/profile/BMICalculator";
 import LocalStorageService from "../services/LocalStorageService";
 
 interface ProfileData {
@@ -558,40 +559,44 @@ export default function Profile(): JSX.Element {
             className="lg:col-span-1 space-y-8"
           >
             {userRole === "patient" ? (
-              <div className="bg-white dark:bg-neutral-800/90 backdrop-blur-sm rounded-2xl border border-blue-50 dark:border-neutral-700/80 shadow-xl shadow-blue-900/5 dark:shadow-blue-900/20 p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <CalendarIcon className="w-6 h-6 text-blue-500" />
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                      Appointments
-                    </h2>
+              <>
+                <div className="bg-white dark:bg-neutral-800/90 backdrop-blur-sm rounded-2xl border border-blue-50 dark:border-neutral-700/80 shadow-xl shadow-blue-900/5 dark:shadow-blue-900/20 p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-3">
+                      <CalendarIcon className="w-6 h-6 text-blue-500" />
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                        Appointments
+                      </h2>
+                    </div>
                   </div>
-                </div>
 
-                <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl border border-blue-100 dark:border-blue-800/50">
-                  <div className="flex items-center gap-3 mb-2">
-                    <BellIcon className="w-5 h-5 text-blue-500" />
-                    <h3 className="font-semibold text-gray-900 dark:text-white">
-                      Next Appointment
-                    </h3>
+                  <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl border border-blue-100 dark:border-blue-800/50">
+                    <div className="flex items-center gap-3 mb-2">
+                      <BellIcon className="w-5 h-5 text-blue-500" />
+                      <h3 className="font-semibold text-gray-900 dark:text-white">
+                        Next Appointment
+                      </h3>
+                    </div>
+                    <p className="text-gray-700 dark:text-gray-300">
+                      April 25, 2025 - 10:00 AM
+                    </p>
+                    <p className="text-gray-700 dark:text-gray-300">
+                      Dr. Emily Chen - General Checkup
+                    </p>
                   </div>
-                  <p className="text-gray-700 dark:text-gray-300">
-                    April 25, 2025 - 10:00 AM
-                  </p>
-                  <p className="text-gray-700 dark:text-gray-300">
-                    Dr. Emily Chen - General Checkup
-                  </p>
-                </div>
 
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 text-white font-medium shadow-lg shadow-blue-500/20 dark:shadow-blue-700/30 flex items-center justify-center gap-2 transition-all duration-200 hover:shadow-xl hover:shadow-blue-500/30"
-                >
-                  <CalendarIcon className="w-5 h-5" />
-                  Book New Appointment
-                </motion.button>
-              </div>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 text-white font-medium shadow-lg shadow-blue-500/20 dark:shadow-blue-700/30 flex items-center justify-center gap-2 transition-all duration-200 hover:shadow-xl hover:shadow-blue-500/30"
+                  >
+                    <CalendarIcon className="w-5 h-5" />
+                    Book New Appointment
+                  </motion.button>
+                </div>
+                
+                <BMICalculator />
+              </>
             ) : (
               <div className="space-y-6">
                 <div className="bg-white dark:bg-neutral-800/90 backdrop-blur-sm rounded-2xl border border-blue-50 dark:border-neutral-700/80 shadow-xl shadow-blue-900/5 dark:shadow-blue-900/20 p-6">
