@@ -11,28 +11,39 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   const [theme, setTheme] = useState<'light' | 'dark' | 'grayscale'>(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'grayscale') {
-      return savedTheme;
+    try {
+      let savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        savedTheme = savedTheme.replace(/['"]+/g, '');
+      }
+      if (savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'grayscale') {
+        return savedTheme as 'light' | 'dark' | 'grayscale';
+      }
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    } catch (error) {
+      console.warn('Error reading theme from localStorage', error);
+      return 'light';
     }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('theme', theme);
+    } catch (error) {
+      console.warn('Error setting theme to localStorage', error);
+    }
+  }, [theme]);
 
   const toggleTheme = () => {
     setTheme((prevTheme) => {
-      let newTheme: 'light' | 'dark' | 'grayscale' = 'light';
-      if (prevTheme === 'light') newTheme = 'dark';
-      else if (prevTheme === 'dark') newTheme = 'grayscale';
-      else newTheme = 'light';
-      
-      localStorage.setItem('theme', newTheme);
-      return newTheme;
+      if (prevTheme === 'light') return 'dark';
+      if (prevTheme === 'dark') return 'grayscale';
+      return 'light';
     });
   };
 
   const setThemeMode = (mode: 'light' | 'dark' | 'grayscale') => {
     setTheme(mode);
-    localStorage.setItem('theme', mode);
   };
 
   useEffect(() => {
