@@ -21,6 +21,8 @@ import Card from '../common/Card';
 import Button from '../common/Button';
 import PDFExportButton from './PDFExportButton';
 
+import EmailExportButton from './EmailExportButton';
+
 // Import the function from your new utility file
 import { getSpecializationsForConditions } from '../../utils/medicalMappings'; // Adjust path if needed
 
@@ -163,9 +165,14 @@ const SymptomResults: React.FC<SymptomResultsProps> = ({ result, symptoms = '' }
     >
       <motion.div
         variants={itemVariants}
-        className="mb-8"
+        className="mb-8 flex gap-4"
       >
-        <PDFExportButton result={result} symptoms={symptoms} />
+        <div className="flex-1">
+          <PDFExportButton result={result} symptoms={symptoms} />
+        </div>
+        <div className="flex-1">
+          <EmailExportButton result={result} symptoms={symptoms} />
+        </div>
       </motion.div>
 
       {renderUrgencyLevel()}
