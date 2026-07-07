@@ -40,6 +40,9 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
 
   // Check if a date is available
   const isDateAvailable = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (date < today) return false;
     return availableDaysIndices.includes(date.getDay());
   };
 
