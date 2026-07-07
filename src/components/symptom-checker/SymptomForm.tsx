@@ -274,6 +274,7 @@ const SymptomForm: React.FC<SymptomFormProps> = ({
             <motion.button
               type="button"
               disabled={true}
+              title="Your browser does not support the Web Speech API"
               className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gray-400 text-white font-medium opacity-70 cursor-not-allowed"
             >
               <Mic size={16} />
