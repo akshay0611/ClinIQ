@@ -1,4 +1,5 @@
 import { SymptomResult } from '../types';
+import i18n from '../i18n';
 
 interface GeminiResponse {
   possibleConditions: {
@@ -50,8 +51,20 @@ class GeminiSymptomService {
 
  
   private buildAnalysisPrompt(symptoms: string): string {
+    const languageMap: Record<string, string> = {
+      'en': 'English',
+      'es': 'Spanish',
+      'hi': 'Hindi'
+    };
+    
+    // Extract base language (e.g., 'en-US' -> 'en')
+    const baseLang = i18n.language ? i18n.language.substring(0, 2) : 'en';
+    const targetLanguage = languageMap[baseLang] || 'English';
+
     return `
       You are a medical symptom analysis assistant. Based on the following symptoms, provide a structured analysis.
+      CRITICAL: You MUST write ALL string values in the JSON response in ${targetLanguage}.
+      Do not change the JSON keys (they must remain in English), but the values for name, description, recommendations, disclaimer, foods, hydration, supplements, precautions, etc., MUST be in ${targetLanguage}.
       
       User symptoms: "${symptoms}"
       
