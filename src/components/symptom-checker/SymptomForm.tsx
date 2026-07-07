@@ -129,8 +129,11 @@ const SymptomForm: React.FC<SymptomFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!inputValue.trim()) {
-      setError('Please enter your symptoms');
+    // Sanitize input to remove HTML tags and potential script injections
+    const sanitizedInput = inputValue.replace(/<[^>]*>?/gm, '').trim();
+    
+    if (!sanitizedInput) {
+      setError('Please enter valid symptoms without special characters.');
       return;
     }
     
@@ -144,7 +147,7 @@ const SymptomForm: React.FC<SymptomFormProps> = ({
     if (!isLoading && !disabled) {
       setError('');
       setLastSubmitTime(now);
-      onSubmit(inputValue);
+      onSubmit(sanitizedInput);
     }
   };
 
