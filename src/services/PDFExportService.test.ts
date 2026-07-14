@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import PDFExportService from './PDFExportService';
+import type { SymptomResult } from '../types';
 
 // Mock jsPDF
 vi.mock('jspdf', () => {
@@ -17,7 +18,7 @@ vi.mock('jspdf', () => {
     setFontSize: vi.fn(),
     setFont: vi.fn(),
     text: vi.fn(),
-    splitTextToSize: vi.fn((text) => [text]),
+    splitTextToSize: vi.fn((text: string) => [text]),
     setDrawColor: vi.fn(),
     line: vi.fn(),
     addPage: vi.fn(),
@@ -29,7 +30,7 @@ vi.mock('jspdf', () => {
 });
 
 describe('PDFExportService', () => {
-  const dummyResult = {
+  const dummyResult: SymptomResult = {
     summary: 'Summary text',
     possibleConditions: [
       { name: 'Common Cold', probability: 90, description: 'Viral infection', recommendations: [] }
@@ -44,6 +45,6 @@ describe('PDFExportService', () => {
 
   it('should generate a PDF report without throwing errors', async () => {
     // Generate report
-    await expect(PDFExportService.generateReport(dummyResult as any, 'I have a headache')).resolves.not.toThrow();
+    await expect(PDFExportService.generateReport(dummyResult, 'I have a headache')).resolves.not.toThrow();
   });
 });
