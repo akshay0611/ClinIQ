@@ -1,12 +1,20 @@
 import { SymptomResult } from '../types';
+import localforage from 'localforage';
 
-// Key for storing symptom history in localStorage
+// Initialize localforage with ClinIQ store config
+localforage.config({
+  name: 'ClinIQ',
+  storeName: 'symptom_history_store',
+  description: 'Secure storage for symptom history data'
+});
+
+// Key for storing symptom history
 const SYMPTOM_HISTORY_KEY = 'symptom_checker_history';
-// Key for storing encryption key in sessionStorage
+// Key for storing encryption key
 const ENCRYPTION_KEY_NAME = 'symptom_checker_encryption_key';
 
-// Maximum number of entries to store
-const MAX_HISTORY_ENTRIES = 10;
+// Increased max entries: IndexedDB has no practical quota limit unlike localStorage
+const MAX_HISTORY_ENTRIES = 100;
 
 // Structure to represent a saved symptom check
 export interface SymptomHistoryEntry {
@@ -23,7 +31,7 @@ class LocalStorageService {
     if (this.keyPromise) return this.keyPromise;
 
     this.keyPromise = (async () => {
-      const storedKeyStr = localStorage.getItem(ENCRYPTION_KEY_NAME);
+      const storedKeyStr = await localforage.getItem<string>(ENCRYPTION_KEY_NAME);
       if (storedKeyStr) {
         try {
           const rawKey = Uint8Array.from(atob(storedKeyStr), c => c.charCodeAt(0));
@@ -47,10 +55,10 @@ class LocalStorageService {
 
       const rawKey = await window.crypto.subtle.exportKey('raw', key);
       const rawKeyStr = btoa(String.fromCharCode(...new Uint8Array(rawKey)));
-      localStorage.setItem(ENCRYPTION_KEY_NAME, rawKeyStr);
-      
-      // Clear old unreadable data
-      localStorage.removeItem(SYMPTOM_HISTORY_KEY);
+      await localforage.setItem(ENCRYPTION_KEY_NAME, rawKeyStr);
+
+      // Clear old unreadable data when a new key is generated
+      await localforage.removeItem(SYMPTOM_HISTORY_KEY);
 
       return key;
     })();
@@ -62,7 +70,7 @@ class LocalStorageService {
     const key = await this.getEncryptionKey();
     const iv = window.crypto.getRandomValues(new Uint8Array(12));
     const encoded = new TextEncoder().encode(text);
-    
+
     const ciphertext = await window.crypto.subtle.encrypt(
       { name: 'AES-GCM', iv },
       key,
@@ -72,7 +80,7 @@ class LocalStorageService {
     const combined = new Uint8Array(iv.length + ciphertext.byteLength);
     combined.set(iv, 0);
     combined.set(new Uint8Array(ciphertext), iv.length);
-    
+
     return btoa(String.fromCharCode(...combined));
   }
 
@@ -92,47 +100,47 @@ class LocalStorageService {
   }
 
   /**
-   * Save a symptom check to localStorage securely
+   * Save a symptom check to IndexedDB securely via localforage
    */
   async saveSymptomCheck(symptoms: string, result: SymptomResult): Promise<void> {
     try {
       const history = await this.getSymptomHistory();
-      
+
       const newEntry: SymptomHistoryEntry = {
         id: this.generateId(),
         date: new Date().toISOString(),
         symptoms,
         result
       };
-      
+
       history.unshift(newEntry);
       const limitedHistory = history.slice(0, MAX_HISTORY_ENTRIES);
-      
+
       const encryptedData = await this.encrypt(JSON.stringify(limitedHistory));
-      localStorage.setItem(SYMPTOM_HISTORY_KEY, encryptedData);
+      await localforage.setItem(SYMPTOM_HISTORY_KEY, encryptedData);
     } catch (error) {
-      console.error('Error saving to localStorage:', error);
+      console.error('Error saving to localforage:', error);
     }
   }
-  
+
   /**
-   * Get all symptom history entries securely
+   * Get all symptom history entries securely from IndexedDB
    */
   async getSymptomHistory(): Promise<SymptomHistoryEntry[]> {
     try {
-      const encryptedJson = localStorage.getItem(SYMPTOM_HISTORY_KEY);
+      const encryptedJson = await localforage.getItem<string>(SYMPTOM_HISTORY_KEY);
       if (!encryptedJson) {
         return [];
       }
-      
+
       const historyJson = await this.decrypt(encryptedJson);
       return JSON.parse(historyJson) as SymptomHistoryEntry[];
     } catch (error) {
-      console.error('Error retrieving from localStorage:', error);
+      console.error('Error retrieving from localforage:', error);
       return [];
     }
   }
-  
+
   /**
    * Get a specific symptom check by ID securely
    */
@@ -145,7 +153,7 @@ class LocalStorageService {
       return null;
     }
   }
-  
+
   /**
    * Delete a specific symptom check by ID securely
    */
@@ -153,31 +161,31 @@ class LocalStorageService {
     try {
       const history = await this.getSymptomHistory();
       const updatedHistory = history.filter(entry => entry.id !== id);
-      
+
       if (updatedHistory.length < history.length) {
         const encryptedData = await this.encrypt(JSON.stringify(updatedHistory));
-        localStorage.setItem(SYMPTOM_HISTORY_KEY, encryptedData);
+        await localforage.setItem(SYMPTOM_HISTORY_KEY, encryptedData);
         return true;
       }
-      
+
       return false;
     } catch (error) {
       console.error('Error deleting entry:', error);
       return false;
     }
   }
-  
+
   /**
-   * Clear all symptom history
+   * Clear all symptom history from IndexedDB
    */
   async clearSymptomHistory(): Promise<void> {
     try {
-      localStorage.removeItem(SYMPTOM_HISTORY_KEY);
+      await localforage.removeItem(SYMPTOM_HISTORY_KEY);
     } catch (error) {
       console.error('Error clearing history:', error);
     }
   }
-  
+
   /**
    * Generate a simple unique ID for entries
    */
