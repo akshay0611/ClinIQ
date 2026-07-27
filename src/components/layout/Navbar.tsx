@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -15,10 +15,12 @@ import {
   Sun,
   Moon,
   Eye,
+  Globe,
 } from "lucide-react";
 import Button from "../common/Button";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
+import { useTranslation } from 'react-i18next';
   const navItems = [
     { name: "Home", path: "/", icon: <Home size={16} /> },
     {
@@ -64,6 +66,41 @@ const Navbar: React.FC = () => {
   const navRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   // Ref for the nav container the pill sits inside
   const navContainerRef = useRef<HTMLDivElement>(null);
+  // Ref for click-outside detection on the profile dropdown
+  const profileDropdownRef = useRef<HTMLDivElement>(null);
+
+  // ── Keyboard & click-outside accessibility ─────────────────────────
+  // Close profile dropdown and mobile menu on Escape key press
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsProfileOpen(false);
+        setIsMenuOpen(false);
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
+
+  // Close profile dropdown when clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isProfileOpen &&
+        profileDropdownRef.current &&
+        !profileDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isProfileOpen]);
 
   // Measure and move the pill whenever pathname changes
   useEffect(() => {
@@ -268,7 +305,7 @@ const Navbar: React.FC = () => {
             </AnimatePresence>
           </motion.button>
           {currentUser ? (
-            <div className="relative">
+            <div className="relative" ref={profileDropdownRef}>
               <motion.button
                 onClick={toggleProfile}
                 className="flex items-center space-x-2 p-2 rounded-xl hover:bg-gray-100/80 dark:hover:bg-gray-800/50 transition-all duration-200"
