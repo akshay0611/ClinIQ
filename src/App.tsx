@@ -11,6 +11,7 @@ import Footer from "./components/layout/Footer";
 import BackToTop from "./components/common/BackToTop";
 import PageLoader from "./components/common/PageLoader";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import ErrorBoundary from "./components/common/ErrorBoundary";
 import AutoScrollToTop from "./components/common/autoScrollToTop";
 
 // Pages (lazy-loaded so each route is split into its own chunk)
@@ -50,6 +51,7 @@ function App() {
             <Navbar />
 
             <main className="flex-grow">
+              <ErrorBoundary>
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   <Route path="/" element={<Home />} />
@@ -83,6 +85,7 @@ function App() {
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
+              </ErrorBoundary>
             </main>
 
             <Footer />
