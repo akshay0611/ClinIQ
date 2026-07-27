@@ -174,7 +174,7 @@ const Footer: React.FC = () => {
                 { name: "Home", path: "/" },
                 { name: "Symptom Checker", path: "/symptom-check" },
                 { name: "Find Doctors", path: "/doctors" },
-                { name: "Dashboard", path: "/dashboard" },
+                { name: "Profile", path: "/profile" },
                 { name: "FAQ", path: "/faq" },
                 { name: "Contact Us", path: "/contact" }
               ].map((link, index) => (
@@ -408,9 +408,7 @@ const Footer: React.FC = () => {
                 <Globe size={14} className="mr-1" />
                 Accessibility
               </Link>
-              <Link to="/sitemap" className="text-gray-700 dark:text-neutral-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors flex items-center">
-                Map
-              </Link>
+
             </div>
           </div>
         </div>
