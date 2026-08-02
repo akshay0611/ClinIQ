@@ -12,36 +12,31 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Builds the app-level User from a Supabase session and resolves the user's
-// role from the profiles table, defaulting to 'patient'. This is the single
-// place role is read, so every consumer of useAuth() gets it for free.
-//
-// Notes:
-// - Defaulting to 'patient' mirrors the schema default (profiles.role default
-//   'patient') and the existing fallback in Profile.tsx (role || "patient"),
-//   so behavior stays consistent.
-// - .single() resolves to { data: null, error } (it does not throw) when a
-//   brand-new user has no profile row yet; the !error check handles that and
-//   falls through to the patient default.
+// role from the profiles table, defaulting to 'patient'.
 const buildUserFromSession = async (session: Session): Promise<User> => {
   const { user } = session;
 
   let role: UserRole = 'patient';
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
 
-  if (!error && data?.role === 'doctor') {
-    role = 'doctor';
+    if (!error && data?.role === 'doctor') {
+      role = 'doctor';
+    }
+  } catch (e) {
+    console.warn('Could not fetch user profile role, defaulting to patient', e);
   }
 
   return {
     id: user.id,
-    name: user.user_metadata.full_name || user.email,
+    name: user.user_metadata?.full_name || user.email || 'User',
     email: user.email || '',
     role,
-    profilePicture: user.user_metadata.avatar_url,
+    profilePicture: user.user_metadata?.avatar_url,
     preferences: {
       theme: 'light',
       notifications: true,
@@ -58,44 +53,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const getSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          setCurrentUser(await buildUserFromSession(session));
+        const res = await supabase.auth.getSession();
+        if (res?.data?.session) {
+          setCurrentUser(await buildUserFromSession(res.data.session));
         }
+      } catch (err) {
+        console.warn('AuthContext: Session resolution handled safely', err);
       } finally {
-        // Always clear the loading flag so guarded routes can never get stuck
-        // on the loader, even if the role lookup fails.
         setIsLoading(false);
       }
     };
 
     getSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!session) {
-        setCurrentUser(null);
-        return;
-      }
+    try {
+      const res = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (!session) {
+          setCurrentUser(null);
+          return;
+        }
 
-      // Supabase fires onAuthStateChange on TOKEN_REFRESHED (roughly hourly).
-      // Rebuilding the user on those events would re-run the profiles role
-      // lookup every time for no reason, since the identity hasn't changed.
-      // Only rebuild (and re-query the role) on events that can actually
-      // change who the user is or their profile data.
-      if (event === 'TOKEN_REFRESHED') {
-        return;
-      }
+        if (event === 'TOKEN_REFRESHED') {
+          return;
+        }
 
-      setCurrentUser(await buildUserFromSession(session));
-    });
+        try {
+          setCurrentUser(await buildUserFromSession(session));
+        } catch (err) {
+          console.warn('AuthContext: Listener build user error', err);
+        }
+      });
 
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
+      return () => {
+        res?.data?.subscription?.unsubscribe();
+      };
+    } catch (err) {
+      console.warn('AuthContext: Listener subscription error', err);
+    }
   }, []);
 
   const logout = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.warn('Logout warning', err);
+    }
     setCurrentUser(null);
   };
 
