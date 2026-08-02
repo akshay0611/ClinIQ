@@ -5,6 +5,8 @@ import toast from 'react-hot-toast';
 import { UserPlusIcon, EnvelopeIcon, UserIcon, LockClosedIcon, EyeIcon, EyeSlashIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
 import { supabase } from '../services/supabaseClient';
+import PasswordStrengthMeter from '../components/common/PasswordStrengthMeter';
+import { getPasswordStrength } from '../utils/passwordStrength';
 
 interface SignupFormInputs {
   name: string;
@@ -173,9 +175,12 @@ export default function Signup() {
                     {...register('password', {
                       required: 'Password is required',
                       minLength: { value: 8, message: 'Password must be at least 8 characters' },
-                      pattern: {
-                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                        message: 'Password must contain uppercase, lowercase, number and special character'
+                      validate: (val) => {
+                        const strength = getPasswordStrength(val);
+                        if (strength.label === 'Weak') {
+                          return 'Password is too weak. Please include uppercase letters, numbers, or special characters.';
+                        }
+                        return true;
                       }
                     })}
                     className="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-200 dark:border-neutral-700/80 bg-gray-50 dark:bg-neutral-900/50 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
@@ -196,6 +201,7 @@ export default function Signup() {
                   </div>
                 </div>
                 {errors.password && <span className="text-red-500 text-sm mt-1 block">{errors.password.message}</span>}
+                <PasswordStrengthMeter password={password} />
               </div>
 
               <div>

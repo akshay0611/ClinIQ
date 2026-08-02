@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
   Menu,
   X,
@@ -15,6 +16,7 @@ import {
   Sun,
   Moon,
   Eye,
+  Globe,
 } from "lucide-react";
 import Button from "../common/Button";
 import { useAuth } from "../../context/AuthContext";
