@@ -9,10 +9,11 @@ import {
   EyeIcon,
   EyeSlashIcon,
 } from "@heroicons/react/24/outline";
+import { ELUAuth } from "@edulinkup/auth";
 
 import { supabase } from "../services/supabaseClient";
 
-const EDULINKUP_PROVIDER = "custom:edulinkup";
+const elu = new ELUAuth({ supabase });
 
 interface LoginFormInputs {
   email: string;
@@ -68,12 +69,7 @@ export default function Login() {
   const handleSSOLogin = async () => {
     try {
       setSsoLoading(true);
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: EDULINKUP_PROVIDER,
-        options: {
-          redirectTo: window.location.origin,
-        },
-      });
+      const { error } = await elu.signIn();
       if (error) throw error;
     } catch (error: unknown) {
       setSsoLoading(false);
