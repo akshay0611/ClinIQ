@@ -71,7 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     getSession();
 
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (!session) {
         setCurrentUser(null);
         return;
@@ -86,7 +86,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         return;
       }
 
-      setCurrentUser(await buildUserFromSession(session));
+      void buildUserFromSession(session)
+        .then(setCurrentUser)
+        .catch((error: unknown) => {
+          console.error('[AUTH] Failed to build user from session:', error);
+        });
     });
 
     return () => {

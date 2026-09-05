@@ -17,6 +17,8 @@ interface LoginFormInputs {
   password: string;
 }
 
+const LOGIN_TIMEOUT_MS = 15000;
+
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const {
@@ -27,10 +29,16 @@ export default function Login() {
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const loginRequest = supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       });
+      const timeout = new Promise<never>((_, reject) => {
+        setTimeout(() => {
+          reject(new Error("Login timed out. Check your internet connection and try again."));
+        }, LOGIN_TIMEOUT_MS);
+      });
+      const { error } = await Promise.race([loginRequest, timeout]);
 
       if (error) {
         throw error;
