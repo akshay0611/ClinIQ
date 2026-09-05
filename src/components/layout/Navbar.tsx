@@ -15,7 +15,9 @@ import {
   Sun,
   Moon,
   Eye,
+  Globe,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import Button from "../common/Button";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
