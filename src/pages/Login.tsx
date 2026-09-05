@@ -12,6 +12,8 @@ import {
 
 import { supabase } from "../services/supabaseClient";
 
+const EDULINKUP_PROVIDER = "custom:edulinkup";
+
 interface LoginFormInputs {
   email: string;
   password: string;
@@ -21,6 +23,7 @@ const LOGIN_TIMEOUT_MS = 15000;
 
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [ssoLoading, setSsoLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -60,6 +63,23 @@ export default function Login() {
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
+  };
+
+  const handleSSOLogin = async () => {
+    try {
+      setSsoLoading(true);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: EDULINKUP_PROVIDER,
+        options: {
+          redirectTo: window.location.origin,
+        },
+      });
+      if (error) throw error;
+    } catch (error: unknown) {
+      setSsoLoading(false);
+      const errorMessage = error instanceof Error ? error.message : "SSO login failed. Please try again.";
+      toast.error(errorMessage);
+    }
   };
 
   return (
@@ -213,6 +233,42 @@ export default function Login() {
                   <ArrowRightIcon className="w-5 h-5" />
                 </motion.button>
               </form>
+
+              <div className="mt-6">
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-200 dark:border-gray-700" />
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-white dark:bg-neutral-800/90 text-gray-500 dark:text-gray-400">
+                      or continue with
+                    </span>
+                  </div>
+                </div>
+
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleSSOLogin}
+                  disabled={ssoLoading}
+                  className="mt-4 w-full px-6 py-3.5 rounded-lg border border-gray-200 dark:border-neutral-700/80 bg-white dark:bg-neutral-900/50 text-gray-700 dark:text-gray-300 font-medium flex items-center justify-center gap-2 transition-all duration-200 hover:bg-gray-50 dark:hover:bg-neutral-800/50 hover:border-gray-300 dark:hover:border-neutral-600"
+                >
+                  {ssoLoading ? (
+                    "Redirecting to EduLinkUp..."
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                        <path
+                          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                      Sign in with EduLinkUp
+                    </>
+                  )}
+                </motion.button>
+              </div>
 
               <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <p className="text-center text-gray-600 dark:text-gray-400">
