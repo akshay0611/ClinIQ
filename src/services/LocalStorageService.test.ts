@@ -1,44 +1,71 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import LocalStorageService from './LocalStorageService';
+import type { SymptomResult } from '../types';
 
-// Mock localStorage and sessionStorage
-const localStorageMock = (() => {
-  let store: Record<string, string> = {};
+// Mock localforage BEFORE importing LocalStorageService so the module uses the mock
+vi.mock('localforage', () => {
+  const store: Record<string, unknown> = {};
   return {
-    getItem: vi.fn((key: string) => store[key] || null),
-    setItem: vi.fn((key: string, value: string) => {
-      store[key] = value;
-    }),
-    removeItem: vi.fn((key: string) => {
-      delete store[key];
-    }),
-    clear: vi.fn(() => {
-      store = {};
-    })
+    default: {
+      config: vi.fn(),
+      getItem: vi.fn(async (key: string) => store[key] ?? null),
+      setItem: vi.fn(async (key: string, value: unknown) => {
+        store[key] = value;
+      }),
+      removeItem: vi.fn(async (key: string) => {
+        delete store[key];
+      }),
+      clear: vi.fn(async () => {
+        for (const key of Object.keys(store)) {
+          delete store[key];
+        }
+      }),
+    },
   };
-})();
+});
 
-Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+import LocalStorageService from './LocalStorageService';
+import localforage from 'localforage';
 
 describe('LocalStorageService', () => {
-  beforeEach(() => {
-    localStorageMock.clear();
+  // Local in-memory store shared across mock implementations
+  let store: Record<string, unknown> = {};
+
+  beforeEach(async () => {
+    store = {};
     vi.clearAllMocks();
-    
-    // We need to mock crypto for Node environment if it's missing
-    if (!window.crypto) {
-      const crypto = require('crypto');
-      Object.defineProperty(window, 'crypto', { value: crypto.webcrypto });
+
+    // Reattach mock implementations to the fresh store after clearAllMocks
+    (localforage.getItem as ReturnType<typeof vi.fn>).mockImplementation(
+      async (key: string) => store[key] ?? null
+    );
+    (localforage.setItem as ReturnType<typeof vi.fn>).mockImplementation(
+      async (key: string, value: unknown) => {
+        store[key] = value;
+      }
+    );
+    (localforage.removeItem as ReturnType<typeof vi.fn>).mockImplementation(
+      async (key: string) => {
+        delete store[key];
+      }
+    );
+    (localforage.clear as ReturnType<typeof vi.fn>).mockImplementation(async () => {
+      store = {};
+    });
+
+    // Ensure Web Crypto API is available in the jsdom environment
+    if (!window.crypto?.subtle) {
+      const { webcrypto } = await import('crypto');
+      Object.defineProperty(window, 'crypto', { value: webcrypto, configurable: true });
     }
   });
 
   afterEach(() => {
-    // Reset singleton internal state via hack to prevent cross-test leakage
-    (LocalStorageService as any).keyPromise = null;
+    // Reset singleton key to prevent cross-test state leakage
+    (LocalStorageService as unknown as { keyPromise: null }).keyPromise = null;
   });
 
-  const dummyResult = {
+  const dummyResult: SymptomResult = {
     summary: 'Summary',
     possibleConditions: [],
     severity: 1,
@@ -50,14 +77,18 @@ describe('LocalStorageService', () => {
   };
 
   it('should encrypt and save a symptom check, then decrypt and retrieve it', async () => {
-    await LocalStorageService.saveSymptomCheck('headache', dummyResult as any);
-    
-    // Ensure it's encrypted in localStorage
-    const rawStorage = localStorageMock.getItem('symptom_checker_history');
-    expect(rawStorage).toBeTruthy();
-    expect(rawStorage).not.toContain('headache'); // Shouldn't be plain text
+    await LocalStorageService.saveSymptomCheck('headache', dummyResult);
 
-    // Ensure we can retrieve it correctly
+    // Verify localforage.setItem was called with an encrypted (non-plain-text) value
+    const historyCall = (localforage.setItem as ReturnType<typeof vi.fn>).mock.calls.find(
+      (call: unknown[]) => call[0] === 'symptom_checker_history'
+    );
+    expect(historyCall).toBeTruthy();
+    const rawStored = historyCall?.[1] as string;
+    expect(rawStored).toBeTruthy();
+    expect(rawStored).not.toContain('headache');
+
+    // Retrieve and verify decryption
     const history = await LocalStorageService.getSymptomHistory();
     expect(history).toHaveLength(1);
     expect(history[0].symptoms).toBe('headache');
@@ -65,27 +96,26 @@ describe('LocalStorageService', () => {
   });
 
   it('should generate a new key and clear old data if no key is found', async () => {
-    // Save first with a key
-    await LocalStorageService.saveSymptomCheck('fever', dummyResult as any);
+    await LocalStorageService.saveSymptomCheck('fever', dummyResult);
     expect(await LocalStorageService.getSymptomHistory()).toHaveLength(1);
-    
-    // Clear the key from localStorage
-    localStorageMock.clear();
-    (LocalStorageService as any).keyPromise = null;
-    
-    // Next access should generate a new key and clear old data
+
+    // Simulate key loss by wiping the in-memory store
+    store = {};
+    (LocalStorageService as unknown as { keyPromise: null }).keyPromise = null;
+
+    // Old encrypted data is unreadable with a new key, so history is empty
     const history = await LocalStorageService.getSymptomHistory();
-    expect(history).toHaveLength(0); // old unreadable data is cleared
+    expect(history).toHaveLength(0);
   });
 
   it('should successfully delete a symptom check by ID', async () => {
-    await LocalStorageService.saveSymptomCheck('cough', dummyResult as any);
+    await LocalStorageService.saveSymptomCheck('cough', dummyResult);
     const history = await LocalStorageService.getSymptomHistory();
     const id = history[0].id;
-    
+
     const deleted = await LocalStorageService.deleteSymptomCheckById(id);
     expect(deleted).toBe(true);
-    
+
     const historyAfter = await LocalStorageService.getSymptomHistory();
     expect(historyAfter).toHaveLength(0);
   });
