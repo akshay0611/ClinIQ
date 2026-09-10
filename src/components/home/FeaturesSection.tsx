@@ -1,52 +1,69 @@
 import React, { useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Stethoscope, Users, Calendar, Shield, ArrowRight, CheckCircle } from 'lucide-react';
 
 const features = [
   {
     icon: <Stethoscope size={28} />,
-    title: 'Symptom Analysis',
-    description: 'Get AI-powered analysis of your symptoms with possible conditions and recommended next steps.',
-    color: 'from-blue-500 to-indigo-600',
-    lightColor: 'bg-blue-50',
-    iconColor: 'text-blue-600',
-    benefits: ['Smart symptom recognition', 'Personalized recommendations', 'Medical database integration'],
-    href: '/symptom-analysis'
+    title: "Symptom Analysis",
+    description:
+      "Get AI-powered analysis of your symptoms with possible conditions and recommended next steps.",
+    color: "from-blue-500 to-indigo-600",
+    lightColor: "bg-blue-50",
+    iconColor: "text-blue-600",
+    benefits: [
+      "Smart symptom recognition",
+      "Personalized recommendations",
+      "Medical database integration",
+    ],
+    href: "/symptom-check",   // ✅ existing route
   },
   {
     icon: <Users size={28} />,
-    title: 'Find Specialists',
-    description: 'Search for doctors by specialty, location, and availability to get the care you need.',
-    color: 'from-emerald-500 to-teal-600',
-    lightColor: 'bg-emerald-50',
-    iconColor: 'text-emerald-600',
-    benefits: ['Verified specialists', 'Filter by expertise', 'Read patient reviews'],
-    href: '/find-specialists'
+    title: "Find Specialists",
+    description:
+      "Search for doctors by specialty, location, and availability to get the care you need.",
+    color: "from-emerald-500 to-teal-600",
+    lightColor: "bg-emerald-50",
+    iconColor: "text-emerald-600",
+    benefits: [
+      "Verified specialists",
+      "Filter by expertise",
+      "Read patient reviews",
+    ],
+    href: "/doctors",         // ✅ existing route
   },
   {
     icon: <Calendar size={28} />,
-    title: 'Easy Booking',
-    description: 'Book appointments with just a few clicks and manage your healthcare schedule in one place.',
-    color: 'from-violet-500 to-purple-600',
-    lightColor: 'bg-violet-50',
-    iconColor: 'text-violet-600',
-    benefits: ['Instant confirmation', 'Reminders & notifications', 'Calendar integration'],
-    href: '/booking'
+    title: "Easy Booking",
+    description:
+      "Book appointments with just a few clicks and manage your healthcare schedule in one place.",
+    color: "from-violet-500 to-purple-600",
+    lightColor: "bg-violet-50",
+    iconColor: "text-violet-600",
+    benefits: [
+      "Instant confirmation",
+      "Reminders & notifications",
+      "Calendar integration",
+    ],
+    href: "/doctors",         // ✅ existing route
   },
   {
-  icon: <Shield size={28} />,
-  title: 'Private & Secure',
-  description: 'Your health data is encrypted and protected with industry-leading security standards.',
-  color: 'from-rose-500 to-pink-600',
-  lightColor: 'bg-rose-50',
-  iconColor: 'text-rose-600',
-  benefits: [
-    'IT Act compliant',
-    'End-to-end encryption',
-    'Secure data storage'
-  ],
-  href: '/security'
-},
+    icon: <Shield size={28} />,
+    title: "Private & Secure",
+    description:
+      "Your health data is encrypted and protected with industry-leading security standards.",
+    color: "from-rose-500 to-pink-600",
+    lightColor: "bg-rose-50",
+    iconColor: "text-rose-600",
+    benefits: [
+      "IT Act compliant",
+      "End-to-end encryption",
+      "Secure data storage",
+    ],
+    href: "/about",           // ✅ existing route
+  },
 ];
 
 
@@ -154,14 +171,14 @@ const FeaturesSection: React.FC = () => {
                
                 <div className="px-8 pb-6">
                   <div className="pt-4 border-t border-neutral-100 dark:border-neutral-700">
-                    <a 
-                      href={feature.href}
-                      className="inline-flex items-center text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-200"
-                      aria-label={`Learn more about ${feature.title}`}
-                    >
-                      Learn more
-                      <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
-                    </a>
+                    <Link
+  to={feature.href}
+  className="inline-flex items-center text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors duration-200"
+  aria-label={`Learn more about ${feature.title}`}
+>
+  Learn more
+  <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
+</Link>
                   </div>
                 </div>
               </motion.div>
@@ -177,15 +194,13 @@ const FeaturesSection: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           viewport={{ once: true }}
         >
-          <motion.a 
-            href="/features" 
-            className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary-600 hover:bg-primary-700 text-white font-medium transition-colors duration-200 shadow-lg hover:shadow-xl"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Explore all features
-            <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
-          </motion.a>
+          <Link
+  to="/doctors"
+  className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-primary-600 hover:bg-primary-700 text-white font-medium transition-colors duration-200 shadow-lg hover:shadow-xl"
+>
+  Explore all features
+  <ArrowRight className="ml-2 h-4 w-4" />
+</Link>
         </motion.div>
       </div>
 
