@@ -11,6 +11,7 @@ interface Entitlement {
 interface EntitlementContextValue {
   entitlements: Entitlement[];
   isLoading: boolean;
+  activePlan: { slug: "plan_a" | "plan_b"; name: string } | null;
   refreshEntitlements: () => Promise<void>;
   hasEntitlement: (featureKey: string) => boolean;
 }
@@ -21,6 +22,12 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const { currentUser } = useAuth();
   const [entitlements, setEntitlements] = useState<Entitlement[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const hasEntitlement = (featureKey: string) => entitlements.some((entitlement) => entitlement.feature_key === featureKey);
+  const activePlan = hasEntitlement("advanced_symptom_analysis")
+    ? { slug: "plan_b" as const, name: "ClinIQ Plan B" }
+    : hasEntitlement("basic_symptom_checker")
+      ? { slug: "plan_a" as const, name: "ClinIQ Plan A" }
+      : null;
 
   const refreshEntitlements = useCallback(async () => {
     if (!currentUser) {
@@ -51,8 +58,9 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
       value={{
         entitlements,
         isLoading,
+        activePlan,
         refreshEntitlements,
-        hasEntitlement: (featureKey) => entitlements.some((entitlement) => entitlement.feature_key === featureKey),
+        hasEntitlement,
       }}
     >
       {children}

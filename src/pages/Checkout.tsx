@@ -60,11 +60,14 @@ const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser } = useAuth();
-  const { refreshEntitlements } = useEntitlements();
+  const { activePlan, refreshEntitlements } = useEntitlements();
   const [planId, setPlanId] = useState<string | null>(null);
   const [isLoadingPlan, setIsLoadingPlan] = useState(true);
   const [status, setStatus] = useState<"idle" | "processing" | "success" | "failed">("idle");
   const plan = planSlug ? plans[planSlug as keyof typeof plans] : undefined;
+  const isPlanActive = Boolean(
+    activePlan && planSlug && (activePlan.slug === planSlug || activePlan.slug === "plan_b"),
+  );
 
   useEffect(() => {
     if (!planSlug || !plan) {
@@ -218,17 +221,25 @@ const Checkout: React.FC = () => {
               <span className="ml-2 text-sm text-neutral-500 dark:text-neutral-400">one-time</span>
             </div>
 
+            {isPlanActive && (
+              <p className="mt-5 rounded-lg bg-emerald-50 px-3 py-2 text-center text-sm font-medium text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+                {activePlan?.name} is active for this account.
+              </p>
+            )}
+
             <button
               type="button"
               onClick={() => void startCheckout()}
-              disabled={isLoadingPlan || !planId || status === "processing"}
+              disabled={isLoadingPlan || !planId || status === "processing" || isPlanActive}
               className="mt-6 w-full rounded-xl bg-emerald-500 px-4 py-3 font-medium text-white transition-colors hover:bg-emerald-600 disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-500 dark:disabled:bg-neutral-700 dark:disabled:text-neutral-400"
             >
               {status === "processing"
                 ? "Opening secure checkout..."
-                : currentUser
-                  ? "Pay securely with Razorpay"
-                  : "Sign in to purchase"}
+                : isPlanActive
+                  ? "Plan already active"
+                  : currentUser
+                    ? "Pay securely with Razorpay"
+                    : "Sign in to purchase"}
             </button>
 
             {status === "success" && (

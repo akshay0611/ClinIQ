@@ -16,10 +16,12 @@ import {
   Moon,
   Eye,
   Globe,
+  BadgeCheck,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Button from "../common/Button";
 import { useAuth } from "../../context/AuthContext";
+import { useEntitlements } from "../../context/EntitlementContext";
 import { useTheme } from "../../context/ThemeContext";
   const navItems = [
     { name: "Home", path: "/", icon: <Home size={16} /> },
@@ -46,6 +48,7 @@ const Navbar: React.FC = () => {
 
   const { pathname } = useLocation();
   const { currentUser, logout } = useAuth();
+  const { activePlan } = useEntitlements();
   const { theme, toggleTheme } = useTheme();
   const { i18n } = useTranslation();
 
@@ -294,6 +297,13 @@ const Navbar: React.FC = () => {
                 <span className="hidden lg:block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {currentUser.name}
                 </span>
+                {activePlan && (
+                  <BadgeCheck
+                    size={18}
+                    aria-label={`${activePlan.name} active`}
+                    className="text-emerald-500 dark:text-emerald-400"
+                  />
+                )}
               </motion.button>
 
               <AnimatePresence>
@@ -312,6 +322,12 @@ const Navbar: React.FC = () => {
                       <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                         {currentUser.email}
                       </p>
+                      {activePlan && (
+                        <p className="mt-2 flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                          <BadgeCheck size={14} />
+                          {activePlan.name} active
+                        </p>
+                      )}
                     </div>
                     <Link
                       to="/profile"

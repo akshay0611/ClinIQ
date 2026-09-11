@@ -12,6 +12,7 @@ import Footer from "./components/layout/Footer";
 import BackToTop from "./components/common/BackToTop";
 import PageLoader from "./components/common/PageLoader";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import EntitlementGate from "./components/common/EntitlementGate";
 import AutoScrollToTop from "./components/common/autoScrollToTop";
 
 // Pages (lazy-loaded so each route is split into its own chunk)
@@ -57,12 +58,12 @@ function App() {
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
                   <Route path="/" element={<Home />} />
-                  <Route path="/symptom-check" element={<SymptomChecker />} />
+                  <Route path="/symptom-check" element={<EntitlementGate featureKey="basic_symptom_checker"><SymptomChecker /></EntitlementGate>} />
                   <Route path="/doctors" element={<Doctors />} />
                   <Route path="/doctors/:id" element={<DoctorProfilePage />} />
-                  <Route path="/appointment/:id" element={<ProtectedRoute><Appointment /></ProtectedRoute>} />
+                  <Route path="/appointment/:id" element={<ProtectedRoute><EntitlementGate featureKey="priority_appointments"><Appointment /></EntitlementGate></ProtectedRoute>} />
                   <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                  <Route path="/hospitals" element={<Hospitals />} />
+                  <Route path="/hospitals" element={<EntitlementGate featureKey="hospital_finder"><Hospitals /></EntitlementGate>} />
                   <Route path="/faq" element={<Faq />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/about" element={<About />} />
@@ -73,14 +74,14 @@ function App() {
                   <Route path="/signup" element={<Signup />} />
                   <Route
                     path="/medical-dictionary"
-                    element={<MedicalDictionary />}
+                    element={<EntitlementGate featureKey="medical_dictionary"><MedicalDictionary /></EntitlementGate>}
                   />
-                  <Route path="/drug-database" element={<DrugDatabase />} />
+                  <Route path="/drug-database" element={<EntitlementGate featureKey="full_drug_database"><DrugDatabase /></EntitlementGate>} />
                   <Route path="/webinars" element={<Webinars />} />
                   <Route path="/first-aid-guides" element={<FirstAidGuides />} />
                   <Route path="/research-papers" element={<ResearchPapers />} />
-                  <Route path="/health-blog" element={<HealthBlog />} />
-                  <Route path="/health-blog/:id" element={<BlogPostPage />} />
+                  <Route path="/health-blog" element={<EntitlementGate featureKey="health_blog"><HealthBlog /></EntitlementGate>} />
+                  <Route path="/health-blog/:id" element={<EntitlementGate featureKey="health_blog"><BlogPostPage /></EntitlementGate>} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="/checkout/:planSlug" element={<Checkout />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
