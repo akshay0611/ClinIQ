@@ -1,12 +1,14 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const plans = [
   {
+    slug: "plan_a",
     name: "ClinIQ Plan A",
     price: "100",
-    billing: "/month",
+    billing: "one-time",
     subtitle: "Basic healthcare access",
     capabilities: null,
     perks: [
@@ -19,9 +21,10 @@ const plans = [
     externalLink: null,
   },
   {
+    slug: "plan_b",
     name: "ClinIQ Plan B",
     price: "200",
-    billing: "/month",
+    billing: "one-time",
     subtitle: "Advanced medical features",
     capabilities: null,
     perks: [
@@ -172,15 +175,14 @@ const Pricing: React.FC = () => {
                   Get Started
                 </a>
               ) : (
-                <button
+                <Link
+                  to={`/checkout/${plan.slug}`}
                   className={`w-full py-3 rounded-xl font-medium transition-colors ${
-                    plan.highlight
-                      ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                      : "bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 text-neutral-900 dark:text-white"
+                    "bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 text-neutral-900 dark:text-white text-center inline-block"
                   }`}
                 >
                   Get Started
-                </button>
+                </Link>
               )}
             </motion.div>
           ))}
