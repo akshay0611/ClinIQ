@@ -1,12 +1,15 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import { BadgeCheck, Check } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useEntitlements } from "../context/EntitlementContext";
 
 const plans = [
   {
+    slug: "plan_a",
     name: "ClinIQ Plan A",
     price: "100",
-    billing: "/month",
+    billing: "one-time",
     subtitle: "Basic healthcare access",
     capabilities: null,
     perks: [
@@ -19,9 +22,10 @@ const plans = [
     externalLink: null,
   },
   {
+    slug: "plan_b",
     name: "ClinIQ Plan B",
     price: "200",
-    billing: "/month",
+    billing: "one-time",
     subtitle: "Advanced medical features",
     capabilities: null,
     perks: [
@@ -56,6 +60,9 @@ const plans = [
 ];
 
 const Pricing: React.FC = () => {
+  const { activePlan, accessSource, hasClinIQAccess } = useEntitlements();
+  const activeLabel = activePlan?.name || (accessSource === "edulinkup_premium" ? "EduLinkUp Premium" : null);
+
   return (
     <div className="relative min-h-screen bg-neutral-50 dark:bg-neutral-900 overflow-hidden">
       {/* Decorative blurs */}
@@ -76,10 +83,24 @@ const Pricing: React.FC = () => {
             Choose the plan that fits your needs. Upgrade or downgrade at any
             time.
           </p>
+          {hasClinIQAccess && activeLabel && (
+            <div className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
+              <BadgeCheck size={16} />
+              Active access: {activeLabel}
+            </div>
+          )}
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {plans.map((plan, index) => (
+          {plans.map((plan, index) => {
+            const purchasablePlan = "slug" in plan ? plan : null;
+            const isActive = Boolean(
+              purchasablePlan && activePlan &&
+              (activePlan.slug === purchasablePlan.slug || activePlan.slug === "plan_b"),
+            );
+            const isEduLinkUpActive = plan.name === "EduLinkUp Premium" && accessSource === "edulinkup_premium";
+
+            return (
             <motion.div
               key={plan.name}
               initial={{ opacity: 0, y: 30 }}
@@ -94,6 +115,12 @@ const Pricing: React.FC = () => {
               {plan.highlight && (
                 <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-xs font-semibold px-4 py-1 rounded-full">
                   Most Popular
+                </span>
+              )}
+
+              {(isActive || isEduLinkUpActive) && (
+                <span className="mb-3 inline-flex w-fit items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
+                  <BadgeCheck size={14} /> Active
                 </span>
               )}
 
@@ -172,18 +199,18 @@ const Pricing: React.FC = () => {
                   Get Started
                 </a>
               ) : (
-                <button
+                <Link
+                  to={`/checkout/${plan.slug}`}
                   className={`w-full py-3 rounded-xl font-medium transition-colors ${
-                    plan.highlight
-                      ? "bg-emerald-500 hover:bg-emerald-600 text-white"
-                      : "bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 text-neutral-900 dark:text-white"
+                    "bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 text-neutral-900 dark:text-white text-center inline-block"
                   }`}
                 >
-                  Get Started
-                </button>
+                  {isActive || isEduLinkUpActive ? "Active plan" : "Get Started"}
+                </Link>
               )}
             </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

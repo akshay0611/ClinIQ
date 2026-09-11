@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { BadgeCheck } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import {
   UserCircleIcon,
@@ -13,6 +14,7 @@ import {
   AcademicCapIcon,
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../context/AuthContext";
+import { useEntitlements } from "../context/EntitlementContext";
 import { supabase } from "../services/supabaseClient";
 import ProfileSkeleton from "../components/profile/ProfileSkeleton";
 import BMICalculator from "../components/profile/BMICalculator";
@@ -110,6 +112,8 @@ const getDoctorStats = (): Stat[] => [
 
 export default function Profile(): JSX.Element {
   const { currentUser } = useAuth();
+  const { activePlan, accessSource, hasClinIQAccess } = useEntitlements();
+  const accessLabel = activePlan?.name || (accessSource === "edulinkup_premium" ? "EduLinkUp Premium" : "ClinIQ access");
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [doctorProfile, setDoctorProfile] = useState<DoctorProfileData | null>(
     null
@@ -357,6 +361,12 @@ export default function Profile(): JSX.Element {
                   ? "Manage your practice and view patient appointments."
                   : "Manage your profile and view your health summary."}
               </p>
+              {hasClinIQAccess && (
+                <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
+                  <BadgeCheck size={17} />
+                  {accessLabel} active
+                </div>
+              )}
             </div>
           </div>
         </motion.header>
