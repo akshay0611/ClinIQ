@@ -58,7 +58,8 @@ Deno.serve(async (request) => {
     const result = await response.json();
     console.log("[EDULINKUP_ENTITLEMENTS]", JSON.stringify(result));
     const premiumEntitled = result?.entitlements?.["cliniq.access"]?.allowed === true;
-    const marketplaceEntitled = result?.entitlements?.["cliniq.marketplace"]?.allowed === true;
+    const marketplaceEntitled = result?.entitlements?.["cliniq.plan_a_marketplace"]?.allowed === true;
+    const planBMarketplaceEntitled = result?.entitlements?.["cliniq.plan_b_marketplace"]?.allowed === true;
     const admin = getAdminClient();
 
     // Sync premium access (cliniq.access → cliniq_access)
@@ -82,18 +83,40 @@ Deno.serve(async (request) => {
       if (error) throw new Error("Unable to clear EduLinkUp access cache");
     }
 
-    // Sync marketplace access (cliniq.marketplace → Plan A features + marketplace_access)
-    // The marketplace product maps to Plan A (₹100), so we grant all Plan A features.
-    const MARKETPLACE_PLAN_FEATURES = [
+    // Sync marketplace access based on which plan was purchased.
+    // cliniq.plan_a_marketplace → Plan A features (₹100)
+    // cliniq.plan_b_marketplace → Plan B features (₹200)
+    const PLAN_A_FEATURES = [
       "marketplace_access",
       "basic_symptom_checker",
       "hospital_finder",
       "health_blog",
       "email_support",
     ];
+    const PLAN_B_FEATURES = [
+      "marketplace_access",
+      "basic_symptom_checker",
+      "hospital_finder",
+      "health_blog",
+      "email_support",
+      "advanced_symptom_analysis",
+      "priority_appointments",
+      "full_drug_database",
+      "medical_dictionary",
+      "priority_support",
+    ];
 
-    if (marketplaceEntitled) {
-      const rows = MARKETPLACE_PLAN_FEATURES.map((featureKey) => ({
+    // Clear any existing marketplace-sourced entitlements first, then grant the correct plan.
+    const { error: clearError } = await admin
+      .from("entitlements")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("source", "edulinkup_marketplace");
+    if (clearError) throw new Error("Unable to clear EduLinkUp marketplace access cache");
+
+    // Plan B takes precedence over Plan A if user has both.
+    if (planBMarketplaceEntitled) {
+      const rows = PLAN_B_FEATURES.map((featureKey) => ({
         user_id: user.id,
         feature_key: featureKey,
         source: "edulinkup_marketplace",
@@ -103,18 +126,23 @@ Deno.serve(async (request) => {
         rows,
         { onConflict: "user_id,feature_key", ignoreDuplicates: true },
       );
-      if (error) throw new Error("Unable to cache EduLinkUp marketplace access");
-    } else {
-      const { error } = await admin
-        .from("entitlements")
-        .delete()
-        .eq("user_id", user.id)
-        .eq("source", "edulinkup_marketplace");
-      if (error) throw new Error("Unable to clear EduLinkUp marketplace access cache");
+      if (error) throw new Error("Unable to cache EduLinkUp Plan B marketplace access");
+    } else if (marketplaceEntitled) {
+      const rows = PLAN_A_FEATURES.map((featureKey) => ({
+        user_id: user.id,
+        feature_key: featureKey,
+        source: "edulinkup_marketplace",
+        payment_id: null,
+      }));
+      const { error } = await admin.from("entitlements").upsert(
+        rows,
+        { onConflict: "user_id,feature_key", ignoreDuplicates: true },
+      );
+      if (error) throw new Error("Unable to cache EduLinkUp Plan A marketplace access");
     }
 
-    const entitled = premiumEntitled || marketplaceEntitled;
-    const source = premiumEntitled ? "edulinkup_premium" : marketplaceEntitled ? "edulinkup_marketplace" : null;
+    const entitled = premiumEntitled || marketplaceEntitled || planBMarketplaceEntitled;
+    const source = premiumEntitled ? "edulinkup_premium" : planBMarketplaceEntitled ? "edulinkup_marketplace" : marketplaceEntitled ? "edulinkup_marketplace" : null;
     return jsonResponse({ entitled, source, synced: true });
   } catch (error) {
     console.error("[EDULINKUP_ACCESS]", error);

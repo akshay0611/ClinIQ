@@ -16,6 +16,7 @@ interface EntitlementContextValue {
   hasClinIQAccess: boolean;
   accessSource: "cliniq_purchase" | "edulinkup_premium" | "edulinkup_marketplace" | null;
   refreshEntitlements: () => Promise<void>;
+  syncAndRefresh: () => Promise<void>;
   hasEntitlement: (featureKey: string) => boolean;
 }
 
@@ -60,17 +61,17 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
     setEntitlements(data || []);
   }, [currentUser]);
 
-  useEffect(() => {
-    const syncAndRefresh = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session?.provider_token) {
-        await syncEduLinkUpAccess(data.session);
-      }
-      await refreshEntitlements();
-    };
+  const syncAndRefresh = useCallback(async () => {
+    const { data } = await supabase.auth.getSession();
+    if (data.session?.provider_token) {
+      await syncEduLinkUpAccess(data.session);
+    }
+    await refreshEntitlements();
+  }, [refreshEntitlements]);
 
+  useEffect(() => {
     void syncAndRefresh();
-  }, [currentUser?.id, refreshEntitlements]);
+  }, [currentUser?.id, syncAndRefresh]);
 
   return (
     <EntitlementContext.Provider
@@ -81,6 +82,7 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
         hasClinIQAccess,
         accessSource,
         refreshEntitlements,
+        syncAndRefresh,
         hasEntitlement,
       }}
     >
