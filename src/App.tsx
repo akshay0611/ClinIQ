@@ -37,6 +37,7 @@ const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
 const DoctorProfilePage = lazy(() => import("./pages/DoctorProfilePage"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const Profile = lazy(() => import("./pages/Profile"));
+const Pricing = lazy(() => import("./pages/Pricing"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 
@@ -77,6 +78,7 @@ function App() {
                   <Route path="/research-papers" element={<ResearchPapers />} />
                   <Route path="/health-blog" element={<HealthBlog />} />
                   <Route path="/health-blog/:id" element={<BlogPostPage />} />
+                  <Route path="/pricing" element={<Pricing />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
 
                   {/* Catch-all route for unknown URLs */}

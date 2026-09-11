@@ -31,6 +31,7 @@ import { useTheme } from "../../context/ThemeContext";
     { name: "Find Doctors", path: "/doctors", icon: <Users size={16} /> },
     { name: "Hospitals", path: "/hospitals", icon: <Hospital size={16} /> },
     { name: "About", path: "/about", icon: <Info size={16} /> },
+    { name: "Pricing", path: "/pricing", icon: <Sparkles size={16} /> },
   ] as const;
 
 const Navbar: React.FC = () => {
