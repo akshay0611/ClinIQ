@@ -56,10 +56,13 @@ Deno.serve(async (request) => {
     }
 
     const result = await response.json();
-    const entitled = result?.entitlements?.["cliniq.access"]?.allowed === true;
+    console.log("[EDULINKUP_ENTITLEMENTS]", JSON.stringify(result));
+    const premiumEntitled = result?.entitlements?.["cliniq.access"]?.allowed === true;
+    const marketplaceEntitled = result?.entitlements?.["cliniq.marketplace"]?.allowed === true;
     const admin = getAdminClient();
 
-    if (entitled) {
+    // Sync premium access (cliniq.access → cliniq_access)
+    if (premiumEntitled) {
       const { error } = await admin.from("entitlements").upsert(
         {
           user_id: user.id,
@@ -79,7 +82,30 @@ Deno.serve(async (request) => {
       if (error) throw new Error("Unable to clear EduLinkUp access cache");
     }
 
-    return jsonResponse({ entitled, source: entitled ? "edulinkup_premium" : null, synced: true });
+    // Sync marketplace access (cliniq.marketplace → marketplace_access)
+    if (marketplaceEntitled) {
+      const { error } = await admin.from("entitlements").upsert(
+        {
+          user_id: user.id,
+          feature_key: "marketplace_access",
+          source: "edulinkup_marketplace",
+          payment_id: null,
+        },
+        { onConflict: "user_id,feature_key", ignoreDuplicates: true },
+      );
+      if (error) throw new Error("Unable to cache EduLinkUp marketplace access");
+    } else {
+      const { error } = await admin
+        .from("entitlements")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("source", "edulinkup_marketplace");
+      if (error) throw new Error("Unable to clear EduLinkUp marketplace access cache");
+    }
+
+    const entitled = premiumEntitled || marketplaceEntitled;
+    const source = premiumEntitled ? "edulinkup_premium" : marketplaceEntitled ? "edulinkup_marketplace" : null;
+    return jsonResponse({ entitled, source, synced: true });
   } catch (error) {
     console.error("[EDULINKUP_ACCESS]", error);
     return jsonResponse({ error: error instanceof Error ? error.message : "Unable to sync EduLinkUp access" }, 400);

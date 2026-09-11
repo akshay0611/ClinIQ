@@ -11,10 +11,10 @@ interface EntitlementGateProps {
 
 const EntitlementGate: React.FC<EntitlementGateProps> = ({ featureKey, children }) => {
   const { currentUser } = useAuth();
-  const { isLoading, accessSource, hasEntitlement } = useEntitlements();
+  const { isLoading, hasEntitlement } = useEntitlements();
 
   if (isLoading) return <PageLoader />;
-  const hasAccess = hasEntitlement(featureKey) || accessSource === "edulinkup_premium";
+  const hasAccess = hasEntitlement(featureKey);
   if (currentUser && hasAccess) return <>{children}</>;
 
   return (

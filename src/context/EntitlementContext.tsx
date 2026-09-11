@@ -5,7 +5,7 @@ import { syncEduLinkUpAccess } from "../services/edulinkupEntitlements";
 
 interface Entitlement {
   feature_key: string;
-  source: "cliniq_purchase" | "edulinkup_premium";
+  source: "cliniq_purchase" | "edulinkup_premium" | "edulinkup_marketplace";
   granted_at: string;
 }
 
@@ -14,7 +14,7 @@ interface EntitlementContextValue {
   isLoading: boolean;
   activePlan: { slug: "plan_a" | "plan_b"; name: string } | null;
   hasClinIQAccess: boolean;
-  accessSource: "cliniq_purchase" | "edulinkup_premium" | null;
+  accessSource: "cliniq_purchase" | "edulinkup_premium" | "edulinkup_marketplace" | null;
   refreshEntitlements: () => Promise<void>;
   hasEntitlement: (featureKey: string) => boolean;
 }
@@ -31,12 +31,14 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
     : hasEntitlement("basic_symptom_checker")
       ? { slug: "plan_a" as const, name: "ClinIQ Plan A" }
       : null;
-  const hasClinIQAccess = Boolean(activePlan || hasEntitlement("cliniq_access"));
+  const hasClinIQAccess = Boolean(activePlan || hasEntitlement("cliniq_access") || hasEntitlement("marketplace_access"));
   const accessSource = hasEntitlement("cliniq_access")
     ? "edulinkup_premium" as const
-    : activePlan
-      ? "cliniq_purchase" as const
-      : null;
+    : hasEntitlement("marketplace_access")
+      ? "edulinkup_marketplace" as const
+      : activePlan
+        ? "cliniq_purchase" as const
+        : null;
 
   const refreshEntitlements = useCallback(async () => {
     if (!currentUser) {
