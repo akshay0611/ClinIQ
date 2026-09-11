@@ -82,15 +82,25 @@ Deno.serve(async (request) => {
       if (error) throw new Error("Unable to clear EduLinkUp access cache");
     }
 
-    // Sync marketplace access (cliniq.marketplace → marketplace_access)
+    // Sync marketplace access (cliniq.marketplace → Plan A features + marketplace_access)
+    // The marketplace product maps to Plan A (₹100), so we grant all Plan A features.
+    const MARKETPLACE_PLAN_FEATURES = [
+      "marketplace_access",
+      "basic_symptom_checker",
+      "hospital_finder",
+      "health_blog",
+      "email_support",
+    ];
+
     if (marketplaceEntitled) {
+      const rows = MARKETPLACE_PLAN_FEATURES.map((featureKey) => ({
+        user_id: user.id,
+        feature_key: featureKey,
+        source: "edulinkup_marketplace",
+        payment_id: null,
+      }));
       const { error } = await admin.from("entitlements").upsert(
-        {
-          user_id: user.id,
-          feature_key: "marketplace_access",
-          source: "edulinkup_marketplace",
-          payment_id: null,
-        },
+        rows,
         { onConflict: "user_id,feature_key", ignoreDuplicates: true },
       );
       if (error) throw new Error("Unable to cache EduLinkUp marketplace access");
