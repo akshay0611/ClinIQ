@@ -87,7 +87,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
 
       void buildUserFromSession(session)
-        .then(setCurrentUser)
+        .then((user) => {
+          setCurrentUser(user);
+        })
         .catch((error: unknown) => {
           console.error('[AUTH] Failed to build user from session:', error);
         });

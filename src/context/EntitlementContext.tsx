@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { supabase } from "../services/supabaseClient";
+import { syncEduLinkUpAccess } from "../services/edulinkupEntitlements";
 
 interface Entitlement {
   feature_key: string;
@@ -12,6 +13,8 @@ interface EntitlementContextValue {
   entitlements: Entitlement[];
   isLoading: boolean;
   activePlan: { slug: "plan_a" | "plan_b"; name: string } | null;
+  hasClinIQAccess: boolean;
+  accessSource: "cliniq_purchase" | "edulinkup_premium" | null;
   refreshEntitlements: () => Promise<void>;
   hasEntitlement: (featureKey: string) => boolean;
 }
@@ -27,6 +30,12 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
     ? { slug: "plan_b" as const, name: "ClinIQ Plan B" }
     : hasEntitlement("basic_symptom_checker")
       ? { slug: "plan_a" as const, name: "ClinIQ Plan A" }
+      : null;
+  const hasClinIQAccess = Boolean(activePlan || hasEntitlement("cliniq_access"));
+  const accessSource = hasEntitlement("cliniq_access")
+    ? "edulinkup_premium" as const
+    : activePlan
+      ? "cliniq_purchase" as const
       : null;
 
   const refreshEntitlements = useCallback(async () => {
@@ -50,7 +59,15 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
   }, [currentUser]);
 
   useEffect(() => {
-    void refreshEntitlements();
+    const syncAndRefresh = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session?.provider_token) {
+        await syncEduLinkUpAccess(data.session);
+      }
+      await refreshEntitlements();
+    };
+
+    void syncAndRefresh();
   }, [currentUser?.id, refreshEntitlements]);
 
   return (
@@ -59,6 +76,8 @@ export const EntitlementProvider: React.FC<{ children: React.ReactNode }> = ({ c
         entitlements,
         isLoading,
         activePlan,
+        hasClinIQAccess,
+        accessSource,
         refreshEntitlements,
         hasEntitlement,
       }}

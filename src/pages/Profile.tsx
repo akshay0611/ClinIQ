@@ -112,7 +112,8 @@ const getDoctorStats = (): Stat[] => [
 
 export default function Profile(): JSX.Element {
   const { currentUser } = useAuth();
-  const { activePlan } = useEntitlements();
+  const { activePlan, accessSource, hasClinIQAccess } = useEntitlements();
+  const accessLabel = activePlan?.name || (accessSource === "edulinkup_premium" ? "EduLinkUp Premium" : "ClinIQ access");
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [doctorProfile, setDoctorProfile] = useState<DoctorProfileData | null>(
     null
@@ -360,10 +361,10 @@ export default function Profile(): JSX.Element {
                   ? "Manage your practice and view patient appointments."
                   : "Manage your profile and view your health summary."}
               </p>
-              {activePlan && (
+              {hasClinIQAccess && (
                 <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-sm font-semibold text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
                   <BadgeCheck size={17} />
-                  {activePlan.name} active
+                  {accessLabel} active
                 </div>
               )}
             </div>

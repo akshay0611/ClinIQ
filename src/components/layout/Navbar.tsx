@@ -48,7 +48,8 @@ const Navbar: React.FC = () => {
 
   const { pathname } = useLocation();
   const { currentUser, logout } = useAuth();
-  const { activePlan } = useEntitlements();
+  const { activePlan, accessSource, hasClinIQAccess } = useEntitlements();
+  const accessLabel = activePlan?.name || (accessSource === "edulinkup_premium" ? "EduLinkUp Premium" : null);
   const { theme, toggleTheme } = useTheme();
   const { i18n } = useTranslation();
 
@@ -297,10 +298,10 @@ const Navbar: React.FC = () => {
                 <span className="hidden lg:block text-sm font-medium text-gray-700 dark:text-gray-300">
                   {currentUser.name}
                 </span>
-                {activePlan && (
+                {hasClinIQAccess && (
                   <BadgeCheck
                     size={18}
-                    aria-label={`${activePlan.name} active`}
+                    aria-label={`${accessLabel || "ClinIQ access"} active`}
                     className="text-emerald-500 dark:text-emerald-400"
                   />
                 )}
@@ -322,10 +323,10 @@ const Navbar: React.FC = () => {
                       <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                         {currentUser.email}
                       </p>
-                      {activePlan && (
+                      {hasClinIQAccess && (
                         <p className="mt-2 flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                           <BadgeCheck size={14} />
-                          {activePlan.name} active
+                          {accessLabel || "ClinIQ access"} active
                         </p>
                       )}
                     </div>

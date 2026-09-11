@@ -60,7 +60,8 @@ const plans = [
 ];
 
 const Pricing: React.FC = () => {
-  const { activePlan } = useEntitlements();
+  const { activePlan, accessSource, hasClinIQAccess } = useEntitlements();
+  const activeLabel = activePlan?.name || (accessSource === "edulinkup_premium" ? "EduLinkUp Premium" : null);
 
   return (
     <div className="relative min-h-screen bg-neutral-50 dark:bg-neutral-900 overflow-hidden">
@@ -82,10 +83,10 @@ const Pricing: React.FC = () => {
             Choose the plan that fits your needs. Upgrade or downgrade at any
             time.
           </p>
-          {activePlan && (
+          {hasClinIQAccess && activeLabel && (
             <div className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
               <BadgeCheck size={16} />
-              Active plan: {activePlan.name}
+              Active access: {activeLabel}
             </div>
           )}
         </motion.div>
@@ -97,6 +98,7 @@ const Pricing: React.FC = () => {
               purchasablePlan && activePlan &&
               (activePlan.slug === purchasablePlan.slug || activePlan.slug === "plan_b"),
             );
+            const isEduLinkUpActive = plan.name === "EduLinkUp Premium" && accessSource === "edulinkup_premium";
 
             return (
             <motion.div
@@ -116,7 +118,7 @@ const Pricing: React.FC = () => {
                 </span>
               )}
 
-              {isActive && (
+              {(isActive || isEduLinkUpActive) && (
                 <span className="mb-3 inline-flex w-fit items-center gap-1 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
                   <BadgeCheck size={14} /> Active
                 </span>
@@ -203,7 +205,7 @@ const Pricing: React.FC = () => {
                     "bg-neutral-100 dark:bg-neutral-700 hover:bg-neutral-200 dark:hover:bg-neutral-600 text-neutral-900 dark:text-white text-center inline-block"
                   }`}
                 >
-                  {isActive ? "Active plan" : "Get Started"}
+                  {isActive || isEduLinkUpActive ? "Active plan" : "Get Started"}
                 </Link>
               )}
             </motion.div>
